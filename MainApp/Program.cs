@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TopLevelProgram
+namespace MainApp
 {
     class Program
     {
