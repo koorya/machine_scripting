@@ -58,8 +58,8 @@ namespace MainApp
 					var server = new NetMQ.Sockets.ResponseSocket();
 					server.Bind("tcp://*:5554");
 					
-					var client = new RequestSocket("tcp://localhost:5555");
-					// client.Connect();
+					var client = new RequestSocket();
+					client.Connect("tcp://localhost:5555");
 					string message;
 					while (true)
 					{
@@ -76,20 +76,29 @@ namespace MainApp
 									if(service_up)
 									{
 										Console.WriteLine("kill command was sent to cnn service");
+
+									}
+									else
+									{
+										Console.WriteLine("cnn service kill");
+										py.Kill();
 									}
 									working = false;
 									break;
 								}
 								else if (service_task.command == "capture")
 								{
-									client = client ?? new RequestSocket("tcp://localhost:5555");
-
+									if(client == null)
+									{
+										client = new RequestSocket();
+										client.Connect("tcp://localhost:5555");
+									}
 									CNNTask cnn_task = new CNNTask();
 									cnn_task.image = Capture.getImage();
 									string cnn_task_str = json_converter.JsonConverter.serialaze(cnn_task);
 									string service_message;
-									if (client.TrySendFrame(System.TimeSpan.FromSeconds(2), cnn_task_str) && 
-										client.TryReceiveFrameString(System.TimeSpan.FromSeconds(2), out service_message))
+									if (client.TrySendFrame(System.TimeSpan.FromSeconds(5), cnn_task_str) && 
+										client.TryReceiveFrameString(System.TimeSpan.FromSeconds(5), out service_message))
 									{
 										var service_obj = json_converter.JsonConverter.deserialaze(service_message);
 										if(Object.ReferenceEquals(service_obj.GetType(), typeof(CNNAnswer)))
