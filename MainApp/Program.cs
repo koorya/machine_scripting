@@ -34,12 +34,8 @@ namespace MainApp
 								}
 								else if (service_task.command == "capture")
 								{
-									VideoCapture capture = new VideoCapture(0);
-									Mat img = new Mat();
-									capture.Read(img);
 									CNNTask cnn_task = new CNNTask();
-									cnn_task.image = img.Clone();
-									capture.Release();
+									cnn_task.image = Capture.getImage();
 									var client = new RequestSocket();
 									client.Connect("tcp://localhost:5555");
 									string cnn_task_str = json_converter.JsonConverter.serialaze(cnn_task);
