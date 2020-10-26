@@ -4,6 +4,8 @@ using NetMQ.Sockets;
 using NetMQ;
 using json_converter;
 using OpenCvSharp;
+using System.Diagnostics;
+using System.IO;
 
 namespace MainApp
 {
@@ -13,13 +15,51 @@ namespace MainApp
 		static void Main(string[] args)
 		{
 			Console.WriteLine("Main thread start");
+
+
+			var py = new Process();
+			py.StartInfo.FileName = "python";
+			py.StartInfo.Arguments = @" C:\programming\cnn_zmq_service\cnn_zmq_service.py";
+			py.StartInfo.WorkingDirectory = @"C:\programming\cnn_zmq_service\";
+			py.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			py.StartInfo.UseShellExecute = false;
+			py.StartInfo.RedirectStandardOutput = true; 
+			py.StartInfo.RedirectStandardError = true;
+			string cnn_outputPath = @"./log/output_cnn.txt";
+			using (StreamWriter sw = new StreamWriter(cnn_outputPath, false, System.Text.Encoding.Default))
+			{
+				sw.WriteLine(DateTime.Now);
+			}
+			py.OutputDataReceived += new DataReceivedEventHandler( (s, e) => {
+				if (!String.IsNullOrEmpty(e.Data))
+					using (StreamWriter sw = new StreamWriter(cnn_outputPath, true, System.Text.Encoding.Default))
+					{
+						sw.WriteLine(e.Data);
+					}
+			});
+			string cnn_errorPath = @"./log/error_cnn.txt";
+			using (StreamWriter sw = new StreamWriter(cnn_errorPath, false, System.Text.Encoding.Default))
+			{
+				sw.WriteLine(DateTime.Now);
+			}
+			py.ErrorDataReceived += new DataReceivedEventHandler((s, e) => {
+				if (!String.IsNullOrEmpty(e.Data))
+					using (StreamWriter sw = new StreamWriter(cnn_errorPath, true, System.Text.Encoding.Default))
+					{
+						sw.WriteLine(e.Data);
+					}
+			});
+			py.Start();
+			py.BeginOutputReadLine();
+			py.BeginErrorReadLine();
+
 			var listener = new Thread(new ThreadStart(()=>
 				{
 					var server = new NetMQ.Sockets.ResponseSocket();
 					server.Bind("tcp://*:5554");
 					
-					var client = new RequestSocket();
-					client.Connect("tcp://localhost:5555");
+					var client = new RequestSocket("tcp://localhost:5555");
+					// client.Connect();
 					string message;
 					while (true)
 					{
@@ -32,7 +72,8 @@ namespace MainApp
 								var service_task = messaje_obj as ServiceTask;
 								if (service_task.command == "kill")
 								{
-									if(client.TrySendFrame(System.TimeSpan.FromSeconds(2), message))
+									bool service_up = client?.TrySendFrame(System.TimeSpan.FromSeconds(2), message) ?? false;
+									if(service_up)
 									{
 										Console.WriteLine("kill command was sent to cnn service");
 									}
@@ -41,6 +82,8 @@ namespace MainApp
 								}
 								else if (service_task.command == "capture")
 								{
+									client = client ?? new RequestSocket("tcp://localhost:5555");
+
 									CNNTask cnn_task = new CNNTask();
 									cnn_task.image = Capture.getImage();
 									string cnn_task_str = json_converter.JsonConverter.serialaze(cnn_task);
@@ -69,6 +112,7 @@ namespace MainApp
 									}
 									else
 									{
+										client = null;
 										System.Console.WriteLine("service is down");
 										var error_answer = new ServiceTask();
 										error_answer.command = "service is down";
@@ -94,6 +138,7 @@ namespace MainApp
 				Thread.Sleep(5000);
 				Console.WriteLine("Hello main thread");
 			}
+			py.WaitForExit();
 		}
 	}
 }
