@@ -17,6 +17,9 @@ namespace MainApp
 				{
 					var server = new NetMQ.Sockets.ResponseSocket();
 					server.Bind("tcp://*:5554");
+					
+					var client = new RequestSocket();
+					client.Connect("tcp://localhost:5555");
 					string message;
 					while (true)
 					{
@@ -29,6 +32,10 @@ namespace MainApp
 								var service_task = messaje_obj as ServiceTask;
 								if (service_task.command == "kill")
 								{
+									if(client.TrySendFrame(System.TimeSpan.FromSeconds(2), message))
+									{
+										Console.WriteLine("kill command was sent to cnn service");
+									}
 									working = false;
 									break;
 								}
@@ -36,8 +43,6 @@ namespace MainApp
 								{
 									CNNTask cnn_task = new CNNTask();
 									cnn_task.image = Capture.getImage();
-									var client = new RequestSocket();
-									client.Connect("tcp://localhost:5555");
 									string cnn_task_str = json_converter.JsonConverter.serialaze(cnn_task);
 									string service_message;
 									if (client.TrySendFrame(System.TimeSpan.FromSeconds(2), cnn_task_str) && 
