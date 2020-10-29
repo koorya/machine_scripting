@@ -2,7 +2,7 @@ using OpenCvSharp;
 
 namespace json_converter
 {
-	public class CNNTask
+	public class CNNTask : Request, Response
 	{
 		public int a { get; set; }
 		public int b { get; set; }
