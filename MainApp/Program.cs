@@ -3,9 +3,6 @@ using System.Threading;
 using NetMQ.Sockets;
 using NetMQ;
 using json_converter;
-using OpenCvSharp;
-using System.Diagnostics;
-using System.IO;
 
 namespace MainApp
 {
@@ -17,41 +14,7 @@ namespace MainApp
 			Console.WriteLine("Main thread start");
 
 
-			var py = new Process();
-			py.StartInfo.FileName = "python";
-			py.StartInfo.Arguments = @" C:\programming\cnn_zmq_service\start.py";
-			py.StartInfo.WorkingDirectory = @"C:\programming\cnn_zmq_service\";
-			py.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			py.StartInfo.UseShellExecute = false;
-			py.StartInfo.RedirectStandardOutput = true; 
-			py.StartInfo.RedirectStandardError = true;
-			string cnn_outputPath = @"./log/output_cnn.txt";
-			using (StreamWriter sw = new StreamWriter(cnn_outputPath, false, System.Text.Encoding.Default))
-			{
-				sw.WriteLine(DateTime.Now);
-			}
-			py.OutputDataReceived += new DataReceivedEventHandler( (s, e) => {
-				if (!String.IsNullOrEmpty(e.Data))
-					using (StreamWriter sw = new StreamWriter(cnn_outputPath, true, System.Text.Encoding.Default))
-					{
-						sw.WriteLine(e.Data);
-					}
-			});
-			string cnn_errorPath = @"./log/error_cnn.txt";
-			using (StreamWriter sw = new StreamWriter(cnn_errorPath, false, System.Text.Encoding.Default))
-			{
-				sw.WriteLine(DateTime.Now);
-			}
-			py.ErrorDataReceived += new DataReceivedEventHandler((s, e) => {
-				if (!String.IsNullOrEmpty(e.Data))
-					using (StreamWriter sw = new StreamWriter(cnn_errorPath, true, System.Text.Encoding.Default))
-					{
-						sw.WriteLine(e.Data);
-					}
-			});
-			py.Start();
-			py.BeginOutputReadLine();
-			py.BeginErrorReadLine();
+			var cnn_service = new ServiceStarter();
 
 			var listener = new Thread(new ThreadStart(()=>
 				{
@@ -81,7 +44,7 @@ namespace MainApp
 									else
 									{
 										Console.WriteLine("cnn service kill");
-										py.Kill();
+										cnn_service.Kill();
 									}
 									working = false;
 									break;
@@ -147,7 +110,7 @@ namespace MainApp
 				Thread.Sleep(5000);
 				Console.WriteLine("Hello main thread");
 			}
-			py.WaitForExit();
+			cnn_service.WaitForExit();
 		}
 	}
 }
