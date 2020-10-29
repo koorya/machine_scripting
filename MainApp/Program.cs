@@ -19,7 +19,7 @@ namespace MainApp
 
 			var py = new Process();
 			py.StartInfo.FileName = "python";
-			py.StartInfo.Arguments = @" C:\programming\cnn_zmq_service\cnn_zmq_service.py";
+			py.StartInfo.Arguments = @" C:\programming\cnn_zmq_service\start.py";
 			py.StartInfo.WorkingDirectory = @"C:\programming\cnn_zmq_service\";
 			py.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			py.StartInfo.UseShellExecute = false;
