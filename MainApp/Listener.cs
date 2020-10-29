@@ -24,7 +24,6 @@ namespace MainApp
 					server = new ResponseSocket();
 					server.Bind("tcp://*:5554");
 					
-
 					string message;
 					while (working)
 					{

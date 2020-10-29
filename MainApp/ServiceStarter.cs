@@ -10,10 +10,17 @@ namespace MainApp
 	class ServiceStarter : Process	
 	{
 		RequestSocket client;
+		string service_addres;
+		int free_sock_numb;
 		public ServiceStarter() : base()
 		{
+			var free_sock = new ResponseSocket();
+			free_sock_numb = free_sock.BindRandomPort("tcp://*");
+			Console.WriteLine("free socket is {0}", free_sock_numb);
+			free_sock.Close();
+			service_addres = String.Format("tcp://localhost:{0}", free_sock_numb);
 			this.StartInfo.FileName = "python";
-			this.StartInfo.Arguments = @" C:\programming\cnn_zmq_service\start.py";
+			this.StartInfo.Arguments = String.Format(@" C:\programming\cnn_zmq_service\start.py --port {0}", free_sock_numb);
 			this.StartInfo.WorkingDirectory = @"C:\programming\cnn_zmq_service\";
 			this.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			this.StartInfo.UseShellExecute = false;
@@ -48,7 +55,7 @@ namespace MainApp
 			this.BeginErrorReadLine();	
 
 			client = new RequestSocket();
-			client.Connect("tcp://localhost:5555");
+			client.Connect(service_addres);
 
 		}
 
@@ -61,7 +68,7 @@ namespace MainApp
 			if(client == null)
 			{
 				client = new RequestSocket();
-				client.Connect("tcp://localhost:5555");
+				client.Connect(service_addres);
 			}
 			CNNTask cnn_task = new CNNTask();
 			cnn_task.image = Capture.getImage();

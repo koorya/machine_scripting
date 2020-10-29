@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading;
-using NetMQ.Sockets;
-using NetMQ;
 using json_converter;
 
 namespace MainApp
@@ -18,7 +16,7 @@ namespace MainApp
 			var listener = new Listener();
 			listener.service_received += (m) => {Console.WriteLine("rec1: {0}", m);};
 			listener.service_received += (m) => {Console.WriteLine("rec2: command == {0}", m.command);};
-			// listener.service_received += (m) => {if (m.command == "kill") cnn_service.KillService();};
+			
 			listener.ServiseCommandResponder = (m) => 
 				{
 					var rec = new ServiceTask();
