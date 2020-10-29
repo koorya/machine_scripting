@@ -1,5 +1,7 @@
 from . import utils
-from .messagetypes import *
+from .messages import *  
+
+# from messages import *
 
 def decode_object(o):
 	if 'CNNTask' in o:
@@ -13,6 +15,10 @@ def decode_object(o):
 	elif 'ServiceTask' in o:
 		a = ServiceTask("")
 		a.__dict__.update(o['ServiceTask'])
+		return a
+	elif 'ServiceResponse' in o:
+		a = ServiceResponse("")
+		a.__dict__.update(o['ServiceResponse'])
 		return a
 	elif '__base64img__' in o:
 		a = utils.base642ndarray(o['__base64img__'])
