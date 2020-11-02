@@ -12,11 +12,11 @@ namespace MainApp
 			Console.WriteLine("Main thread start");
 
 			var cnn_service = new ServiceStarter();
-
+			cnn_service.StartService();
+			
 			var listener = new Listener();
 			listener.service_received += (m) => {Console.WriteLine("rec1: {0}", m);};
 			listener.service_received += (m) => {Console.WriteLine("rec2: command == {0}", m.command);};
-			
 			listener.ServiseCommandResponder = (m) => 
 				{
 					var rec = new ServiceTask();
@@ -27,7 +27,8 @@ namespace MainApp
 			 			working = false;
 						listener.working = false;
 						rec.command = "ok, kill";
-					}else if (m.command == "capture")
+					}
+					else if (m.command == "capture")
 					{
 						var proc_resp = cnn_service.ProcessResponse(m);
 						return proc_resp;

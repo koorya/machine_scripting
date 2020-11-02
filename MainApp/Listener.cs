@@ -30,8 +30,8 @@ namespace MainApp
 						if (server.TryReceiveFrameString(System.TimeSpan.FromSeconds(2), out message))
 						{
 							Console.WriteLine("receive message: {0}", message);
-							var messaje_obj = json_converter.JsonConverter.deserialaze(message);
-							processMessage(messaje_obj as Message);
+							var message_obj = json_converter.JsonConverter.deserialaze(message);
+							ProcessMessage(message_obj as Message);
 						}
 						else
 						{
@@ -45,7 +45,7 @@ namespace MainApp
 		{
 			listener.Start();
 		}
-		private void processMessage(Message message)
+		private void ProcessMessage(Message message)
 		{
 			if (message is null)
 				return;

@@ -50,16 +50,19 @@ namespace MainApp
 						sw.WriteLine(e.Data);
 					}
 			});
+
+
+		}
+
+		public void StartService()
+		{
 			this.Start();
 			this.BeginOutputReadLine();
 			this.BeginErrorReadLine();	
 
 			client = new RequestSocket();
 			client.Connect(service_addres);
-
 		}
-
-
 		public Response ProcessResponse(ServiceTask task)
 		{
 			var resp = new ServiceTask();
