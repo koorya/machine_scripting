@@ -20,8 +20,8 @@ namespace MainApp
 			free_sock.Close();
 			service_addres = String.Format("tcp://localhost:{0}", free_sock_numb);
 			this.StartInfo.FileName = "python";
-			this.StartInfo.Arguments = String.Format(@" C:\programming\cnn_zmq_service\start.py --port {0}", free_sock_numb);
-			this.StartInfo.WorkingDirectory = @"C:\programming\cnn_zmq_service\";
+			this.StartInfo.Arguments = String.Format(@" C:\programming\TopLevelProgram\cnn_service\start.py --port {0}", free_sock_numb);
+			this.StartInfo.WorkingDirectory = @"C:\programming\TopLevelProgram\cnn_service\";
 			this.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			this.StartInfo.UseShellExecute = false;
 			this.StartInfo.RedirectStandardOutput = true; 
