@@ -1,6 +1,6 @@
 namespace json_converter
 {
-	public interface Message
+	public interface iMessage
 	{
 
 	}

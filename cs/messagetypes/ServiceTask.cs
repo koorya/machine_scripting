@@ -1,6 +1,6 @@
 namespace json_converter
 {
-	public class ServiceTask: Request, Response
+	public class ServiceTask: iRequest, iResponse
 	{
 		public string command { get; set; }
 		public ServiceTask()

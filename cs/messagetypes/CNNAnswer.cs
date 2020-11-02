@@ -3,7 +3,7 @@ using OpenCvSharp;
 
 namespace json_converter
 {
-	public class CNNAnswer: Response
+	public class CNNAnswer: iResponse
 	{
 		public int res { get; set; }
 		public Mat image { get; set; }
