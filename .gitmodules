@@ -4,3 +4,6 @@
 [submodule "cnn_service"]
 	path = cnn_service
 	url = https://github.com/koorya/cnn_zmq_service
+[submodule "py_client"]
+	path = py_client
+	url = https://github.com/koorya/py_client
