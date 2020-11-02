@@ -33,7 +33,7 @@ namespace MainApp
 						var proc_resp = cnn_service.ProcessResponse(m);
 						return proc_resp;
 					}
-					return (Response)rec;
+					return (iResponse)rec;
 			 	};
 
 			listener.Start();

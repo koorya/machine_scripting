@@ -12,7 +12,7 @@ namespace MainApp
 		Thread listener;
 		public delegate void ServiceCommandHandler(ServiceTask task);
 		public event ServiceCommandHandler service_received;
-		public delegate Response ServiseCommandResponderDelegate(ServiceTask task); //ServiceResponse
+		public delegate iResponse ServiseCommandResponderDelegate(ServiceTask task); //ServiceResponse
 		public ServiseCommandResponderDelegate ServiseCommandResponder;
 		public bool working { get; set; }
 		ResponseSocket server;
@@ -31,7 +31,7 @@ namespace MainApp
 						{
 							Console.WriteLine("receive message: {0}", message);
 							var message_obj = json_converter.JsonConverter.deserialaze(message);
-							ProcessMessage(message_obj as Message);
+							ProcessMessage(message_obj as iMessage);
 						}
 						else
 						{
@@ -45,7 +45,7 @@ namespace MainApp
 		{
 			listener.Start();
 		}
-		private void ProcessMessage(Message message)
+		private void ProcessMessage(iMessage message)
 		{
 			if (message is null)
 				return;

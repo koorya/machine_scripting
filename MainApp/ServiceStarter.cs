@@ -63,7 +63,7 @@ namespace MainApp
 			client = new RequestSocket();
 			client.Connect(service_addres);
 		}
-		public Response ProcessResponse(ServiceTask task)
+		public iResponse ProcessResponse(ServiceTask task)
 		{
 			var resp = new ServiceTask();
 			resp.command = "processed resp";
