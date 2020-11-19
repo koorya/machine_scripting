@@ -13,19 +13,19 @@ namespace MainApp
 
 			var cnn_service = new ServiceStarter();
 			cnn_service.StartService();
-			
+
 			var listener = new Listener();
-			listener.service_received += (m) => {Console.WriteLine("rec1: {0}", m);};
-			listener.service_received += (m) => {Console.WriteLine("rec2: command == {0}", m.command);};
-			listener.ServiseCommandResponder = (m) => 
+			listener.service_received += (m) => { Console.WriteLine("rec1: {0}", m); };
+			listener.service_received += (m) => { Console.WriteLine("rec2: command == {0}", m.command); };
+			listener.ServiseCommandResponder = (m) =>
 				{
 					var rec = new ServiceTask();
 					rec.command = "default info";
 					if (m.command == "kill")
 					{
 						cnn_service.KillService();
-			 			working = false;
-						listener.working = false;
+						working = false;
+						listener.Stop();
 						rec.command = "ok, kill";
 					}
 					else if (m.command == "capture")
@@ -34,14 +34,20 @@ namespace MainApp
 						return proc_resp;
 					}
 					return (iResponse)rec;
-			 	};
+				};
 
 			listener.Start();
 
 			while (working)
 			{
 				Thread.Sleep(5000);
-				Console.WriteLine("Hello main thread");
+				Console.WriteLine("Hello main thread. For exit press [ESC]");
+				if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
+				{
+					cnn_service.KillService();
+					listener.Stop();
+					working = false;
+				}
 			}
 			cnn_service.WaitForExit();
 		}

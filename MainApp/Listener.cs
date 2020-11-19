@@ -45,6 +45,10 @@ namespace MainApp
 		{
 			listener.Start();
 		}
+		public void Stop()
+		{
+			this.working = false;
+		}
 		private void ProcessMessage(iMessage message)
 		{
 			if (message is null)
