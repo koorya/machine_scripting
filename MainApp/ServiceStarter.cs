@@ -74,7 +74,10 @@ namespace MainApp
 				client.Connect(service_addres);
 			}
 			CNNTask cnn_task = new CNNTask();
-			cnn_task.image = Capture.getImage();
+
+			cnn_task.image.image_cv = Capture.getImage();
+			cnn_task.image.generateBase64();
+
 			string cnn_task_str = json_converter.JsonConverter.serialaze(cnn_task);
 			string response_cnn_message;
 			if (client.TrySendFrame(System.TimeSpan.FromSeconds(5), cnn_task_str) && 

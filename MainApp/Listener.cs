@@ -5,9 +5,11 @@ using json_converter;
 using NetMQ;
 using NetMQ.Sockets;
 
+
+
 namespace MainApp
 {
-	class Listener 
+	class Listener
 	{
 		Thread listener;
 		public delegate void ServiceCommandHandler(ServiceTask task);
@@ -16,14 +18,14 @@ namespace MainApp
 		public ServiseCommandResponderDelegate ServiseCommandResponder;
 		public bool working { get; set; }
 		ResponseSocket server;
-		public Listener() 
+		public Listener()
 		{
 			working = true;
-			listener = new Thread(new ThreadStart(()=>
+			listener = new Thread(new ThreadStart(() =>
 				{
 					server = new ResponseSocket();
 					server.Bind("tcp://*:5554");
-					
+
 					string message;
 					while (working)
 					{
@@ -38,7 +40,7 @@ namespace MainApp
 							Console.WriteLine("No message recieve");
 						}
 					}
-				}));     
+				}));
 			listener.IsBackground = true;
 		}
 		public void Start()
@@ -56,11 +58,16 @@ namespace MainApp
 			if (Object.ReferenceEquals(message.GetType(), typeof(ServiceTask)))
 			{
 				var service_task = message as ServiceTask;
-				service_received(service_task); //подписчики
+
+				//подписчики
+				service_received(service_task);
+
+				// отвечающий
 				var resp = ServiseCommandResponder(service_task);
-				
-				string answer_delegate_str = json_converter.JsonConverter.serialaze(resp); // отвечающий
+
+				string answer_delegate_str = json_converter.JsonConverter.serialaze(resp);
 				server.TrySendFrame(System.TimeSpan.FromSeconds(5), answer_delegate_str);
+
 			}
 		}
 	}

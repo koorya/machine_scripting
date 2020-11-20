@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using json_converter;
+using PlcConnector_module;
 
 namespace MainApp
 {
@@ -32,6 +33,10 @@ namespace MainApp
 					{
 						var proc_resp = cnn_service.ProcessResponse(m);
 						return proc_resp;
+					}
+					else if (m.command == "get all plc vars")
+					{
+						return PlcConnector.getPlcVars();
 					}
 					return (iResponse)rec;
 				};
