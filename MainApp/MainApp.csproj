@@ -5,13 +5,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CIPCompolet64">
+      <HintPath>.\references\CIPCompolet64.dll</HintPath>
+    </Reference>
+    <Reference Include="CIPCompoletProxyLib">
+      <HintPath>.\references\CIPCompoletProxyLib.dll</HintPath>
+    </Reference>
+    <Reference Include="CIPCompoletProxyServer">
+      <HintPath>.\references\CIPCompoletProxyServer.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="OpenCvSharp3-AnyCPU" Version="4.0.0.20181129" />
   </ItemGroup>
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <!-- <TargetFramework>netcoreapp3.1</TargetFramework> -->
+    
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
 </Project>

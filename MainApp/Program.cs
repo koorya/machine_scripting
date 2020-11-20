@@ -11,6 +11,8 @@ namespace MainApp
 		static void Main(string[] args)
 		{
 			Console.WriteLine("Main thread start");
+			PlcConnector.connect(new System.ComponentModel.Container());
+			// return;
 
 			var cnn_service = new ServiceStarter();
 			cnn_service.StartService();
@@ -54,6 +56,7 @@ namespace MainApp
 				};
 
 			listener.Start();
+
 
 			while (working)
 			{
