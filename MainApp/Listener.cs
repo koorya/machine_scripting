@@ -13,7 +13,10 @@ namespace MainApp
 	{
 		Thread listener;
 		public delegate void ServiceCommandHandler(ServiceTask task);
+		public delegate void PlcVarsArrayHandler(PlcVarsArray plc_var_array);
+
 		public event ServiceCommandHandler service_received;
+		public event PlcVarsArrayHandler plcvar_recived;
 		public delegate iResponse ServiseCommandResponderDelegate(ServiceTask task); //ServiceResponse
 		public ServiseCommandResponderDelegate ServiseCommandResponder;
 		public bool working { get; set; }
@@ -69,6 +72,14 @@ namespace MainApp
 				server.TrySendFrame(System.TimeSpan.FromSeconds(5), answer_delegate_str);
 
 			}
+			else if (Object.ReferenceEquals(message.GetType(), typeof(PlcVarsArray)))
+			{ 
+				var plc_vars_array = message as PlcVarsArray;
+				plcvar_recived(plc_vars_array);
+				string answer_delegate_str = json_converter.JsonConverter.serialaze(message);
+				server.TrySendFrame(System.TimeSpan.FromSeconds(5), answer_delegate_str);
+			}
+
 		}
 	}
 }

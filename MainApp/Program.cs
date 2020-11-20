@@ -41,6 +41,18 @@ namespace MainApp
 					return (iResponse)rec;
 				};
 
+			listener.plcvar_recived += (m) =>
+				{
+					Console.WriteLine(m);
+					foreach(PlcVar plc_var in PlcConnector.plc_vars)
+					{
+						foreach(PlcVar req_var in m.arr)
+							if(plc_var.id == req_var.id)
+								plc_var.value = req_var.value;
+					}
+					
+				};
+
 			listener.Start();
 
 			while (working)
