@@ -7,31 +7,39 @@ using NetMQ.Sockets;
 
 namespace MainApp
 {
-	class ServiceStarter : Process	
+	class ServiceStarter : Process
 	{
 		RequestSocket client;
 		string service_addres;
 		int free_sock_numb;
+
+		static int FreeTcpPort()
+		{
+			System.Net.Sockets.TcpListener l = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			l.Start();
+			int port = ((System.Net.IPEndPoint)l.LocalEndpoint).Port;
+			l.Stop();
+			return port;
+		}
 		public ServiceStarter() : base()
 		{
-			var free_sock = new ResponseSocket();
-			free_sock_numb = free_sock.BindRandomPort("tcp://*");
+			free_sock_numb = FreeTcpPort();
 			Console.WriteLine("free socket is {0}", free_sock_numb);
-			free_sock.Close();
 			service_addres = String.Format("tcp://localhost:{0}", free_sock_numb);
 			this.StartInfo.FileName = "python";
 			this.StartInfo.Arguments = String.Format(@" C:\programming\TopLevelProgram\cnn_service\start.py --port {0}", free_sock_numb);
 			this.StartInfo.WorkingDirectory = @"C:\programming\TopLevelProgram\cnn_service\";
 			this.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			this.StartInfo.UseShellExecute = false;
-			this.StartInfo.RedirectStandardOutput = true; 
+			this.StartInfo.RedirectStandardOutput = true;
 			this.StartInfo.RedirectStandardError = true;
 			string cnn_outputPath = @"./log/output_cnn.txt";
 			using (StreamWriter sw = new StreamWriter(cnn_outputPath, false, System.Text.Encoding.Default))
 			{
 				sw.WriteLine(DateTime.Now);
 			}
-			this.OutputDataReceived += new DataReceivedEventHandler( (s, e) => {
+			this.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
+			{
 				if (!String.IsNullOrEmpty(e.Data))
 					using (StreamWriter sw = new StreamWriter(cnn_outputPath, true, System.Text.Encoding.Default))
 					{
@@ -43,7 +51,8 @@ namespace MainApp
 			{
 				sw.WriteLine(DateTime.Now);
 			}
-			this.ErrorDataReceived += new DataReceivedEventHandler((s, e) => {
+			this.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
+			{
 				if (!String.IsNullOrEmpty(e.Data))
 					using (StreamWriter sw = new StreamWriter(cnn_errorPath, true, System.Text.Encoding.Default))
 					{
@@ -58,7 +67,7 @@ namespace MainApp
 		{
 			this.Start();
 			this.BeginOutputReadLine();
-			this.BeginErrorReadLine();	
+			this.BeginErrorReadLine();
 
 			client = new RequestSocket();
 			client.Connect(service_addres);
@@ -68,7 +77,7 @@ namespace MainApp
 			var resp = new ServiceTask();
 			resp.command = "processed resp";
 
-			if(client == null)
+			if (client == null)
 			{
 				client = new RequestSocket();
 				client.Connect(service_addres);
@@ -80,11 +89,11 @@ namespace MainApp
 
 			string cnn_task_str = json_converter.JsonConverter.serialaze(cnn_task);
 			string response_cnn_message;
-			if (client.TrySendFrame(System.TimeSpan.FromSeconds(5), cnn_task_str) && 
+			if (client.TrySendFrame(System.TimeSpan.FromSeconds(5), cnn_task_str) &&
 				client.TryReceiveFrameString(System.TimeSpan.FromSeconds(5), out response_cnn_message))
 			{
 				var response_cnn_obj = json_converter.JsonConverter.deserialaze(response_cnn_message);
-				if(Object.ReferenceEquals(response_cnn_obj.GetType(), typeof(CNNAnswer)))
+				if (Object.ReferenceEquals(response_cnn_obj.GetType(), typeof(CNNAnswer)))
 				{
 					CNNAnswer cnn_rec_answ = response_cnn_obj as CNNAnswer;
 					System.Console.WriteLine("service resp.res: {0}", cnn_rec_answ.res);
@@ -93,7 +102,7 @@ namespace MainApp
 				else
 				{
 					System.Console.WriteLine("server illegal answer");
-					resp.command = "service illegal answer";                                      
+					resp.command = "service illegal answer";
 				}
 			}
 			else
@@ -108,11 +117,11 @@ namespace MainApp
 		{
 			var kill_command = new ServiceTask();
 			kill_command.command = "kill";
-			
+
 			string kill_message = json_converter.JsonConverter.serialaze(kill_command);
 			bool service_up = client?.TrySendFrame(System.TimeSpan.FromSeconds(2), kill_message) ?? false;
 			string response_cnn_message = "";
-			if(service_up && 
+			if (service_up &&
 				client.TryReceiveFrameString(System.TimeSpan.FromSeconds(5), out response_cnn_message))
 			{
 				Console.WriteLine("kill command was sent to cnn service");
