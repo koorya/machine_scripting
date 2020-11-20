@@ -1,4 +1,3 @@
-using OpenCvSharp;
 
 namespace json_converter
 {
@@ -6,10 +5,16 @@ namespace json_converter
 	{
 		public int a { get; set; }
 		public int b { get; set; }
-		public Mat image { get; set; }
+		public Image image { get; set; }
+			
 		public CNNTask()
 		{
-			image = new Mat();
+			 image = new Image();
+		}
+		public object getWrapper()
+		{
+			return new {CNNTask = this};
 		}
 	}
+
 }
