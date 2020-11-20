@@ -17,7 +17,7 @@ namespace PlcConnector_module
 		}
 		public static PlcVarsArray getPlcVars()
 		{
-
+			readPlcVariablesFromPLC();
 			PlcVarsArray wrapper = new PlcVarsArray();
 			wrapper.arr = plc_vars;
 			return wrapper;
@@ -47,15 +47,15 @@ namespace PlcConnector_module
 			plc_con1.Active = true;
 			while (!plc_con1.IsConnected) ;
 
-			if (plc_con1.IsConnected)
-
-
-
 			plc_vars = new PlcVar[plc_con1.plc_var_list.Count];
 
+			readPlcVariablesFromPLC();
 
+		}
+		public static void readPlcVariablesFromPLC()
+		{
 			int i = 0;
-			foreach (var variable in plc_con1.plc_var_list)
+			foreach (var variable in plc_conn[0].plc_var_list)
 			{
 				variable.Value.readFromPlc();
 				Console.WriteLine(variable.Value.Plc_value);
@@ -65,20 +65,28 @@ namespace PlcConnector_module
 				plc_vars[i].name = variable.Value.name;
 				plc_vars[i].value = variable.Value.Plc_value;
 				plc_vars[i].type = getMyType(variable.Value.Plc_value.GetType());
-
+				plc_vars[i].valueref = variable.Value;
 				i++;
 
 			}
-
 		}
+		public static void updatePlcVariablesByArray(PlcVar[] var_arr)
+		{
+			foreach(var upd_var in var_arr)
+			{
+				plcvariable plc_var_ref = plc_vars[upd_var.id].valueref as plcvariable;
+				plc_var_ref.Plc_value = upd_var.value;
+			}
+		}
+
 		static public string getMyType(Type type)
 		{
 			Console.WriteLine(type);
-			if(object.Equals(typeof(System.Boolean), type))
+			if (object.Equals(typeof(System.Boolean), type))
 				return "bool";
-			if(object.Equals(typeof(System.Int32), type))
+			if (object.Equals(typeof(System.Int32), type))
 				return "int";
-			if(object.Equals(typeof(System.Double), type))
+			if (object.Equals(typeof(System.Double), type))
 				return "float";
 
 			return "int";
