@@ -19,7 +19,7 @@ namespace json_converter
 		{
 			var im_b64 = str;
 			var im_bytes = System.Convert.FromBase64String(im_b64);
-			Mat img = OpenCvSharp.Cv2.ImDecode(im_bytes, ImreadModes.Color);
+			Mat img = OpenCvSharp.Cv2.ImDecode(im_bytes,ImreadModes.Unchanged);
 			return img;	
 		}
 		public bool generateCV()
