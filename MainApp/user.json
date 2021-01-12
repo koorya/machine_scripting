@@ -1,34 +1,23 @@
 [
   {
-    "plc_name": "near kostya",
-    "LocalPort": 2,
+    "plc_name": "MD",
+    "LocalPort": 3,
     "PeerAddress": "192.168.250.1",
     "var_name_list": [
-      {
-        "name": "run"
-      },
-      {
-        "name": "counter"
-      },
-      {
-        "name": "value"
-      }
+        {"name": "Y1"},
+        {"name": "Y2"},
+        {"name": "BP1"},
+        {"name": "SP4"},
+        {"name": "SP1"},
+        {"name": "SP2"},
+        {"name": "SP3"},
+        {"name": "BP2"},
+        {"name": "Y16"},
+        {"name": "Y17"},
+        {"name": "Y18"}
     ],
     "cam_ip_list": [
-      "172.16.201.113", "172.16.203.103","172.16.203.129"
-    ]
-  },
-  {
-    "plc_name": "near me",
-    "LocalPort": 3,
-    "PeerAddress": "172.16.201.13",
-    "var_name_list": [
-      {
-        "name": "plc_from_stock"
-      }
-    ],
-    "cam_ip_list": [
-      "172.16.203.117", "172.16.203.118"
+      
     ]
   }
 ]
