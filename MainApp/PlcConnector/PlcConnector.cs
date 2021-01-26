@@ -7,7 +7,11 @@ using Newtonsoft.Json;
 
 namespace PlcConnector_module
 {
-
+	// Объект, который создает и хранит список переменных манипулятора
+	// по файлу описания. В настоящий момент реализовано использование 
+  // переменных только одного манипулятора. Исходя из этого переменные 
+	// имеют в качестве характеристики только собственное название,
+	// идентификации по разным контроллерам нет.
 	public class PlcConnector
 	{
 		public static PlcVar[] plc_vars;
@@ -27,7 +31,6 @@ namespace PlcConnector_module
 		static List<ExtCompolet> plc_conn; // список объектов для связи с плк через CIP
 		static public void connect(System.ComponentModel.IContainer cont)
 		{
-
 			plc_conn = new List<ExtCompolet>();
 
 			string fs = File.ReadAllText("./MainApp/user.json");
@@ -41,7 +44,7 @@ namespace PlcConnector_module
 				// добавляем этот объект в список объектов для связи с плк
 				plc_conn.Add(plc);
 			}
-
+			// ATTENTION только один плк используется, других вариантов пока не предусмотрено
 			var plc_con1 = plc_conn[0];
 
 			plc_con1.Active = true;
@@ -54,9 +57,11 @@ namespace PlcConnector_module
 		}
 		public static void readPlcVariablesFromPLC()
 		{
+			// ATTENTION только один плк используется, других вариантов пока не предусмотрено
 			int i = 0;
 			foreach (var variable in plc_conn[0].plc_var_list)
 			{
+				Console.WriteLine("variable for read: {0}",variable.Key);
 				variable.Value.readFromPlc();
 				Console.WriteLine(variable.Value.Plc_value);
 
