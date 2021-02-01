@@ -92,9 +92,11 @@
 
         {"name": "FC1_command"},
         {"name": "FC1_freq"},
+        {"name": "FC1_reset_error"},
 
         {"name": "FC2_command"},
-        {"name": "FC2_freq"}
+        {"name": "FC2_freq"},
+        {"name": "FC2_reset_error"}
         
 
         
