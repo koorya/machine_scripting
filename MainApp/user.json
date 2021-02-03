@@ -93,10 +93,15 @@
         {"name": "FC1_command"},
         {"name": "FC1_freq"},
         {"name": "FC1_reset_error"},
+        {"name": "FC1_out_freq"},
+        {"name": "FC1_out_curr"},
 
         {"name": "FC2_command"},
         {"name": "FC2_freq"},
-        {"name": "FC2_reset_error"}
+        {"name": "FC2_reset_error"},
+        {"name": "FC2_out_freq"},
+        {"name": "FC2_out_curr"}
+
         
 
         
