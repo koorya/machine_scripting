@@ -1,8 +1,8 @@
 [
   {
-    "plc_name": "MD",
+    "plc_name": "MT",
     "LocalPort": 2,
-    "PeerAddress": "172.16.201.89",
+    "PeerAddress": "172.16.203.203",
     "var_name_list": [
         {"name": "Base_Fork_L"},
         {"name": "Base_Fork_R"},
@@ -15,24 +15,25 @@
         {"name": "HMI_Cargo_Angle"},
         {"name": "HMI_Cargo_H_State"},
         {"name": "HMI_Cargo_Height"},
-        {"name": "HMI_Curr_Angle"},
         {"name": "HMI_Dist_Bottom"},
         {"name": "HMI_Dist_Top"},
-        {"name": "HMI_Forward"},
         {"name": "HMI_HandBrake"},
-        {"name": "HMI_Lamp_Ind"},
-        {"name": "HMI_Reverse"},
-        {"name": "HMI_Seat"},
-        {"name": "HMI_Speed"},
-        {"name": "HMI_Targ_Angle"},
         {"name": "HMI_Turttle"},
+        {"name": "HMI_Seat"},
+        {"name": "HMI_Targ_Angle"},
+        {"name": "HMI_Curr_Angle"},
+        {"name": "HMI_Speed"},
+        {"name": "HMI_Matrix_Step_Angles"},
         {"name": "HMI_US1"},
         {"name": "HMI_US2"},
         {"name": "HMI_US3"},
         {"name": "HMI_US4"},
         {"name": "HMI_US5"},
-        {"name": "HMI_US6"}
-        
+        {"name": "HMI_US6"},
+        {"name": "HMI_Reverse"},
+        {"name": "HMI_Forward"},
+        {"name": "HMI_Joystick2_Kind"}
+
 
         
 

@@ -69,7 +69,7 @@ namespace PlcConnector_module
 				plc_vars[i].id = i;
 				plc_vars[i].name = variable.Value.name;
 				plc_vars[i].value = variable.Value.Plc_value;
-				plc_vars[i].type = getMyType(variable.Value.Plc_value.GetType());
+				plc_vars[i].type = getMyType(variable.Value.Plc_value?.GetType());
 				plc_vars[i].valueref = variable.Value;
 				i++;
 

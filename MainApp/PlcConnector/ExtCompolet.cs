@@ -71,7 +71,7 @@ namespace PlcConnector_module
 			catch (Exception ex)
 			{
 				System.Console.WriteLine("exept");
-				Console.WriteLine("WriteVar exeption, {0}", ex.Message);
+				Console.WriteLine("readFromPlc exeption, {0}", ex.Message);
 				return null;
 			}
 		}
