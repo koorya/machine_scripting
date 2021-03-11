@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using json_converter;
 using Newtonsoft.Json;
@@ -29,7 +31,7 @@ namespace PlcConnector_module
 		}
 
 		static List<ExtCompolet> plc_conn; // список объектов для связи с плк через CIP
-		static public async void connect(System.ComponentModel.IContainer cont)
+		static public async Task connect(System.ComponentModel.IContainer cont)
 		{
 			plc_conn = new List<ExtCompolet>();
 
@@ -49,10 +51,11 @@ namespace PlcConnector_module
 			{
 				plc_con__.Active = true;
 				int wait_time = 0;
-				while (!plc_con__.IsConnected && wait_time < 30)
+				while ( wait_time < 30)
 				{ //три секунды ожидаем
 					wait_time++;
 					await Task.Delay(100);
+					Console.WriteLine("wait {0}", wait_time);
 				}
 
 				if (plc_con__.IsConnected)
@@ -72,18 +75,19 @@ namespace PlcConnector_module
 			{
 				if (plc.IsConnected)
 				{
-
+					var var_names = plc.plc_var_list.Keys.ToArray();
+					Hashtable var_hash = plc.ReadVariableMultiple(var_names);
 					foreach (var variable in plc.plc_var_list)
 					{
-						Console.WriteLine("variable for read: {0}", variable.Key);
-						variable.Value.readFromPlc();
-						Console.WriteLine(variable.Value.Plc_value);
+						// Console.WriteLine("variable for read: {0}", variable.Key);
+						// variable.Value.readFromPlc();
+						// Console.WriteLine(variable.Value.Plc_value);
 
 						plc_vars[i] = new PlcVar();
 						plc_vars[i].id = i;
 						plc_vars[i].name = variable.Value.name;
-						plc_vars[i].value = variable.Value.Plc_value;
-						plc_vars[i].type = getMyType(variable.Value.Plc_value?.GetType());
+						plc_vars[i].value = var_hash[variable.Value.name];
+						plc_vars[i].type = getMyType(var_hash[variable.Value.name]?.GetType());
 						plc_vars[i].valueref = variable.Value;
 						i++;
 
@@ -91,6 +95,7 @@ namespace PlcConnector_module
 				}
 			}
 		}
+
 		public static void updatePlcVariablesByArray(PlcVar[] var_arr)
 		{
 			foreach (var upd_var in var_arr)
@@ -102,7 +107,7 @@ namespace PlcConnector_module
 
 		static public string getMyType(Type type)
 		{
-			Console.WriteLine(type);
+			// Console.WriteLine(type);
 			if (object.Equals(typeof(System.Boolean), type))
 				return "bool";
 			if (object.Equals(typeof(System.Int32), type))

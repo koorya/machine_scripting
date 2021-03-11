@@ -8,10 +8,10 @@ namespace MainApp
 	class Program
 	{
 		static bool working = true;
-		static void Main(string[] args)
+		static async System.Threading.Tasks.Task Main(string[] args)
 		{
 			Console.WriteLine("Main thread start");
-			PlcConnector.connect(new System.ComponentModel.Container());
+			await PlcConnector.connect(new System.ComponentModel.Container());
 			// return;
 
 			var cnn_service = new ServiceStarter();
@@ -71,6 +71,9 @@ namespace MainApp
 					listener.Stop();
 					working = false;
 				}
+				// Console.WriteLine(
+				// 	json_converter.JsonConverter.serialaze(PlcConnector.getPlcVars())
+				// 	);
 			}
 			cnn_service.WaitForExit();
 		}
