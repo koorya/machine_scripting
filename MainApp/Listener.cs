@@ -21,13 +21,13 @@ namespace MainApp
 		public ServiseCommandResponderDelegate ServiseCommandResponder;
 		public bool working { get; set; }
 		ResponseSocket server;
-		public Listener()
+		public Listener(string port)
 		{
 			working = true;
 			listener = new Thread(new ThreadStart(() =>
 				{
 					server = new ResponseSocket();
-					server.Bind("tcp://*:5554");
+					server.Bind(port);
 
 					string message;
 					while (working)
