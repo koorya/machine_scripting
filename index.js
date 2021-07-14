@@ -22,41 +22,42 @@ let states = [
   "waiting",
 ];
 
+const ext_transitions = [
+  {
+    name: "liftUpFrameCycle",
+    from: ["on_pins", "on_pins_only"],
+    to: "liftingUpFrame",
+  },
+  { name: "step", from: "liftingUpFrame", to: "on_pins_only" },
+  { name: "step", from: "liftingUpFrame", to: "up_limit" },
+  // { name: "step", from: "on_pins_only", to: "up_limit" },
+  {
+    name: "holdFrame",
+    from: ["on_pins", "on_pins_only", "up_limit"],
+    to: "holding_frame_cycle",
+  },
+  { name: "step", from: "holding_frame_cycle", to: "holding_frame" },
+  {
+    name: "liftDownFrame",
+    from: ["up_limit", "on_pins_only"],
+    to: "liftingDownFrame",
+  },
+  {
+    name: "step",
+    from: "liftingDownFrame",
+    to: "on_pins_only",
+  },
+  {
+    name: "gotoNextState",
+    from: "*",
+    to: function () {
+      return this.next_state;
+    },
+  },
+];
 var fsm = new StateMachine({
   init: "on_pins",
-  transitions: [
-    {
-      name: "liftUpFrameCycle",
-      from: ["on_pins", "on_pins_only"],
-      to: "liftingUpFrame",
-    },
-    { name: "step", from: "liftingUpFrame", to: "on_pins_only" },
-    { name: "step", from: "liftingUpFrame", to: "up_limit" },
-    // { name: "step", from: "on_pins_only", to: "up_limit" },
-    {
-      name: "holdFrame",
-      from: ["on_pins", "on_pins_only", "up_limit"],
-      to: "holding_frame_cycle",
-    },
-    { name: "step", from: "holding_frame_cycle", to: "holding_frame" },
-    {
-      name: "liftDownFrame",
-      from: ["up_limit", "on_pins_only"],
-      to: "liftingDownFrame",
-    },
-    {
-      name: "step",
-      from: "liftingDownFrame",
-      to: "on_pins_only",
-    },
-    {
-      name: "gotoNextState",
-      from: "*",
-      to: function () {
-        return this.next_state;
-      },
-    },
-  ],
+  transitions: ext_transitions,
   data: {
     current_level: 0,
     top_level: 4,
@@ -68,11 +69,36 @@ var fsm = new StateMachine({
       if (lifecycle.transition == "gotoNextState") return true;
 
       this.funct_todo_in_step = (resolve, reject) => {
-        console.log("ожидаем пока манипулятор исполнит цикл");
+        console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
         let flag = false;
         const mon = setInterval(() => {
           if (!flag) return;
-          console.log("подождали пока манипулятор исполнит цикл");
+          console.log(
+            "подождали пока манипулятор исполнит цикл " + lifecycle.from
+          );
+          resolve();
+          clearInterval(mon);
+        }, 100);
+        setTimeout(() => (flag = true), 1000);
+      };
+      this.current_level += 1;
+      if (this.current_level >= this.top_level) this.next_state = "up_limit";
+      else this.next_state = "on_pins_only";
+
+      return false;
+    },
+
+    onLeaveHoldingFrameCycle: function (lifecycle) {
+      if (lifecycle.transition == "gotoNextState") return true;
+
+      this.funct_todo_in_step = (resolve, reject) => {
+        console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
+        let flag = true;
+        const mon = setInterval(() => {
+          if (!flag) return;
+          console.log(
+            "подождали пока манипулятор исполнит цикл " + lifecycle.from
+          );
           resolve();
           clearInterval(mon);
         }, 100);
@@ -84,6 +110,7 @@ var fsm = new StateMachine({
 
       return false;
     },
+
     onBeforeGotoNextState: function () {
       if (this.next_state === "") return false;
       return new Promise(this.funct_todo_in_step);
@@ -101,10 +128,22 @@ var fsm = new StateMachine({
   plugins: [new StateMachineHistory()],
 });
 
-graphviz.parse(visualize(fsm, { orientation: "vertical" }), (gg) =>
-  // gg.output("svg", "test01.svg")
-  gg.output("png", "test01.png")
-);
+function updateImage() {
+  let tran = [...ext_transitions];
+
+  var fsm_image = new StateMachine({
+    init: "on_pins",
+    transitions: tran,
+  });
+
+  graphviz.parse(visualize(fsm_image, { orientation: "vertical" }), (gg) =>
+    // gg.output("svg", "test01.svg")
+    {
+      gg.getNode(fsm.state).set("color", "red");
+      gg.output("png", "test01.png");
+    }
+  );
+}
 
 const history_upd = setInterval(() => {
   // process.stdout.clearLine();
@@ -117,6 +156,7 @@ const history_upd = setInterval(() => {
 }, 150);
 
 const commands = [
+  "liftUpFrameCycle",
   "liftUpFrameCycle",
   "liftUpFrameCycle",
   "liftUpFrameCycle",
@@ -136,4 +176,6 @@ let cmd_exec = setInterval(() => {
     clearInterval(cmd_exec);
     clearInterval(history_upd);
   }
-}, 50);
+}, 1000);
+
+setInterval(() => updateImage(), 300);
