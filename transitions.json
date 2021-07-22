@@ -1,10 +1,10 @@
 [
   {
-    "name": "liftUpFrameCycle",
+    "name": "liftUpFrame",
     "from": "on_pins_support",
-    "to": "liftingUpFrame"
+    "to": "lifting_up_frame_cycle"
   },
-  { "name": "step", "from": "liftingUpFrame", "to": "on_pins_support" },
+  { "name": "step", "from": "lifting_up_frame_cycle", "to": "on_pins_support" },
   {
     "name": "holdFrame",
     "from": "on_pins_support",
@@ -12,7 +12,7 @@
   },
   { "name": "step", "from": "holding_frame_cycle", "to": "holding_frame" },
   {
-    "name": "prepare_to_lifting_bottom_frame",
+    "name": "prepareToLiftingBottomFrame",
     "from": "holding_frame",
     "to": "prepareing_to_lifting_bottom_frame"
   },
@@ -33,7 +33,7 @@
     "dot": { "tailport": "s", "headport": "n" }
   },
   {
-    "name": "pushin_crab",
+    "name": "pushinCrab",
     "from": "on_external_support",
     "to": "pushing_in_crab_cycle"
   },
@@ -43,7 +43,7 @@
     "to": "ready_to_lifting_bottom_frame"
   },
   {
-    "name": "pushout_crab",
+    "name": "pushoutCrab",
     "from": "ready_to_lifting_bottom_frame",
     "to": "pushing_out_crab_cycle"
   },
@@ -73,7 +73,7 @@
     "to": "lifting_down_bottom_frame_cycle"
   },
   {
-    "name": "land_bottom_frame_to_pins",
+    "name": "landBottomFrameToPins",
     "from": "on_external_support",
     "to": "landing_bottom_frame_to_pins"
   },
@@ -97,11 +97,11 @@
   {
     "name": "liftDownFrame",
     "from": "on_pins_support",
-    "to": "liftingDownFrame"
+    "to": "lifting_down_frame_cycle"
   },
   {
     "name": "step",
-    "from": "liftingDownFrame",
+    "from": "lifting_down_frame_cycle",
     "to": "on_pins_support"
   }
 ]

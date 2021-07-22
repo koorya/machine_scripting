@@ -1,10 +1,10 @@
 [
-  "liftUpFrameCycle",
-  "liftUpFrameCycle",
-  "liftUpFrameCycle",
+  "liftUpFrame",
+  "liftUpFrame",
+  "liftUpFrame",
   "liftDownFrame",
   "holdFrame",
   "horizontalMoveTopFrame",
   "prepareToTopFrameMoveing",
-  "liftUpFrameCycle"
+  "liftUpFrame"
 ]

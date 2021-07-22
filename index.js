@@ -25,16 +25,16 @@ var fsm = new StateMachine({
     top_level: 4,
   },
   methods: {
-    onBeforeLiftUpFrameCycle: function () {
+    onBeforeLiftUpFrame: function () {
       console.log("level: " + this.current_level + "\n");
       if (this.current_level >= this.top_level) return false;
       return true;
     },
-    onBeforeLiftDownFrameCycle: function () {
+    onBeforeLiftDownFrame: function () {
       if (this.current_level <= 0) return false;
       return true;
     },
-    onLeaveLiftingUpFrame: function (lifecycle) {
+    onLeaveLiftingUpFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
         console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
         let flag = false;
@@ -51,7 +51,7 @@ var fsm = new StateMachine({
       });
     },
 
-    onLeaveLiftingDownFrame: function (lifecycle) {
+    onLeaveLiftingDownFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
         console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
         let flag = false;
@@ -83,16 +83,7 @@ var fsm = new StateMachine({
         }, 5000);
       });
     },
-    onBeforeTransition: function (lifecycle) {
-      if (lifecycle.transition == "init") return true;
-      console.log(lifecycle.to);
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve();
-          console.log(lifecycle.to);
-        }, 500);
-      });
-    },
+
     onAfterTransition: function (lifecycle) {
       if (lifecycle.transition == "init") return true;
       updateImage();
