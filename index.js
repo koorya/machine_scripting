@@ -70,13 +70,17 @@ var fsm = new StateMachine({
 
     onLeaveHoldingFrameCycle: function () {
       return new Promise((resolve, reject) => {
+        let cnt = 0;
         const cycle_check = setInterval(() => {
-          console.log("holding frame cycle continues");
-        }, 100);
+          process.stdout.cursorTo(0);
+          process.stdout.write("holding frame cycle continues : " + cnt);
+          cnt += 1;
+        }, 200);
         setTimeout(() => {
           clearInterval(cycle_check);
           resolve();
-        }, 2000);
+          console.log("");
+        }, 5000);
       });
     },
     onBeforeTransition: function (lifecycle) {
@@ -90,7 +94,9 @@ var fsm = new StateMachine({
       });
     },
     onAfterTransition: function (lifecycle) {
+      if (lifecycle.transition == "init") return true;
       updateImage();
+      updateHistory();
       if (this.transitions().includes("step"))
         setTimeout(() => {
           this.step();
@@ -123,16 +129,12 @@ function updateImage() {
     }
   );
 }
-
-const history_upd = setInterval(() => {
-  // process.stdout.clearLine();
-  process.stdout.cursorTo(0);
-  process.stdout.write(
+function updateHistory() {
+  console.log(
     JSON.stringify(fsm.history) + "; can: " + JSON.stringify(fsm.transitions())
   );
-  // process.stdout.write("\n"); // end the line
-  // console.log(fsm.history + `\r`);
-}, 150);
+}
+// const history_upd = setInterval(updateHistory, 150);
 
 const commands = JSON.parse(fs.readFileSync("algorithms.json"));
 const eCommands = commands[Symbol.iterator]();
@@ -147,7 +149,7 @@ let cmd_exec = setInterval(() => {
     console.log("commands reading finish");
     clearInterval(cmd_exec);
     setTimeout(() => {
-      clearInterval(history_upd);
+      // clearInterval(history_upd);
     }, 1000);
   }
 }, 1000);
