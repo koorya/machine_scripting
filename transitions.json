@@ -1,0 +1,107 @@
+[
+  {
+    "name": "liftUpFrameCycle",
+    "from": "on_pins_support",
+    "to": "liftingUpFrame"
+  },
+  { "name": "step", "from": "liftingUpFrame", "to": "on_pins_support" },
+  {
+    "name": "holdFrame",
+    "from": "on_pins_support",
+    "to": "holding_frame_cycle"
+  },
+  { "name": "step", "from": "holding_frame_cycle", "to": "holding_frame" },
+  {
+    "name": "prepare_to_lifting_bottom_frame",
+    "from": "holding_frame",
+    "to": "prepareing_to_lifting_bottom_frame"
+  },
+  {
+    "name": "prepareToTopFrameMoveing",
+    "from": "holding_frame",
+    "to": "prepareing_to_top_frame_moveing_vertical"
+  },
+  {
+    "name": "step",
+    "from": "prepareing_to_top_frame_moveing_vertical",
+    "to": "on_pins_support"
+  },
+  {
+    "name": "step",
+    "from": "prepareing_to_lifting_bottom_frame",
+    "to": "on_external_support",
+    "dot": { "tailport": "s", "headport": "n" }
+  },
+  {
+    "name": "pushin_crab",
+    "from": "on_external_support",
+    "to": "pushing_in_crab_cycle"
+  },
+  {
+    "name": "step",
+    "from": "pushing_in_crab_cycle",
+    "to": "ready_to_lifting_bottom_frame"
+  },
+  {
+    "name": "pushout_crab",
+    "from": "ready_to_lifting_bottom_frame",
+    "to": "pushing_out_crab_cycle"
+  },
+  {
+    "name": "step",
+    "from": "pushing_out_crab_cycle",
+    "to": "on_external_support"
+  },
+  {
+    "name": "liftUpBottomFrame",
+    "from": "ready_to_lifting_bottom_frame",
+    "to": "lifting_up_bottom_frame_cycle"
+  },
+  {
+    "name": "step",
+    "from": "lifting_up_bottom_frame_cycle",
+    "to": "ready_to_lifting_bottom_frame"
+  },
+  {
+    "name": "step",
+    "from": "lifting_down_bottom_frame_cycle",
+    "to": "ready_to_lifting_bottom_frame"
+  },
+  {
+    "name": "liftDownBottomFrame",
+    "from": "ready_to_lifting_bottom_frame",
+    "to": "lifting_down_bottom_frame_cycle"
+  },
+  {
+    "name": "land_bottom_frame_to_pins",
+    "from": "on_external_support",
+    "to": "landing_bottom_frame_to_pins"
+  },
+  {
+    "name": "step",
+    "from": "landing_bottom_frame_to_pins",
+    "to": "on_pins_support"
+  },
+
+  {
+    "name": "horizontalMoveTopFrame",
+    "from": "holding_frame",
+    "to": "horizontal_moveing_cycle"
+  },
+  {
+    "name": "step",
+    "from": "horizontal_moveing_cycle",
+    "to": "holding_frame"
+  },
+
+  {
+    "name": "liftDownFrame",
+    "from": "on_pins_support",
+    "to": "liftingDownFrame"
+  },
+  {
+    "name": "step",
+    "from": "liftingDownFrame",
+    "to": "on_pins_support"
+  }
+]

@@ -3,6 +3,8 @@ import visualize from "javascript-state-machine/lib/visualize.js";
 import StateMachineHistory from "javascript-state-machine/lib/history.js";
 
 import graphviz from "graphviz";
+import fs from "fs";
+import { resolve } from "path";
 
 // хранение состояния манипулятора
 // восстановление и сопоставление состояния манипулятора по датчикам
@@ -13,160 +15,44 @@ import graphviz from "graphviz";
 // доступ по web
 // передача точек пути для сдвига рамы
 
-let states = [
-  "lifting topframe",
-  "sinking topframe",
-  "lifting bottomframe",
-  "sinking bottomframe",
-  "holding topframe",
-  "waiting",
-];
+const ext_transitions = JSON.parse(fs.readFileSync("transitions.json"));
 
-const ext_transitions = [
-  {
-    name: "liftUpFrameCycle",
-    from: ["on_pins", "on_pins_only"],
-    to: "liftingUpFrame",
-  },
-  { name: "step", from: "liftingUpFrame", to: "on_pins_only" },
-  { name: "step", from: "liftingUpFrame", to: "up_limit" },
-  // { name: "step", from: "on_pins_only", to: "up_limit" },
-  {
-    name: "holdFrame",
-    from: ["on_pins", "on_pins_only", "up_limit"],
-    to: "holding_frame_cycle",
-  },
-  { name: "step", from: "holding_frame_cycle", to: "holding_frame" },
-  {
-    name: "prepare_to_lifting_bottom_frame",
-    from: "holding_frame",
-    to: "prepareing_to_lifting_bottom_frame",
-  },
-  {
-    name: "prepare_to_top_frame_moveing",
-    from: "holding_frame",
-    to: "prepareing_to_top_frame_moveing",
-  },
-  {
-    name: "step",
-    from: "prepareing_to_top_frame_moveing",
-    to: "up_limit",
-  },
-  {
-    name: "step",
-    from: "prepareing_to_top_frame_moveing",
-    to: "on_pins",
-  },
-  {
-    name: "step",
-    from: "prepareing_to_top_frame_moveing",
-    to: "on_pins_only",
-  },
-  {
-    name: "step",
-    from: "prepareing_to_lifting_bottom_frame",
-    to: "on_external_support",
-    dot: { tailport: "s", headport: "n" },
-  },
-  {
-    name: "pushin_crab",
-    from: "on_external_support",
-    to: "pushing_in_crab_cycle",
-  },
-  {
-    name: "step",
-    from: "pushing_in_crab_cycle",
-    to: "ready_to_lifting_bottom_frame",
-  },
-  {
-    name: "pushout_crab",
-    from: "ready_to_lifting_bottom_frame",
-    to: "pushing_out_crab_cycle",
-  },
-  {
-    name: "step",
-    from: "pushing_out_crab_cycle",
-    to: "on_external_support",
-  },
-  {
-    name: "liftUpBottomFrame",
-    from: "ready_to_lifting_bottom_frame",
-    to: "lifting_up_bottom_frame_cycle",
-  },
-  {
-    name: "step",
-    from: "lifting_up_bottom_frame_cycle",
-    to: "ready_to_lifting_bottom_frame",
-  },
-  {
-    name: "step",
-    from: "lifting_down_bottom_frame_cycle",
-    to: "ready_to_lifting_bottom_frame",
-  },
-  {
-    name: "liftDownBottomFrame",
-    from: "ready_to_lifting_bottom_frame",
-    to: "lifting_down_bottom_frame_cycle",
-  },
-  {
-    name: "land_bottom_frame_to_pins",
-    from: "on_external_support",
-    to: "landing_bottom_frame_to_pins",
-  },
-  {
-    name: "step",
-    from: "landing_bottom_frame_to_pins",
-    to: "on_pins",
-  },
-
-  {
-    name: "horizontal_move_top_frame",
-    from: "holding_frame",
-    to: "horizontal_moveing_cycle",
-  },
-  {
-    name: "step",
-    from: "horizontal_moveing_cycle",
-    to: "holding_frame",
-  },
-
-  {
-    name: "liftDownFrame",
-    from: ["up_limit", "on_pins_only"],
-    to: "liftingDownFrame",
-  },
-  {
-    name: "step",
-    from: "liftingDownFrame",
-    to: "on_pins_only",
-  },
-  {
-    name: "step",
-    from: "liftingDownFrame",
-    to: "on_pins",
-  },
-  {
-    name: "gotoNextState",
-    from: "*",
-    to: function () {
-      return this.next_state;
-    },
-  },
-];
 var fsm = new StateMachine({
-  init: "on_pins",
+  init: "on_pins_support",
   transitions: ext_transitions,
   data: {
     current_level: 0,
     top_level: 4,
-    next_state: "",
-    funct_todo_in_step: (resolve, reject) => {},
   },
   methods: {
+    onBeforeLiftUpFrameCycle: function () {
+      console.log("level: " + this.current_level + "\n");
+      if (this.current_level >= this.top_level) return false;
+      return true;
+    },
+    onBeforeLiftDownFrameCycle: function () {
+      if (this.current_level <= 0) return false;
+      return true;
+    },
     onLeaveLiftingUpFrame: function (lifecycle) {
-      if (lifecycle.transition == "gotoNextState") return true;
+      return new Promise((resolve, reject) => {
+        console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
+        let flag = false;
+        const mon = setInterval(() => {
+          if (!flag) return;
+          resolve();
+          this.current_level += 1;
+          console.log(
+            "подождали пока манипулятор исполнит цикл " + lifecycle.from
+          );
+          clearInterval(mon);
+        }, 100);
+        setTimeout(() => (flag = true), 1000);
+      });
+    },
 
-      this.funct_todo_in_step = (resolve, reject) => {
+    onLeaveLiftingDownFrame: function (lifecycle) {
+      return new Promise((resolve, reject) => {
         console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
         let flag = false;
         const mon = setInterval(() => {
@@ -175,52 +61,40 @@ var fsm = new StateMachine({
             "подождали пока манипулятор исполнит цикл " + lifecycle.from
           );
           resolve();
+          this.current_level -= 1;
           clearInterval(mon);
         }, 100);
         setTimeout(() => (flag = true), 1000);
-      };
-      this.current_level += 1;
-      if (this.current_level >= this.top_level) this.next_state = "up_limit";
-      else this.next_state = "on_pins_only";
-
-      return false;
+      });
     },
 
-    onLeaveHoldingFrameCycle: function (lifecycle) {
-      if (lifecycle.transition == "gotoNextState") return true;
-
-      this.funct_todo_in_step = (resolve, reject) => {
-        console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
-        let flag = true;
-        const mon = setInterval(() => {
-          if (!flag) return;
-          console.log(
-            "подождали пока манипулятор исполнит цикл " + lifecycle.from
-          );
-          resolve();
-          clearInterval(mon);
+    onLeaveHoldingFrameCycle: function () {
+      return new Promise((resolve, reject) => {
+        const cycle_check = setInterval(() => {
+          console.log("holding frame cycle continues");
         }, 100);
-        setTimeout(() => (flag = true), 2000);
-      };
-      this.current_level += 1;
-      if (this.current_level >= this.top_level) this.next_state = "up_limit";
-      else this.next_state = "on_pins_only";
-
-      return false;
+        setTimeout(() => {
+          clearInterval(cycle_check);
+          resolve();
+        }, 2000);
+      });
     },
-
-    onBeforeGotoNextState: function () {
-      if (this.next_state === "") return false;
-      return new Promise(this.funct_todo_in_step);
+    onBeforeTransition: function (lifecycle) {
+      if (lifecycle.transition == "init") return true;
+      console.log(lifecycle.to);
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+          console.log(lifecycle.to);
+        }, 500);
+      });
     },
-    onAfterGotoNextState: function () {
-      this.next_state = "";
-    },
-
-    doStep: function () {
-      if (this.cannot("step")) return false;
-      this.step();
-      this.gotoNextState();
+    onAfterTransition: function (lifecycle) {
+      updateImage();
+      if (this.transitions().includes("step"))
+        setTimeout(() => {
+          this.step();
+        }, 250);
     },
   },
   plugins: [new StateMachineHistory()],
@@ -237,7 +111,7 @@ function updateImage() {
     }
   });
   var fsm_image = new StateMachine({
-    init: "on_pins",
+    init: "on_pins_support",
     transitions: tran,
   });
 
@@ -260,13 +134,7 @@ const history_upd = setInterval(() => {
   // console.log(fsm.history + `\r`);
 }, 150);
 
-const commands = [
-  "liftUpFrameCycle",
-  "liftUpFrameCycle",
-  "liftUpFrameCycle",
-  "liftUpFrameCycle",
-  "liftUpFrameCycle",
-];
+const commands = JSON.parse(fs.readFileSync("algorithms.json"));
 const eCommands = commands[Symbol.iterator]();
 let curr_cmd = eCommands.next();
 let cmd_exec = setInterval(() => {
@@ -274,14 +142,12 @@ let cmd_exec = setInterval(() => {
     if (fsm.cannot(curr_cmd.value)) return;
     console.log("command to FSM: " + curr_cmd.value);
     fsm[curr_cmd.value]();
-    fsm.doStep();
     curr_cmd = eCommands.next();
   } else {
     console.log("commands reading finish");
     clearInterval(cmd_exec);
-    clearInterval(history_upd);
+    setTimeout(() => {
+      clearInterval(history_upd);
+    }, 1000);
   }
 }, 1000);
-
-updateImage();
-// setInterval(() => updateImage(), 300);
