@@ -1,10 +1,15 @@
-import StateMachine from "javascript-state-machine";
-import visualize from "javascript-state-machine/lib/visualize.js";
-import StateMachineHistory from "javascript-state-machine/lib/history.js";
+import * as StateMachine from "javascript-state-machine";
+import * as visualize from "javascript-state-machine/lib/visualize.js";
+import * as StateMachineHistory from "javascript-state-machine/lib/history.js";
 
-import graphviz from "graphviz";
-import fs from "fs";
+import * as graphviz from "graphviz";
+import * as fs from "fs";
 import { resolve } from "path";
+import * as plc from "./zmq_network";
+
+import * as express from "express";
+import * as cors from "cors";
+import { RequestHandler } from "express-serve-static-core";
 
 // хранение состояния манипулятора
 // восстановление и сопоставление состояния манипулятора по датчикам
@@ -15,7 +20,9 @@ import { resolve } from "path";
 // доступ по web
 // передача точек пути для сдвига рамы
 
-const ext_transitions = JSON.parse(fs.readFileSync("transitions.json"));
+const ext_transitions = JSON.parse(
+  fs.readFileSync("transitions.json").toString()
+);
 
 var fsm = new StateMachine({
   init: "on_pins_support",
@@ -37,17 +44,25 @@ var fsm = new StateMachine({
     onLeaveLiftingUpFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
         console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
-        let flag = false;
-        const mon = setInterval(() => {
-          if (!flag) return;
-          resolve();
-          this.current_level += 1;
-          console.log(
-            "подождали пока манипулятор исполнит цикл " + lifecycle.from
-          );
-          clearInterval(mon);
-        }, 100);
-        setTimeout(() => (flag = true), 1000);
+        plc
+          .writeVar({
+            up_frame_cycle_state: 0,
+            start_up_frame_cycle_handle: true,
+          })
+          .then(() => {
+            const mon = setInterval(async () => {
+              let up_frame_cycle_state = (
+                await plc.readVar(["up_frame_cycle_state"])
+              )[0].value;
+              if (up_frame_cycle_state != 99) return;
+              resolve(null);
+              this.current_level += 1;
+              console.log(
+                "подождали пока манипулятор исполнит цикл " + lifecycle.from
+              );
+              clearInterval(mon);
+            }, 100);
+          });
       });
     },
 
@@ -60,7 +75,7 @@ var fsm = new StateMachine({
           console.log(
             "подождали пока манипулятор исполнит цикл " + lifecycle.from
           );
-          resolve();
+          resolve(null);
           this.current_level -= 1;
           clearInterval(mon);
         }, 100);
@@ -78,7 +93,7 @@ var fsm = new StateMachine({
         }, 200);
         setTimeout(() => {
           clearInterval(cycle_check);
-          resolve();
+          resolve(null);
           console.log("");
         }, 5000);
       });
@@ -96,8 +111,8 @@ var fsm = new StateMachine({
   },
   plugins: [new StateMachineHistory()],
 });
-
-function updateImage() {
+let rendered_image = null;
+async function updateImage() {
   let tran = [...ext_transitions];
   tran.map((edge) => {
     if (edge.name === "step") {
@@ -112,13 +127,19 @@ function updateImage() {
     transitions: tran,
   });
 
-  graphviz.parse(visualize(fsm_image, { orientation: "vertical" }), (gg) =>
-    // gg.output("svg", "test01.svg")
-    {
-      gg.getNode(fsm.state).set("color", "red");
-      gg.output("png", "test01.png");
-    }
+  await graphviz.parse(
+    visualize(fsm_image, { orientation: "vertical" }),
+    (gg) =>
+      // gg.output("svg", "test01.svg")
+      {
+        gg.getNode(fsm.state).set("color", "red");
+        gg.output("png", (buff) => {
+          rendered_image = buff.toString("base64");
+        });
+        console.log("rendered");
+      }
   );
+  resolve();
 }
 function updateHistory() {
   console.log(
@@ -127,20 +148,55 @@ function updateHistory() {
 }
 // const history_upd = setInterval(updateHistory, 150);
 
-const commands = JSON.parse(fs.readFileSync("algorithms.json"));
+const commands = JSON.parse(fs.readFileSync("algorithms.json").toString());
 const eCommands = commands[Symbol.iterator]();
 let curr_cmd = eCommands.next();
-let cmd_exec = setInterval(() => {
-  if (!curr_cmd.done) {
-    if (fsm.cannot(curr_cmd.value)) return;
-    console.log("command to FSM: " + curr_cmd.value);
-    fsm[curr_cmd.value]();
-    curr_cmd = eCommands.next();
-  } else {
-    console.log("commands reading finish");
-    clearInterval(cmd_exec);
-    setTimeout(() => {
-      // clearInterval(history_upd);
-    }, 1000);
+// let cmd_exec = setInterval(() => {
+//   if (!curr_cmd.done) {
+//     if (fsm.cannot(curr_cmd.value)) return;
+//     console.log("command to FSM: " + curr_cmd.value);
+//     fsm[curr_cmd.value]();
+//     curr_cmd = eCommands.next();
+//   } else {
+//     console.log("commands reading finish");
+//     clearInterval(cmd_exec);
+//     setTimeout(() => {
+//       // clearInterval(history_upd);
+//     }, 1000);
+//   }
+// }, 1000);
+
+const app = express();
+const port = 5001;
+app.use(express.json());
+app.use(cors());
+
+app.get("/", (request, response) => {
+  response.send("hello world");
+});
+app.get("/state", (request, response) => {
+  response.send(fsm.state);
+});
+app.get("/commands", (request, response) => {
+  response.send(fsm.transitions());
+});
+
+app.post("/command", (req, res) => {
+  console.log(req.body);
+  let cmd = req.body.command;
+  if (fsm.cannot(cmd)) res.send("invalid cmd");
+  else {
+    fsm[cmd]();
+    res.send("valid cmd");
   }
-}, 1000);
+});
+app.get("/image", (req, res) => {
+  if (rendered_image === null) {
+    updateImage().then(() => res.send(rendered_image));
+    console.log(rendered_image);
+  } else {
+    res.send(rendered_image);
+  }
+});
+
+app.listen(port, () => console.log(`running on port ${port}`));
