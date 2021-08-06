@@ -28,6 +28,7 @@ function doFakePlcLogic() {
               vault[element] = 99;
               clearInterval(cycle_interval);
             }
+            console.log(vault);
           }, 200);
         }
       });
@@ -43,7 +44,7 @@ class SocketServer {
     var my_sock = new zmq.Reply();
     my_sock.bind(`tcp://*:${port}`).then(async () => {
       // will return a rejected promise immediately if there is no message to receive.
-      my_sock.receiveTimeout = 0;
+      my_sock.receiveTimeout = 2000;
       while (!this.stop)
         await my_sock.receive().then(
           (mes) => {
@@ -67,15 +68,16 @@ const srv_inst = new SocketServer(port, (mess) => {
   } else {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
       vault[element.name] = element["value"];
-      doFakePlcLogic();
     });
+    console.log(vault);
+    doFakePlcLogic();
   }
 
   return JSON.stringify(rec_obj);
 });
 
 // setTimeout(() => (srv_inst.stop = true), 10000);
-setInterval(() => console.log(vault), 500);
+// setInterval(() => console.log(vault), 500);
 
 async function sendExample(port: number) {
   var sender = new zmq.Request();
