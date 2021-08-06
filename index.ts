@@ -24,6 +24,39 @@ const ext_transitions = JSON.parse(
   fs.readFileSync("transitions.json").toString()
 );
 
+function cycleExecutor(props: {
+  cycle_name: string;
+  lifecycle: any;
+  resolve: () => void;
+  reject: () => void;
+}) {
+  const cycle_name = props.cycle_name;
+  const lifecycle = props.lifecycle;
+  const resolve = props.resolve;
+  const reject = props.reject;
+
+  console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
+  const var_obj = {};
+  var_obj[`${cycle_name}_state`] = 0;
+  var_obj[`start_${cycle_name}_handle`] = true;
+
+  plc.writeVar(var_obj).then(() => {
+    var mon = setTimeout(async function run() {
+      let cycle_state = (await plc.readVar([`${cycle_name}_state`]))[0].value;
+      mon = setTimeout(run, 100);
+      if (cycle_state == 98) {
+        console.log("ошибка при исполнении цикла " + lifecycle.from);
+        reject();
+        clearTimeout(mon);
+      }
+      if (cycle_state != 99) return;
+      console.log("подождали пока манипулятор исполнит цикл " + lifecycle.from);
+      resolve();
+      clearTimeout(mon);
+    }, 100);
+  });
+}
+
 var fsm = new StateMachine({
   init: "on_pins_support",
   transitions: ext_transitions,
@@ -42,45 +75,35 @@ var fsm = new StateMachine({
       return true;
     },
     onLeaveLiftingUpFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
-        plc
-          .writeVar({
-            up_frame_cycle_state: 0,
-            start_up_frame_cycle_handle: true,
-          })
-          .then(() => {
-            const mon = setInterval(async () => {
-              let up_frame_cycle_state = (
-                await plc.readVar(["up_frame_cycle_state"])
-              )[0].value;
-              if (up_frame_cycle_state != 99) return;
-              resolve(null);
-              this.current_level += 1;
-              console.log(
-                "подождали пока манипулятор исполнит цикл " + lifecycle.from
-              );
-              clearInterval(mon);
-            }, 100);
-          });
-      });
+      return new Promise((resolve, reject) =>
+        cycleExecutor({
+          cycle_name: "up_frame_cycle",
+          lifecycle: lifecycle,
+          resolve: () => {
+            this.current_level += 1;
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        })
+      );
     },
 
     onLeaveLiftingDownFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
-        let flag = false;
-        const mon = setInterval(() => {
-          if (!flag) return;
-          console.log(
-            "подождали пока манипулятор исполнит цикл " + lifecycle.from
-          );
-          resolve(null);
-          this.current_level -= 1;
-          clearInterval(mon);
-        }, 100);
-        setTimeout(() => (flag = true), 1000);
-      });
+      return new Promise((resolve, reject) =>
+        cycleExecutor({
+          cycle_name: "down_frame_cycle",
+          lifecycle: lifecycle,
+          resolve: () => {
+            this.current_level -= 1;
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        })
+      );
     },
 
     onLeaveHoldingFrameCycle: function () {
@@ -102,7 +125,7 @@ var fsm = new StateMachine({
     onAfterTransition: function (lifecycle) {
       if (lifecycle.transition == "init") return true;
       updateImage();
-      updateHistory();
+      // updateHistory();
       if (this.transitions().includes("step"))
         setTimeout(() => {
           this.step();

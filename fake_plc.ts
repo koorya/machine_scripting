@@ -23,7 +23,7 @@ function doFakePlcLogic() {
         if (RegExp(`${name}_state$`).exec(element)) {
           vault[element] = 0;
           const cycle_interval = setInterval(() => {
-            if (vault[element] < 50) vault[element] += 1;
+            if (vault[element] < 20) vault[element] += 1;
             else {
               vault[element] = 99;
               clearInterval(cycle_interval);
