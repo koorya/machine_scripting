@@ -4,7 +4,8 @@
   "description": "pc service, whitch operates with manipulator-domkrat",
   "main": "index.ts",
   "scripts": {
-    "start": "npx ts-node index.ts"
+    "build": "tsc",
+    "start": "npx ts-node fake_plc.ts"
   },
   "author": "",
   "license": "ISC",
