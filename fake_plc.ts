@@ -13,15 +13,29 @@ function test(value: any, should_be: any) {
 }
 
 function doFakePlcLogic() {
-  function isStateVar(name: string): boolean {
-    return true;
-  }
-  test("up_frame_cycle_state", true)(isStateVar);
-  test("start_up_frame_cycle_handle", false)(isStateVar);
+  const start_reg = /^start_(\w+)_handle$/;
+  const state_reg = /(w+)_state$/;
 
-  // Object.keys(vault).forEach();
+  Object.keys(vault).forEach((element) => {
+    const name = start_reg.exec(element)?.[1];
+    if (name != null && vault[element]) {
+      Object.keys(vault).forEach((element) => {
+        if (RegExp(`${name}_state$`).exec(element)) {
+          vault[element] = 0;
+          const cycle_interval = setInterval(() => {
+            if (vault[element] < 50) vault[element] += 1;
+            else {
+              vault[element] = 99;
+              clearInterval(cycle_interval);
+            }
+          }, 200);
+        }
+      });
+      vault[element] = false;
+    }
+  });
+  console.log(vault);
 }
-doFakePlcLogic();
 
 class SocketServer {
   stop: boolean = false;
@@ -53,19 +67,21 @@ const srv_inst = new SocketServer(port, (mess) => {
   } else {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
       vault[element.name] = element["value"];
+      doFakePlcLogic();
     });
   }
 
   return JSON.stringify(rec_obj);
 });
 
-setTimeout(() => (srv_inst.stop = true), 1000);
+// setTimeout(() => (srv_inst.stop = true), 10000);
+setInterval(() => console.log(vault), 500);
 
 async function sendExample(port: number) {
   var sender = new zmq.Request();
   sender.connect(`tcp://127.0.0.1:${port}`);
 
-  const vars = { up_frame_cycle_state: 0, start_up_frame_cycle_handle: true };
+  const vars = { up_frame_cycle_state: 10, start_up_frame_cycle_handle: true };
   await sender
     .send(
       JSON.stringify({
@@ -79,6 +95,26 @@ async function sendExample(port: number) {
       })
     )
     .then(() => sender.receive().then((answ) => null));
+
+  setTimeout(() => {
+    const vars = {
+      down_frame_cycle_state: 0,
+      start_down_frame_cycle_handle: true,
+    };
+    sender
+      .send(
+        JSON.stringify({
+          PlcVarsArray: {
+            arr: Object.keys(vars).map((n) => {
+              return { name: n, value: vars[n] };
+            }),
+
+            update: true,
+          },
+        })
+      )
+      .then(() => sender.receive().then((answ) => null));
+  }, 2000);
 
   const names = ["up_frame_cycle_state", "start_up_frame_cycle_handle", "kaka"];
   await sender
@@ -102,4 +138,4 @@ async function sendExample(port: number) {
     );
 }
 
-sendExample(port);
+// sendExample(port);
