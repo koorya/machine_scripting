@@ -24,47 +24,52 @@ const ext_transitions = JSON.parse(
   fs.readFileSync("transitions.json").toString()
 );
 
-function cycleExecutor(props: {
-  cycle_name: string;
-  lifecycle: any;
-  resolve: () => void;
-  reject: () => void;
-}) {
-  const cycle_name = props.cycle_name;
-  const lifecycle = props.lifecycle;
-  const resolve = props.resolve;
-  const reject = props.reject;
-
-  console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
-  const var_obj = {};
-  var_obj[`${cycle_name}_state`] = 0;
-  var_obj[`start_${cycle_name}_handle`] = true;
-
-  plc.writeVar(var_obj).then(() => {
-    var mon = setTimeout(async function run() {
-      let cycle_state = (await plc.readVar([`${cycle_name}_state`]))[0].value;
-      mon = setTimeout(run, 100);
-      if (cycle_state == 98) {
-        console.log("ошибка при исполнении цикла " + lifecycle.from);
-        reject();
-        clearTimeout(mon);
-      }
-      if (cycle_state != 99) return;
-      console.log("подождали пока манипулятор исполнит цикл " + lifecycle.from);
-      resolve();
-      clearTimeout(mon);
-    }, 100);
-  });
-}
-
 var fsm = new StateMachine({
   init: "on_pins_support",
   transitions: ext_transitions,
   data: {
     current_level: 0,
     top_level: 4,
+    cycle_state: 0,
   },
   methods: {
+    cycleExecutor: function (props: {
+      cycle_name: string;
+      lifecycle: any;
+      resolve: () => void;
+      reject: () => void;
+    }) {
+      const cycle_name = props.cycle_name;
+      const lifecycle = props.lifecycle;
+      const resolve = props.resolve;
+      const reject = props.reject;
+
+      console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
+      const var_obj = {};
+      var_obj[`${cycle_name}_state`] = 0;
+      var_obj[`start_${cycle_name}_handle`] = true;
+      plc.writeVar(var_obj).then(() => {
+        var mon = setTimeout(() => null, 100);
+        const run = async () => {
+          this.cycle_state = (
+            await plc.readVar([`${cycle_name}_state`])
+          )[0].value;
+          mon = setTimeout(run, 100);
+          if (this.cycle_state == 98) {
+            console.log("ошибка при исполнении цикла " + lifecycle.from);
+            reject();
+            clearTimeout(mon);
+          }
+          if (this.cycle_state != 99) return;
+          console.log(
+            "подождали пока манипулятор исполнит цикл " + lifecycle.from
+          );
+          resolve();
+          clearTimeout(mon);
+        };
+        run();
+      });
+    },
     onBeforeLiftUpFrame: function () {
       console.log("level: " + this.current_level + "\n");
       if (this.current_level >= this.top_level) return false;
@@ -76,7 +81,7 @@ var fsm = new StateMachine({
     },
     onLeaveLiftingUpFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) =>
-        cycleExecutor({
+        this.cycleExecutor({
           cycle_name: "up_frame_cycle",
           lifecycle: lifecycle,
           resolve: () => {
@@ -92,7 +97,7 @@ var fsm = new StateMachine({
 
     onLeaveLiftingDownFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) =>
-        cycleExecutor({
+        this.cycleExecutor({
           cycle_name: "down_frame_cycle",
           lifecycle: lifecycle,
           resolve: () => {
@@ -106,19 +111,132 @@ var fsm = new StateMachine({
       );
     },
 
-    onLeaveHoldingFrameCycle: function () {
+    onLeaveHoldingFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
-        let cnt = 0;
-        const cycle_check = setInterval(() => {
-          process.stdout.cursorTo(0);
-          process.stdout.write("holding frame cycle continues : " + cnt);
-          cnt += 1;
-        }, 200);
-        setTimeout(() => {
-          clearInterval(cycle_check);
-          resolve(null);
-          console.log("");
-        }, 5000);
+        this.cycleExecutor({
+          cycle_name: "init_to_hold",
+          lifecycle: lifecycle,
+          resolve: () => {
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+
+    onLeavePrepareingToLiftingBottomFrameCycle: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "init_from_hold_to_lift_crab",
+          lifecycle: lifecycle,
+          resolve: () => {
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+
+    onLeavePrepareingToTopFrameMoveingVertical: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "from_hold_to_init",
+          lifecycle: lifecycle,
+          resolve: () => {
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+
+    onLeaveLandingBottomFrameToPins: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "up_from_upcrcyc_to_init",
+          lifecycle: lifecycle,
+          resolve: () => {
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+    onLeavePushingInCrabCycle: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "init_pushin_crab",
+          lifecycle: lifecycle,
+          resolve: () => {
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+    onLeavePushingOutCrabCycle: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "init_pushout_crab",
+          lifecycle: lifecycle,
+          resolve: () => {
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+
+    onBeforeLiftUpBottomFrame: function () {
+      console.log("level: " + this.current_level + "\n");
+      if (this.current_level <= 0) return false;
+      return true;
+    },
+    onBeforeLiftDownBottomFrame: function () {
+      if (this.current_level >= this.top_level) return false;
+      return true;
+    },
+
+    onLeaveLiftingUpBottomFrameCycle: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "up_crab_cycle",
+          lifecycle: lifecycle,
+          resolve: () => {
+            this.current_level -= 1;
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
+      });
+    },
+    onLeaveLiftingDownBottomFrameCycle: function (lifecycle) {
+      return new Promise((resolve, reject) => {
+        this.cycleExecutor({
+          cycle_name: "down_crab_cycle",
+          lifecycle: lifecycle,
+          resolve: () => {
+            this.current_level += 1;
+            resolve(null);
+          },
+          reject: () => {
+            reject();
+          },
+        });
       });
     },
 
@@ -156,7 +274,7 @@ async function updateImage() {
       // gg.output("svg", "test01.svg")
       {
         gg.getNode(fsm.state).set("color", "red");
-        gg.output("png", (buff) => {
+        gg.output("svg", (buff) => {
           rendered_image = buff.toString("base64");
         });
         console.log("rendered");
@@ -220,6 +338,16 @@ app.get("/image", (req, res) => {
   } else {
     res.send(rendered_image);
   }
+});
+// cycle_state
+app.get("/cycle_state", (request, response) => {
+  response.send(
+    JSON.stringify({
+      state: fsm.state,
+      cycle_step: fsm.cycle_state,
+      current_level: fsm.current_level,
+    })
+  );
 });
 
 app.listen(port, () => console.log(`running on port ${port}`));

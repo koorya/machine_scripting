@@ -14,7 +14,7 @@
   {
     "name": "prepareToLiftingBottomFrame",
     "from": "holding_frame",
-    "to": "prepareing_to_lifting_bottom_frame"
+    "to": "prepareing_to_lifting_bottom_frame_cycle"
   },
   {
     "name": "prepareToTopFrameMoveing",
@@ -28,7 +28,7 @@
   },
   {
     "name": "step",
-    "from": "prepareing_to_lifting_bottom_frame",
+    "from": "prepareing_to_lifting_bottom_frame_cycle",
     "to": "on_external_support",
     "dot": { "tailport": "s", "headport": "n" }
   },
