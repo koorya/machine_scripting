@@ -1,4 +1,6 @@
 [
+  "pushinCrab",
+  "liftDownBottomFrame",
   "liftUpFrame",
   "liftUpFrame",
   "liftUpFrame",
@@ -6,5 +8,7 @@
   "holdFrame",
   "horizontalMoveTopFrame",
   "prepareToTopFrameMoveing",
+  "liftUpFrame",
+  "liftUpFrame",
   "liftUpFrame"
 ]

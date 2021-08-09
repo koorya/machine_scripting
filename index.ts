@@ -5,11 +5,13 @@ import * as StateMachineHistory from "javascript-state-machine/lib/history.js";
 import * as graphviz from "graphviz";
 import * as fs from "fs";
 import { resolve } from "path";
-import * as plc from "./zmq_network";
 
 import * as express from "express";
 import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
+import { fsm_config, transitions } from "./state_machine_cfg";
+import { plc_fsm } from "./plc_fsm";
+import { fsm_sc } from "./scenario";
 
 // хранение состояния манипулятора
 // восстановление и сопоставление состояния манипулятора по датчикам
@@ -19,242 +21,18 @@ import { RequestHandler } from "express-serve-static-core";
 // контроль выполнения циклов, отображение состояния внутри цикла
 // доступ по web
 // передача точек пути для сдвига рамы
+const funct = plc_fsm.onAfterTransition;
+plc_fsm.onAfterTransition = function (lifecycle) {
+  updateImage();
+  funct(lifecycle);
+  fsm_sc.goto(fsm.state);
+  fsm_sc.current_level = fsm.current_level;
+};
+const fsm = plc_fsm;
 
-const ext_transitions = JSON.parse(
-  fs.readFileSync("transitions.json").toString()
-);
-
-var fsm = new StateMachine({
-  init: "on_pins_support",
-  transitions: ext_transitions,
-  data: {
-    current_level: 0,
-    top_level: 4,
-    cycle_state: 0,
-  },
-  methods: {
-    cycleExecutor: function (props: {
-      cycle_name: string;
-      lifecycle: any;
-      resolve: () => void;
-      reject: () => void;
-    }) {
-      const cycle_name = props.cycle_name;
-      const lifecycle = props.lifecycle;
-      const resolve = props.resolve;
-      const reject = props.reject;
-
-      console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
-      const var_obj = {};
-      var_obj[`${cycle_name}_state`] = 0;
-      var_obj[`start_${cycle_name}_handle`] = true;
-      plc.writeVar(var_obj).then(() => {
-        var mon = setTimeout(() => null, 100);
-        const run = async () => {
-          this.cycle_state = (
-            await plc.readVar([`${cycle_name}_state`])
-          )[0].value;
-          mon = setTimeout(run, 100);
-          if (this.cycle_state == 98) {
-            console.log("ошибка при исполнении цикла " + lifecycle.from);
-            reject();
-            clearTimeout(mon);
-          }
-          if (this.cycle_state != 99) return;
-          console.log(
-            "подождали пока манипулятор исполнит цикл " + lifecycle.from
-          );
-          resolve();
-          clearTimeout(mon);
-        };
-        run();
-      });
-    },
-    onBeforeLiftUpFrame: function () {
-      console.log("level: " + this.current_level + "\n");
-      if (this.current_level >= this.top_level) return false;
-      return true;
-    },
-    onBeforeLiftDownFrame: function () {
-      if (this.current_level <= 0) return false;
-      return true;
-    },
-    onLeaveLiftingUpFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) =>
-        this.cycleExecutor({
-          cycle_name: "up_frame_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level += 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        })
-      );
-    },
-
-    onLeaveLiftingDownFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) =>
-        this.cycleExecutor({
-          cycle_name: "down_frame_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level -= 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        })
-      );
-    },
-
-    onLeaveHoldingFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "init_to_hold",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-
-    onLeavePrepareingToLiftingBottomFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "init_from_hold_to_lift_crab",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-
-    onLeavePrepareingToTopFrameMoveingVertical: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "from_hold_to_init",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-
-    onLeaveLandingBottomFrameToPins: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "up_from_upcrcyc_to_init",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-    onLeavePushingInCrabCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "init_pushin_crab",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-    onLeavePushingOutCrabCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "init_pushout_crab",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-
-    onBeforeLiftUpBottomFrame: function () {
-      console.log("level: " + this.current_level + "\n");
-      if (this.current_level <= 0) return false;
-      return true;
-    },
-    onBeforeLiftDownBottomFrame: function () {
-      if (this.current_level >= this.top_level) return false;
-      return true;
-    },
-
-    onLeaveLiftingUpBottomFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "up_crab_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level -= 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-    onLeaveLiftingDownBottomFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "down_crab_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level += 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-
-    onAfterTransition: function (lifecycle) {
-      if (lifecycle.transition == "init") return true;
-      updateImage();
-      // updateHistory();
-      if (this.transitions().includes("step"))
-        setTimeout(() => {
-          this.step();
-        }, 250);
-    },
-  },
-  plugins: [new StateMachineHistory()],
-});
 let rendered_image = null;
 async function updateImage() {
-  let tran = [...ext_transitions];
+  let tran = [...transitions];
   tran.map((edge) => {
     if (edge.name === "step") {
       if (!edge["dot"]) edge["dot"] = { color: "blue" };
@@ -289,24 +67,6 @@ function updateHistory() {
 }
 // const history_upd = setInterval(updateHistory, 150);
 
-const commands = JSON.parse(fs.readFileSync("algorithms.json").toString());
-const eCommands = commands[Symbol.iterator]();
-let curr_cmd = eCommands.next();
-// let cmd_exec = setInterval(() => {
-//   if (!curr_cmd.done) {
-//     if (fsm.cannot(curr_cmd.value)) return;
-//     console.log("command to FSM: " + curr_cmd.value);
-//     fsm[curr_cmd.value]();
-//     curr_cmd = eCommands.next();
-//   } else {
-//     console.log("commands reading finish");
-//     clearInterval(cmd_exec);
-//     setTimeout(() => {
-//       // clearInterval(history_upd);
-//     }, 1000);
-//   }
-// }, 1000);
-
 const app = express();
 const port = 5001;
 app.use(express.json());
@@ -327,8 +87,10 @@ app.post("/command", (req, res) => {
   let cmd = req.body.command;
   if (fsm.cannot(cmd)) res.send("invalid cmd");
   else {
-    fsm[cmd]();
-    res.send("valid cmd");
+    const is_command_exec = fsm[cmd]();
+    // if (fsm.can("step")) fsm.step();
+    if (!is_command_exec) console.log("invalid cmd");
+    res.send(is_command_exec ? "valid cmd" : "invalid cmd");
   }
 });
 app.get("/image", (req, res) => {
