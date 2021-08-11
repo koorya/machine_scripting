@@ -11,10 +11,28 @@ fsm_config.transitions.push({
 });
 var fsm = new StateMachine(fsm_config);
 
-const commands = JSON.parse(fs.readFileSync("algorithms.json").toString());
+function compileScenario(scenario: string) {
+  function repeat(val: any, counts: number) {
+    return [
+      ...Array(counts)
+        .fill(0)
+        .map((el) => val),
+    ];
+  }
+  let compiled = null;
+  try {
+    compiled = Function(`return function(repeat){ return ` + scenario + `;}`)()(
+      repeat
+    );
+    return compiled;
+  } catch {
+    console.log("invalid script!");
+  }
+  return null;
+}
 
-async function getScenarioError(
-  scenario: [string],
+async function getCompiledScenarioError(
+  cmdlist: string[],
   init: { state: string; level: number } = null
 ) {
   if (init != null) {
@@ -22,7 +40,7 @@ async function getScenarioError(
     fsm.current_level = init.level;
   }
 
-  const eCommands = scenario[Symbol.iterator]();
+  const eCommands = cmdlist[Symbol.iterator]();
   let curr_cmd = eCommands.next();
   let index = 0;
   while (!curr_cmd.done) {
@@ -55,8 +73,4 @@ async function getScenarioError(
   return null;
 }
 
-getScenarioError(commands, { state: "on_external_support", level: 2 }).then(
-  console.log
-);
-
-export { fsm as fsm_sc };
+export { fsm as fsm_sc, getCompiledScenarioError, compileScenario };

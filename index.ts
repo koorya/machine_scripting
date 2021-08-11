@@ -11,22 +11,24 @@ import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
 import { fsm_config, transitions } from "./state_machine_cfg";
 import { plc_fsm } from "./plc_fsm";
-import { fsm_sc } from "./scenario";
+import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
+import e = require("express");
 
-// хранение состояния манипулятора
-// восстановление и сопоставление состояния манипулятора по датчикам
-// прием команд через внешние запросы
-// проверка команд на валидность и возможность для текущего состояния
-// запуск соответствующих циклов внутри домкрата
-// контроль выполнения циклов, отображение состояния внутри цикла
-// доступ по web
-// передача точек пути для сдвига рамы
+// хранение состояния манипулятора +
+// восстановление и сопоставление состояния манипулятора по датчикам -
+// прием команд через внешние запросы + (rest api)
+// проверка команд на валидность и возможность для текущего состояния +
+// запуск соответствующих циклов внутри домкрата +
+// контроль выполнения циклов, отображение состояния внутри цикла +- (непонятный сценарий работы при ошибках в контроллере)
+// доступ по web +
+// передача точек пути для сдвига рамы -
+
 const funct = plc_fsm.onAfterTransition;
 plc_fsm.onAfterTransition = function (lifecycle) {
   updateImage();
   funct(lifecycle);
-  fsm_sc.goto(fsm.state);
-  fsm_sc.current_level = fsm.current_level;
+  // fsm_sc.goto(fsm.state);
+  // fsm_sc.current_level = fsm.current_level;
 };
 const fsm = plc_fsm;
 
@@ -109,6 +111,60 @@ app.get("/cycle_state", (request, response) => {
       cycle_step: fsm.cycle_state,
       current_level: fsm.current_level,
     })
+  );
+});
+// get_all_states
+app.get("/get_all_states", (request, response) => {
+  response.send(JSON.stringify(fsm.allStates()));
+});
+const scenarios = JSON.parse(fs.readFileSync("algorithms.json").toString());
+
+app.get("/scenarios", (request, response) => {
+  response.send(JSON.stringify(scenarios));
+});
+app.post("/compile_scenario", (req, res) => {
+  console.log(req.body);
+  let script = req.body.script;
+  const compiled = compileScenario(script);
+  console.log(compiled);
+  if (compiled != null) res.send(compiled);
+  else res.send([]);
+});
+app.post("/is_scenario_valid", (req, res) => {
+  console.log(req.body);
+  let compiled = req.body.compiled_scenario;
+  const starting_condition = req.body.starting_condition;
+  starting_condition.level = parseInt(starting_condition.level);
+
+  getCompiledScenarioError(compiled, starting_condition).then((err) => {
+    console.log(err);
+    if (err != null) res.send(err);
+    else res.send({});
+  });
+});
+app.post("/save_scenario", (req, res) => {
+  console.log(req.body);
+  const scenario = req.body;
+  console.log(scenario);
+  const compiled = compileScenario(scenario.script);
+  scenario.starting_condition.level = parseInt(
+    scenario.starting_condition.level
+  );
+  getCompiledScenarioError(compiled, scenario.starting_condition).then(
+    (err) => {
+      console.log(err);
+      if (err != null) res.send(err);
+      else {
+        const found = scenarios.find((el, index) => {
+          if (el.name === scenario.name) {
+            scenarios[index] = scenario;
+            return true;
+          }
+        });
+        if (found == undefined) scenarios.push(scenario);
+        res.send(scenarios);
+      }
+    }
   );
 });
 
