@@ -3,8 +3,32 @@
     "name": "example_csenario",
     "starting_condition": {
       "level": 0,
+      "state": "on_external_support"
+    },
+    "script": "function (){n = 2; return [  \"pushinCrab\",\n  \"liftDownBottomFrame\",\n  ...repeat(\"liftDownBottomFrame\", n),\n  ...repeat(\"liftUpBottomFrame\",n-1),\n  \"pushoutCrab\",\n  \"landBottomFrameToPins\",\n  \"holdFrame\",\n  \"horizontalMoveTopFrame\",\n  \"prepareToTopFrameMoveing\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",\n]}()"
+  },
+  {
+    "name": "new scenario",
+    "starting_condition": {
+      "level": 0,
       "state": "on_pins_support"
     },
-    "script": "function (){n = 3; return [  \"pushinCrab\",\n  \"liftDownBottomFrame\",\n  ...repeat(\"liftUpFrame\", n),\n  ...repeat(\"liftDownFrame\",n-1),\n  \"holdFrame\",\n  \"horizontalMoveTopFrame\",\n  \"prepareToTopFrameMoveing\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",\n]}()"
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",]"
+  },
+  {
+    "name": "new scenario 2",
+    "starting_condition": {
+      "level": 1,
+      "state": "on_pins_support"
+    },
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",]"
+  },
+  {
+    "name": "new scenario %20",
+    "starting_condition": {
+      "level": 1,
+      "state": "on_pins_support"
+    },
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",]"
   }
 ]

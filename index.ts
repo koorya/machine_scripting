@@ -54,6 +54,7 @@ async function updateImage() {
       // gg.output("svg", "test01.svg")
       {
         gg.getNode(fsm.state).set("color", "red");
+        // gg.set("ratio", "1.0");
         gg.output("svg", (buff) => {
           rendered_image = buff.toString("base64");
         });
@@ -162,6 +163,14 @@ app.post("/save_scenario", (req, res) => {
           }
         });
         if (found == undefined) scenarios.push(scenario);
+        fs.writeFile(
+          "algorithms.json",
+          JSON.stringify(scenarios, null, 2),
+          () => {
+            console.log("File uptaded");
+          }
+        );
+
         res.send(scenarios);
       }
     }
