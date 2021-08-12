@@ -11,6 +11,8 @@ fsm.onAfterTransition = function (lifecycle) {
       fsm.step();
     }, 250);
 };
+// function switch controls cycle executing
+// in PLC.
 fsm.cycleExecutor = function (props: {
   cycle_name: string;
   lifecycle: any;
