@@ -128,30 +128,6 @@ function CurrentState() {
     </div>
   );
 }
-function useCompile(script) {
-  const [compiled, setCompiled] = useState([]);
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    fetch("http://localhost:5001/compile_scenario", {
-      method: "POST",
-      body: JSON.stringify({ script: script }),
-      headers: { "Content-Type": "application/json" },
-      signal: signal,
-    })
-      .then(
-        (res) => res.json(),
-        () => console.log("useCompile fetch aborted")
-      )
-      .then((res) => {
-        setCompiled(res);
-      });
-    return () => {
-      controller.abort();
-    };
-  }, [script]);
-  return compiled;
-}
 
 function useAllStates() {
   const [allStates, setAllStates] = useState([]);
@@ -168,31 +144,62 @@ function useAllStates() {
   }, []);
   return allStates;
 }
+
+function useCompile(script) {
+  const [compiled, setCompiled] = useState([]);
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchData(abortSignal) {
+      try {
+        const res = await fetch("http://localhost:5001/compile_scenario", {
+          method: "POST",
+          body: JSON.stringify({ script: script }),
+          headers: { "Content-Type": "application/json" },
+          signal: abortSignal,
+        });
+
+        const res_data = await res.json();
+        setCompiled(res_data);
+      } catch {
+        console.log("useCompile: fetch aborted");
+      }
+    }
+    fetchData(controller.signal);
+    return () => {
+      controller.abort();
+    };
+  }, [script]);
+  return compiled;
+}
+
 function useValidation(condition, scenario) {
   const [error, setError] = useState({});
 
   useEffect(() => {
     const controller = new AbortController();
-    const signal = controller.signal;
     if (scenario && scenario.length == 0) {
       setError({ error: "scenario is empty" });
     } else {
-      fetch("http://localhost:5001/is_scenario_valid", {
-        method: "POST",
-        body: JSON.stringify({
-          compiled_scenario: scenario,
-          starting_condition: condition,
-        }),
-        headers: { "Content-Type": "application/json" },
-        signal: signal,
-      })
-        .then(
-          (res) => res.json(),
-          () => console.log("fetch aborted")
-        )
-        .then((res) => {
-          setError(res);
-        });
+      async function fetchData(abortSignal) {
+        try {
+          const res = await fetch("http://localhost:5001/is_scenario_valid", {
+            method: "POST",
+            body: JSON.stringify({
+              compiled_scenario: scenario,
+              starting_condition: condition,
+            }),
+            headers: { "Content-Type": "application/json" },
+            signal: abortSignal,
+          });
+
+          const res_data = await res.json();
+          setError(res_data);
+        } catch {
+          console.log("useValidation: fetch aborted");
+        }
+      }
+      fetchData(controller.signal);
     }
     return () => {
       controller.abort();
@@ -213,6 +220,7 @@ function Scenario({ value, mode = "edit", saveCallback }) {
   const sc = useCompile(script);
   const error = useValidation(condition, sc);
   const all_states = useAllStates();
+
   const handleChangeScript = (el) => {
     setScript(el.target.value);
   };
