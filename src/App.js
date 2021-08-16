@@ -50,7 +50,7 @@ function useCycState() {
   const [val, setVal] = useState(null);
   useEffect(() => {
     const upd = setInterval(() => {
-      fetch("http://localhost:5001/cycle_state")
+      fetch("http://localhost:5001/controller_status")
         .then((res) => res.json())
         .then((res) => {
           setVal(res);
@@ -83,15 +83,15 @@ function GraphImage() {
     <Image src={`data:image/svg+xml;base64,${image}`} alt="states" fluid />
   );
 }
+const sendCommand = (cmd) => {
+  fetch("http://localhost:5001/command", {
+    method: "POST",
+    body: JSON.stringify(cmd),
+    headers: { "Content-Type": "application/json" },
+  }).then((res) => res.text().then((res) => console.log(res)));
+};
 
 function El() {
-  const btnClick = (cmd) => {
-    fetch("http://localhost:5001/command", {
-      method: "POST",
-      body: JSON.stringify({ command: cmd }),
-      headers: { "Content-Type": "application/json" },
-    });
-  };
   const cmds = useCmds();
   return cmds.includes("step") ? (
     <Spinner animation="border" />
@@ -102,7 +102,7 @@ function El() {
           className="mx-1"
           disabled={cmd === "step"}
           key={cmd}
-          onClick={() => btnClick(cmd)}
+          onClick={() => sendCommand({ command: "execCommand", payload: cmd })}
           size="sm"
         >
           {cmd}
@@ -111,16 +111,15 @@ function El() {
     </>
   );
 }
-function CurrentState() {
-  const st = useCycState();
+function CurrentState({ machine_status }) {
   return (
     <div>
-      {st != null ? (
+      {machine_status != null ? (
         <>
-          state: {st.state} <br />
-          step: {st.cycle_step}
+          state: {machine_status.state} <br />
+          step: {machine_status.cycle_step}
           <br />
-          level: {st.current_level}
+          level: {machine_status.current_level}
         </>
       ) : (
         "not load"
@@ -208,14 +207,10 @@ function useValidation(condition, scenario) {
   return error;
 }
 
-function Scenario({ value, mode = "edit", saveCallback }) {
+function Scenario({ value, mode = "edit", saveCallback, current_index }) {
   const [script, setScript] = useState(value.script);
   const [condition, setCondition] = useState(value.starting_condition);
   const [name, setName] = useState(value.name);
-
-  // const sc = ["dd", "ss"];
-  // const error = {};
-  // const all_states = useAllStates();
 
   const sc = useCompile(script);
   const error = useValidation(condition, sc);
@@ -227,7 +222,6 @@ function Scenario({ value, mode = "edit", saveCallback }) {
   const handleChangeLevel = (el) => {
     const new_condition = Object.assign({}, condition);
     new_condition.level = el.target.value;
-    console.log(new_condition);
     setCondition(new_condition);
   };
   const handleChangeState = (el) => {
@@ -246,7 +240,7 @@ function Scenario({ value, mode = "edit", saveCallback }) {
       starting_condition: condition,
       script: script,
     });
-    handleResetButton();
+    if (value.name !== name) handleResetButton();
   };
   const handleResetButton = () => {
     setScript(value.script);
@@ -321,13 +315,48 @@ function Scenario({ value, mode = "edit", saveCallback }) {
         </>
       ) : (
         <>
-          <Button className="mx-1">Run</Button>
-          <Button className="mx-1">Stop</Button>
+          <Button
+            className="mx-1"
+            onClick={() => {
+              sendCommand({
+                command: "execScenario",
+                payload: {
+                  name: name,
+                  commands: sc,
+                },
+              });
+            }}
+          >
+            Run
+          </Button>
+          <Button
+            className="mx-1"
+            onClick={() => {
+              sendCommand({ command: "pause" });
+            }}
+          >
+            Pause
+          </Button>
+          <Button
+            className="mx-1"
+            onClick={() => {
+              sendCommand({ command: "resume" });
+            }}
+          >
+            Resume
+          </Button>
+          <Button
+            className="mx-1"
+            onClick={() => {
+              sendCommand({ command: "stop" });
+            }}
+          >
+            Stop
+          </Button>
         </>
       )}
       <Row>
         <Col>
-          {" "}
           <Accordion defaultActiveKey="0" className="py-1">
             <Accordion.Item eventKey="0">
               <Accordion.Header>Resault Command list</Accordion.Header>
@@ -337,7 +366,13 @@ function Scenario({ value, mode = "edit", saveCallback }) {
                     <ListGroup.Item
                       size="sm"
                       key={"Scenario_btn" + el + "_" + index}
-                      variant={error?.index == index ? "danger" : null}
+                      variant={
+                        error?.index === index
+                          ? "danger"
+                          : current_index === index
+                          ? "info"
+                          : null
+                      }
                     >
                       {el}
                     </ListGroup.Item>
@@ -351,7 +386,7 @@ function Scenario({ value, mode = "edit", saveCallback }) {
     </Alert>
   );
 }
-function Scenarios() {
+function Scenarios({ status }) {
   const [scenarios, setScenarios] = useState([
     {
       name: "scenario 1",
@@ -427,7 +462,6 @@ function Scenarios() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (!res?.error) setScenarios(res);
       });
   };
@@ -482,6 +516,9 @@ function Scenarios() {
                   <Scenario
                     key={`scenario_${element.name}`}
                     value={element}
+                    current_index={
+                      status?.name === element.name ? status?.step_index : null
+                    }
                     saveCallback={handleSaveScenario}
                     mode={editMode ? "edit" : "use"}
                   />
@@ -511,6 +548,19 @@ const ExampleToast = ({ children }) => {
 };
 
 function App() {
+  const st = useCycState();
+  //   state: plc_controller.state,
+  //   scenario_status: {
+  //     name: plc_controller.scenario.name,
+  //     sptep_index: plc_controller.scenario.index,
+  //   },
+  //   machine_status: {
+  //     state: fsm.state,
+  //     cycle_step: fsm.cycle_state,
+  //     current_level: fsm.current_level,
+  //   },
+  // })
+
   return (
     <Container fluid>
       <Row>
@@ -518,10 +568,11 @@ function App() {
           <GraphImage />
         </Col>
         <Col xs={4}>
-          <Scenarios />
+          <Scenarios status={st?.scenario_status} />
           <Jumbotron>
             <El />
-            <CurrentState />
+            <CurrentState machine_status={st?.machine_status} />
+            <pre>{JSON.stringify(st, null, 2)}</pre>
           </Jumbotron>
         </Col>
       </Row>
