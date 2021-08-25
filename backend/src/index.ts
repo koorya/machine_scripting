@@ -16,6 +16,7 @@ import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
 import e = require("express");
 
 const algorithms_path = "config/algorithms.json";
+const default_algorithms_path = "config/default_algorithms.json";
 
 // хранение состояния манипулятора +
 // восстановление и сопоставление состояния манипулятора по датчикам -
@@ -154,7 +155,13 @@ app.get("/controller_status", (request, response) => {
 app.get("/get_all_states", (request, response) => {
   response.send(JSON.stringify(fsm.allStates()));
 });
-const scenarios = JSON.parse(fs.readFileSync(algorithms_path).toString());
+let scenarios = [];
+try {
+  scenarios = JSON.parse(fs.readFileSync(algorithms_path).toString());
+} catch {
+  console.log("algorithms.json is empty");
+  scenarios = JSON.parse(fs.readFileSync(default_algorithms_path).toString());
+}
 
 app.get("/scenarios", (request, response) => {
   response.send(JSON.stringify(scenarios));

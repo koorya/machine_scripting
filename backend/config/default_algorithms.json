@@ -1,0 +1,74 @@
+[
+  {
+    "name": "example_csenario",
+    "starting_condition": {
+      "level": 0,
+      "state": "on_external_support"
+    },
+    "script": "function (){\n  n = 3 \n  return [  \"pushinCrab\",\n  \"liftDownBottomFrame\",\n  ...repeat(\"liftDownBottomFrame\", n),\n  ...repeat(\"liftUpBottomFrame\",n-1),\n  \"pushoutCrab\",\n  \"landBottomFrameToPins\",\n  \"holdFrame\",\n  \"horizontalMoveTopFrame\",\n  \"prepareToTopFrameMoveing\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",\n]\n}()"
+  },
+  {
+    "name": "new scenario",
+    "starting_condition": {
+      "level": 0,
+      "state": "on_pins_support"
+    },
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",]"
+  },
+  {
+    "name": "new scenario 2",
+    "starting_condition": {
+      "level": 1,
+      "state": "on_pins_support"
+    },
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",]"
+  },
+  {
+    "name": "new scenario %20",
+    "starting_condition": {
+      "level": 1,
+      "state": "on_pins_support"
+    },
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"liftUpFrame\",]"
+  },
+  {
+    "name": "up climb 2 step ",
+    "starting_condition": {
+      "level": 0,
+      "state": "on_pins_support"
+    },
+    "script": "[  \"liftUpFrame\",\n  \"liftUpFrame\",\n  \"holdFrame\",\n  \"prepareToLiftingBottomFrame\",\n  \"pushinCrab\",\n  \"liftUpBottomFrame\",\n  \"liftUpBottomFrame\",\n  \"pushoutCrab\",\n  \"landBottomFrameToPins\",\n]"
+  },
+  {
+    "name": "down 3 step",
+    "starting_condition": {
+      "level": 3,
+      "state": "on_pins_support"
+    },
+    "script": "[  ...repeat(\"liftDownFrame\", 3),]"
+  },
+  {
+    "name": "home scenario",
+    "starting_condition": {
+      "level": 1,
+      "state": "on_pins_support"
+    },
+    "script": "[\"liftDownFrame\"]"
+  },
+  {
+    "name": "Ruslan",
+    "starting_condition": {
+      "level": 0,
+      "state": "on_pins_support"
+    },
+    "script": "[\"liftUpFrame\"]"
+  },
+  {
+    "name": "Lift down main frame",
+    "starting_condition": {
+      "level": 2,
+      "state": "on_pins_support"
+    },
+    "script": "[\n\"holdFrame\",\n//pause!! remove support\n\"prepareToTopFrameMoveing\",\n...repeat(\"liftDownFrame\", 2)\n]"
+  }
+]
