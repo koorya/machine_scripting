@@ -77,7 +77,7 @@ const fsm_config = {
     onLeavePrepareingToLiftingBottomFrameCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
         this.cycleExecutor({
-          cycle_name: "init_from_hold_to_lift_crab",
+          cycle_name: "from_hold_to_lift_crab",
           lifecycle: lifecycle,
           resolve: () => {
             resolve(null);
@@ -121,7 +121,7 @@ const fsm_config = {
     onLeavePushingInCrabCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
         this.cycleExecutor({
-          cycle_name: "init_pushin_crab",
+          cycle_name: "pushin_crab",
           lifecycle: lifecycle,
           resolve: () => {
             resolve(null);
@@ -135,7 +135,7 @@ const fsm_config = {
     onLeavePushingOutCrabCycle: function (lifecycle) {
       return new Promise((resolve, reject) => {
         this.cycleExecutor({
-          cycle_name: "init_pushout_crab",
+          cycle_name: "pushout_crab",
           lifecycle: lifecycle,
           resolve: () => {
             resolve(null);
