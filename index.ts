@@ -11,6 +11,7 @@ import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
 import { fsm_config, transitions } from "./state_machine_cfg";
 import { plc_fsm } from "./plc_fsm";
+import { FSMController } from "./fsm_controller";
 import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
 import e = require("express");
 
@@ -31,6 +32,8 @@ plc_fsm.onAfterTransition = function (lifecycle) {
   // fsm_sc.current_level = fsm.current_level;
 };
 const fsm = plc_fsm;
+
+const plc_controller = new FSMController(fsm);
 
 let rendered_image = null;
 async function updateImage() {
@@ -87,14 +90,38 @@ app.get("/commands", (request, response) => {
 
 app.post("/command", (req, res) => {
   console.log(req.body);
+  console.log(
+    `cnt_state: ${plc_controller.state}; trs: ${plc_controller.transitions()}`
+  );
   let cmd = req.body.command;
-  if (fsm.cannot(cmd)) res.send("invalid cmd");
-  else {
-    const is_command_exec = fsm[cmd]();
-    // if (fsm.can("step")) fsm.step();
-    if (!is_command_exec) console.log("invalid cmd");
-    res.send(is_command_exec ? "valid cmd" : "invalid cmd");
-  }
+  const payload = req.body.payload;
+
+  if (cmd === "execCommand")
+    try {
+      if (
+        plc_controller.can("execCommand") &&
+        plc_controller.execCommand(payload)
+      )
+        res.send("valid cmd");
+      else res.send("invalid cmd");
+    } catch {
+      res.send("error durind command executing");
+    }
+  else if (cmd === "execScenario")
+    try {
+      if (
+        plc_controller.can("execScenario") &&
+        plc_controller.execScenario(payload)
+      )
+        res.send("valid cmd");
+      else res.send("invalid cmd");
+    } catch {
+      res.send("error durind command executing");
+    }
+  else if (plc_controller.can(cmd)) {
+    plc_controller[cmd]();
+    res.send("exec simple command");
+  } else res.send("invalid req");
 });
 app.get("/image", (req, res) => {
   if (rendered_image === null) {
@@ -105,12 +132,19 @@ app.get("/image", (req, res) => {
   }
 });
 // cycle_state
-app.get("/cycle_state", (request, response) => {
+app.get("/controller_status", (request, response) => {
   response.send(
     JSON.stringify({
-      state: fsm.state,
-      cycle_step: fsm.cycle_state,
-      current_level: fsm.current_level,
+      state: plc_controller.state,
+      scenario_status: {
+        name: plc_controller.scenario?.name,
+        step_index: plc_controller.scenario?.index,
+      },
+      machine_status: {
+        state: fsm.state,
+        cycle_step: fsm.cycle_state,
+        current_level: fsm.current_level,
+      },
     })
   );
 });

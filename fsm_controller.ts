@@ -13,9 +13,19 @@ var FSMController = StateMachine.factory({
   init: "available",
   transitions: [
     {
-      name: "exec_scenario",
+      name: "execScenario",
       from: "available",
       to: "executing_scenario",
+    },
+    {
+      name: "execCommand",
+      from: "available",
+      to: "executing_command",
+    },
+    {
+      name: "finishExecCommand", //only for internal use
+      from: "executing_command",
+      to: "available",
     },
     {
       name: "stop",
@@ -37,13 +47,37 @@ var FSMController = StateMachine.factory({
     return {
       fsm: fsm,
       should_stop: false,
+      scenario: null,
     };
   },
   methods: {
+    execCommandAsync: async function (command: string) {
+      console.log(`command: "${command}" execution start`);
+      console.log(`fsm state: ${this.fsm.state}`);
+      if (this.fsm.cannot(command)) console.log("invalid cmd");
+      else {
+        const is_command_exec = await this.fsm[command]();
+        if (this.fsm.can("step")) await this.fsm.step();
+        if (!is_command_exec) console.log("command exec error");
+      }
+      // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
+      console.log(`command: "${command}" execution finish`);
+      return;
+    },
+    onExecCommand: function (lifecycle, command: string) {
+      if (this.fsm.cannot(command)) return false;
+
+      console.log(this.execCommandAsync);
+      this.execCommandAsync(command).then(() => {
+        this.finishExecCommand();
+      });
+      return true;
+    },
     execScenarioAsync: async function (scenario: {
       name: string;
       commands: string[];
     }) {
+      this.scenario = { ...scenario, index: 0 };
       const commands = scenario.commands;
       const eCommands = commands[Symbol.iterator]();
       const execNextCmd = async () => {
@@ -57,7 +91,7 @@ var FSMController = StateMachine.factory({
           const curr_cmd = eCommands.next();
           if (!curr_cmd.done && !this.should_stop) {
             try {
-              await slowPrint(curr_cmd.value);
+              await this.execCommandAsync(curr_cmd.value);
             } catch {
               console.log("error during executing command");
               if (this.can("stop")) this.stop();
@@ -66,6 +100,7 @@ var FSMController = StateMachine.factory({
             stop_flag = true;
             if (this.can("stop")) this.stop();
           }
+          this.scenario.index += 1;
         }
       };
       execNextCmd();
@@ -79,24 +114,10 @@ var FSMController = StateMachine.factory({
     },
     onPause: function () {},
     onResume: function () {},
+    onTransition: function (lifecycle) {
+      console.log(`controller state: ${lifecycle.to}`);
+    },
   },
 });
 
-var test_fsm = new FSMController(null);
-
-test_fsm.execScenario({
-  namme: "my scenario",
-  commands: [
-    "command1",
-    "command2",
-    "command3",
-    "command4",
-    "command5",
-    "command6",
-  ],
-});
-// setTimeout(() => test_fsm.stop(), 2900);
-setTimeout(() => test_fsm.pause(), 2500);
-setTimeout(() => test_fsm.resume(), 4500);
-
-setInterval(() => console.log(test_fsm.state), 300);
+export { FSMController };

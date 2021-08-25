@@ -3,14 +3,6 @@ import { fsm_config, transitions } from "./state_machine_cfg";
 import * as plc from "./zmq_network";
 
 var fsm = new StateMachine(fsm_config);
-fsm.onAfterTransition = function (lifecycle) {
-  if (lifecycle.transition == "init") return true;
-  // updateHistory();
-  if (fsm.transitions().includes("step"))
-    setTimeout(() => {
-      fsm.step();
-    }, 250);
-};
 // function switch controls cycle executing
 // in PLC.
 fsm.cycleExecutor = function (props: {
