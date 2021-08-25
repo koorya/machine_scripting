@@ -5,7 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
-    "start": "npx ts-node fake_plc.ts && npx ts-node index.ts"
+    "start": "npx ts-node ./src/index.ts",
+    "fake_plc": "npx ts-node ./src/fake_plc.ts"
   },
   "author": "",
   "license": "ISC",

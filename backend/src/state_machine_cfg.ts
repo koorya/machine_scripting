@@ -1,6 +1,8 @@
 import * as fs from "fs";
 
-const transitions = JSON.parse(fs.readFileSync("transitions.json").toString());
+const transitions = JSON.parse(
+  fs.readFileSync("src/transitions.json").toString()
+);
 
 const fsm_config = {
   init: "on_pins_support",

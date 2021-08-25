@@ -15,6 +15,8 @@ import { FSMController } from "./fsm_controller";
 import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
 import e = require("express");
 
+const algorithms_path = "config/algorithms.json";
+
 // хранение состояния манипулятора +
 // восстановление и сопоставление состояния манипулятора по датчикам -
 // прием команд через внешние запросы + (rest api)
@@ -152,7 +154,7 @@ app.get("/controller_status", (request, response) => {
 app.get("/get_all_states", (request, response) => {
   response.send(JSON.stringify(fsm.allStates()));
 });
-const scenarios = JSON.parse(fs.readFileSync("algorithms.json").toString());
+const scenarios = JSON.parse(fs.readFileSync(algorithms_path).toString());
 
 app.get("/scenarios", (request, response) => {
   response.send(JSON.stringify(scenarios));
@@ -198,7 +200,7 @@ app.post("/save_scenario", (req, res) => {
         });
         if (found == undefined) scenarios.push(scenario);
         fs.writeFile(
-          "algorithms.json",
+          algorithms_path,
           JSON.stringify(scenarios, null, 2),
           () => {
             console.log("File uptaded");
