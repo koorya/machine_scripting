@@ -6,9 +6,10 @@
   "scripts": {
     "build": "tsc",
     "start": "npx concurrently \"npm:server\" \"npm:client\"",
-    "start_dev": "npx concurrently \"npm:fake_plc\" \"npm:server\" \"npm:client\"",
+    "start_dev": "npx concurrently \"npm:fake_plc\" \"npm:server_nodemon\" \"npm:client\"",
     "fake_plc": "npx ts-node ./src/fake_plc.ts",
-    "server": "npx nodemon --exec \"ts-node ./src/index.ts\"",
+    "server_nodemon": "npx nodemon --exec \"ts-node ./src/index.ts\"",
+    "server": "npx ts-node ./src/index.ts",
     "client": "npm --prefix ../clients/react start"
   },
   "author": "",
