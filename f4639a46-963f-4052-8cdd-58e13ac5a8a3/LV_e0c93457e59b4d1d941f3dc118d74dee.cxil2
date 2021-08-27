@@ -1,0 +1,86 @@
+{IMPORT<ULs.cxip>}
+MODULE NX END_MODULE {USING<\\NX>}
+INTERFACE LV_e0c93457e59b4d1d941f3dc118d74dee
+VAR
+    _dmmy : BOOL;
+END_VAR
+__VAR_SYSTEM CONSTANT
+    P_On : BOOL;
+    P_Off : BOOL;
+    P_CY : BOOL;
+    P_First_RunMode : BOOL;
+    P_First_Run : BOOL;
+__END_VAR
+__VAR_SYSTEM
+    P_PRGER : BOOL;
+__END_VAR
+VAR_EXTERNAL
+    Y1 : BOOL;
+    Y2 : BOOL;
+    SQ5 : BOOL;
+    SQ7 : BOOL;
+    SQ13 : BOOL;
+    SQ15 : BOOL;
+    SQ21 : BOOL;
+    SQ23 : BOOL;
+    SQ29 : BOOL;
+    SQ31 : BOOL;
+    SQ32 : BOOL;
+    SQ30 : BOOL;
+    SQ24 : BOOL;
+    SQ22 : BOOL;
+    SQ16 : BOOL;
+    SQ14 : BOOL;
+    SQ8 : BOOL;
+    SQ6 : BOOL;
+    Y3 : BOOL;
+    Y6 : BOOL;
+    Y7 : BOOL;
+    BB1 : INT;
+    BB2 : INT;
+    BB3 : INT;
+    BB4 : INT;
+    BB5 : INT;
+    BB6 : INT;
+    BB7 : INT;
+    BB8 : INT;
+    Y5 : BOOL;
+    Y4 : BOOL;
+    Y19 : BOOL;
+    Y20 : BOOL;
+    start_down_frame_cycle_handle : BOOL;
+    down_frame_cycle_state : INT;
+    SQ2 : BOOL;
+    SQ4 : BOOL;
+    SQ10 : BOOL;
+    SQ12 : BOOL;
+    SQ18 : BOOL;
+    SQ20 : BOOL;
+    SQ26 : BOOL;
+    SQ28 : BOOL;
+    SQ1 : BOOL;
+    SQ3 : BOOL;
+    SQ9 : BOOL;
+    SQ11 : BOOL;
+    SQ17 : BOOL;
+    SQ19 : BOOL;
+    SQ25 : BOOL;
+    SQ27 : BOOL;
+    maxbb_glob : INT;
+    liftmech : \\LIFTMECH_TYPE;
+END_VAR
+VAR
+    minbb : INT;
+    maxbb : INT;
+    last_maxbb : INT;
+    last_max_diff : INT;
+    err_cnt : INT;
+    wait_timer : INT;
+END_VAR
+END_INTERFACE
+MODULE NX
+TYPE
+ _dummy4 : (_dummydummy4 := 4);
+END_TYPE
+END_MODULE
+

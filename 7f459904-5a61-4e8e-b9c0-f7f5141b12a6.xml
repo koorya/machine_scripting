@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+  <GeneralSettingsData TaskExecutionCondition="2000" ExecutionPriority="4" CycleTimeOverDetection="Warning" TimeOutValue="2000" VariableAccessTimeRatio="3">
+    <ExecutionConditionVariable VariableName="" Condition="" Constant="" />
+    <ExecutionConditionCJUnit ExternalInputUnit="">
+      <ExecutionConditionInterruptionUnit UnitNumber="" InputContact="" EdgeDetection="" />
+      <ExecutionConditionSiouCpuUnit CJUnitTaskNo="" />
+    </ExecutionConditionCJUnit>
+  </GeneralSettingsData>
+  <Programs>
+    <AssociatedProgramData ProgramName="ECErrorReset" InstanceName="ECErrorReset" IniFileTrackingId="aab12c2e4e0d430989f233059345e390" StartupSetting="TRUE" SequenceNumber="1" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="FC1_hard_reset" InstanceName="FC1_hard_reset" IniFileTrackingId="292c2045c33b4f4b9dfcbd505fb8997a" StartupSetting="TRUE" SequenceNumber="2" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="FC2_hard_reset" InstanceName="FC2_hard_reset" IniFileTrackingId="5d4c2de9682746038bcfe855add51c05" StartupSetting="TRUE" SequenceNumber="3" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="Pressure_calck" InstanceName="Pressure_calck" IniFileTrackingId="5a608e5a06fe419e81982794849d6b4e" StartupSetting="TRUE" SequenceNumber="4" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="Distance_calck" InstanceName="Distance_calck" IniFileTrackingId="b914d67d13794e7391cb18a53c70fdc6" StartupSetting="TRUE" SequenceNumber="5" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="setup_cycle" InstanceName="setup_cycle" IniFileTrackingId="fbc814b9346144a5b43126d02243191e" StartupSetting="TRUE" SequenceNumber="6" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="up_frame_cycle" InstanceName="up_frame_cycle" IniFileTrackingId="0845426686cc491481d8c8f640c01834" StartupSetting="TRUE" SequenceNumber="7" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="init_to_hold" InstanceName="init_to_hold" IniFileTrackingId="7b7524fddc5041e7ab282dd2b7b03952" StartupSetting="TRUE" SequenceNumber="8" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="from_hold_to_lift_crab" InstanceName="from_hold_to_lift_crab" IniFileTrackingId="14152d18c3fb4ac885ba72ef5c8370f0" StartupSetting="TRUE" SequenceNumber="9" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="pushin_crab" InstanceName="pushin_crab" IniFileTrackingId="036b4c99b5be4e6e9b45a7ce07a4e46a" StartupSetting="TRUE" SequenceNumber="10" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="up_crab_cycle" InstanceName="up_crab_cycle" IniFileTrackingId="106fe4fa18374dc6b466e843420df021" StartupSetting="TRUE" SequenceNumber="11" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="pushout_crab" InstanceName="pushout_crab" IniFileTrackingId="2f552fbb4fba4665a7dc1adae93766ac" StartupSetting="TRUE" SequenceNumber="12" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="from_upcrcyc_to_init" InstanceName="from_upcrcyc_to_init" IniFileTrackingId="7f186f61ba9e4f10b23fed2bb6ac705b" StartupSetting="TRUE" SequenceNumber="13" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="down_crab_cycle" InstanceName="down_crab_cycle" IniFileTrackingId="318184fb056a4c159d0aa22525eb1422" StartupSetting="TRUE" SequenceNumber="14" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="from_hold_to_init" InstanceName="from_hold_to_init" IniFileTrackingId="8cf39a310fb744c69d6f06e8e0d1f74a" StartupSetting="TRUE" SequenceNumber="15" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="down_frame_cycle" InstanceName="down_frame_cycle" IniFileTrackingId="e0c93457e59b4d1d941f3dc118d74dee" StartupSetting="TRUE" SequenceNumber="16" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="shift_driver" InstanceName="shift_driver" IniFileTrackingId="25da34f054834efca14445711707896c" StartupSetting="TRUE" SequenceNumber="17" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="lifting_driver" InstanceName="lifting_driver" IniFileTrackingId="77b457ba07f14ae7aaabc1a30a7e6f9b" StartupSetting="TRUE" SequenceNumber="18" IsDebugProgram="false" />
+  </Programs>
+  <RefreshUnitIds>
+    <RefreshUnitId RefreshUnitId="394e1b5a-4d5d-42b5-929a-8cf4b848af7e" />
+    <RefreshUnitId RefreshUnitId="5d0c3294-2587-4a30-9cf2-37e4120d7592" />
+    <RefreshUnitId RefreshUnitId="0068284f-03b6-417f-a21d-1372e50f75fd" />
+    <RefreshUnitId RefreshUnitId="86f994b8-4490-4993-b8b6-cfabf22fa559" />
+    <RefreshUnitId RefreshUnitId="16e00369-2f18-4cd8-899b-68a45b6fe36f" />
+    <RefreshUnitId RefreshUnitId="c8b77c98-3050-477f-b8c0-751e43f929cb" />
+    <RefreshUnitId RefreshUnitId="d8dabb7b-b4e2-4b2b-9739-1f5bfcb4e1bc" />
+    <RefreshUnitId RefreshUnitId="9282caaf-b25c-4da2-9746-210d7bd2e8f2" />
+    <RefreshUnitId RefreshUnitId="1498815c-9a83-45c7-9b7e-2f23bcee2b22" />
+    <RefreshUnitId RefreshUnitId="5211b5eb-8f9b-4bd8-b483-0f4af04d248e" />
+    <RefreshUnitId RefreshUnitId="63757136-b816-4f87-a484-f10b661027b4" />
+    <RefreshUnitId RefreshUnitId="b6f00bc6-b804-40bb-8ad5-238768a89fee" />
+    <RefreshUnitId RefreshUnitId="1f5d50c4-0edb-44de-93cf-2833edda26ad" />
+    <RefreshUnitId RefreshUnitId="27ead943-be34-4154-b002-ceb01090f204" />
+    <RefreshUnitId RefreshUnitId="44c01d7f-b3bc-4930-bd63-5ca655b2c4a3" />
+  </RefreshUnitIds>
+  <TaskInterfaceVariables version="1" />
+</data>

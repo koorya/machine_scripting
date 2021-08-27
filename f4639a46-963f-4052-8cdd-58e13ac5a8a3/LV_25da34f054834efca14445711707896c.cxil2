@@ -1,0 +1,59 @@
+{IMPORT<ULs.cxip>}
+MODULE NX END_MODULE {USING<\\NX>}
+INTERFACE LV_25da34f054834efca14445711707896c
+VAR
+    _dmmy : BOOL;
+END_VAR
+__VAR_SYSTEM CONSTANT
+    P_On : BOOL;
+    P_Off : BOOL;
+    P_CY : BOOL;
+    P_First_RunMode : BOOL;
+    P_First_Run : BOOL;
+__END_VAR
+__VAR_SYSTEM
+    P_PRGER : BOOL;
+__END_VAR
+VAR_EXTERNAL
+    Y8 : BOOL;
+    Y9 : BOOL;
+    Y10 : BOOL;
+    Y11 : BOOL;
+    Y12 : BOOL;
+    Y13 : BOOL;
+    Y14 : BOOL;
+    Y15 : BOOL;
+    BB9 : INT;
+    BB12 : INT;
+    BB10 : INT;
+    BB11 : INT;
+    Y21 : BOOL;
+    Y22 : BOOL;
+    path : ARRAY[1..300] OF \\POINT;
+    path_image : ARRAY[1..300] OF \\POINT;
+    path_exp : ARRAY[1..300] OF \\POINT;
+END_VAR
+VAR
+    setpoint : REAL;
+    procvalue : REAL;
+    regvalue : INT;
+    t : INT;
+    d1 : INT := INT#705;
+    d2 : INT := INT#705;
+    d3 : INT := INT#705;
+    d4 : INT := INT#705;
+    enable : BOOL := BOOL#False;
+    regvalue1 : INT;
+    regvalue2 : INT;
+    regvalue3 : INT;
+    regvalue4 : INT;
+    path_index : INT := INT#1;
+    window : INT := INT#1;
+END_VAR
+END_INTERFACE
+MODULE NX
+TYPE
+ _dummy4 : (_dummydummy4 := 4);
+END_TYPE
+END_MODULE
+

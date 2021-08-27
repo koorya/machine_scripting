@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+  <NexDataTraceConfigModel>
+    <TaskName>BaseControl</TaskName>
+    <TraceId>0</TraceId>
+    <SampleTimingType>interval</SampleTimingType>
+    <SamplingInterval>250</SamplingInterval>
+    <SamplingTime>500</SamplingTime>
+    <PostTriggerDataRatio>100</PostTriggerDataRatio>
+    <StartOnRun>False</StartOnRun>
+    <EnableRealTimeDisplay>True</EnableRealTimeDisplay>
+    <BehaviorWhenMax>Stop</BehaviorWhenMax>
+    <NumSamplingRecords>2000</NumSamplingRecords>
+    <NexDataTraceTriggerModel>
+      <Enabled>true</Enabled>
+      <SymbolId>entity://variables.global.bb24b8c6-72d0-47f7-a178-d45b44a55443/maxbb_glob%3AINT</SymbolId>
+      <SymbolName>maxbb_glob</SymbolName>
+      <Condition>LessThenOrEqualTo</Condition>
+      <Value>950</Value>
+    </NexDataTraceTriggerModel>
+  </NexDataTraceConfigModel>
+</data>

@@ -1,0 +1,46 @@
+{IMPORT<ULs.cxip>}
+MODULE NX END_MODULE {USING<\\NX>}
+INTERFACE LV_0845426686cc491481d8c8f640c01834
+VAR
+    _dmmy : BOOL;
+END_VAR
+__VAR_SYSTEM CONSTANT
+    P_On : BOOL;
+    P_Off : BOOL;
+    P_CY : BOOL;
+    P_First_RunMode : BOOL;
+    P_First_Run : BOOL;
+__END_VAR
+__VAR_SYSTEM
+    P_PRGER : BOOL;
+__END_VAR
+VAR_EXTERNAL
+    Y3 : BOOL;
+    Y19 : BOOL;
+    Y20 : BOOL;
+    Y1 : BOOL;
+    Y2 : BOOL;
+    Y4 : BOOL;
+    BB1 : INT;
+    BB2 : INT;
+    BB3 : INT;
+    BB4 : INT;
+    BB5 : INT;
+    BB6 : INT;
+    BB7 : INT;
+    BB8 : INT;
+    Y5 : BOOL;
+    SQ_DW : DWORD;
+    start_up_frame_cycle_handle : BOOL;
+    up_frame_cycle_state : INT;
+    Y6 : BOOL;
+    Y7 : BOOL;
+    liftmech : \\LIFTMECH_TYPE;
+END_VAR
+END_INTERFACE
+MODULE NX
+TYPE
+ _dummy4 : (_dummydummy4 := 4);
+END_TYPE
+END_MODULE
+

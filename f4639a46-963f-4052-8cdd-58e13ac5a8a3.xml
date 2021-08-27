@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+  <ControllerId>941a400d-dc31-4485-9f2b-bc1bc2484258</ControllerId>
+  <ControllerName></ControllerName>
+  <MajorVersion>1</MajorVersion>
+  <MinorVersion>16</MinorVersion>
+  <Revision>0</Revision>
+  <Category>Controller</Category>
+  <Family>Nex</Family>
+  <ModelName>NX1P2</ModelName>
+  <ModelDetail>9024DT1</ModelDetail>
+  <SystemErrorMessageDisplayLanguageSetting>en-US,ja-JP</SystemErrorMessageDisplayLanguageSetting>
+  <IsDuplicateIdOptimized>true</IsDuplicateIdOptimized>
+  <IsWithoutCommentTransfer>false</IsWithoutCommentTransfer>
+</data>

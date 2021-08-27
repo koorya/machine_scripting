@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+  <BuiltInIOSetting>
+    <InFilterTable>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </InFilterTable>
+    <InFilterTableTableItemMaximumCount>
+      <CurrentValue>4</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>4</DefaultValue>
+      <Options />
+    </InFilterTableTableItemMaximumCount>
+    <InFilterTableItem0SettingNo>
+      <CurrentValue>0</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0</DefaultValue>
+      <Options />
+    </InFilterTableItem0SettingNo>
+    <InFilterTableItem0GeneralInput>
+      <CurrentValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom00to03</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom00to03</DefaultValue>
+      <Options />
+    </InFilterTableItem0GeneralInput>
+    <InFilterTableItem0InputFilter>
+      <CurrentValue>BuiltInIOSettingInFilterTableInputFilter1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableInputFilter1</DefaultValue>
+      <Options />
+    </InFilterTableItem0InputFilter>
+    <InFilterTableItem0FilterMode>
+      <CurrentValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</DefaultValue>
+      <Options />
+    </InFilterTableItem0FilterMode>
+    <InFilterTableItem1SettingNo>
+      <CurrentValue>1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>1</DefaultValue>
+      <Options />
+    </InFilterTableItem1SettingNo>
+    <InFilterTableItem1GeneralInput>
+      <CurrentValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom04to07</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom04to07</DefaultValue>
+      <Options />
+    </InFilterTableItem1GeneralInput>
+    <InFilterTableItem1InputFilter>
+      <CurrentValue>BuiltInIOSettingInFilterTableInputFilter1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableInputFilter1</DefaultValue>
+      <Options />
+    </InFilterTableItem1InputFilter>
+    <InFilterTableItem1FilterMode>
+      <CurrentValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</DefaultValue>
+      <Options />
+    </InFilterTableItem1FilterMode>
+    <InFilterTableItem2SettingNo>
+      <CurrentValue>2</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>2</DefaultValue>
+      <Options />
+    </InFilterTableItem2SettingNo>
+    <InFilterTableItem2GeneralInput>
+      <CurrentValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom08to11</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom08to11</DefaultValue>
+      <Options />
+    </InFilterTableItem2GeneralInput>
+    <InFilterTableItem2InputFilter>
+      <CurrentValue>BuiltInIOSettingInFilterTableInputFilter1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableInputFilter1</DefaultValue>
+      <Options />
+    </InFilterTableItem2InputFilter>
+    <InFilterTableItem2FilterMode>
+      <CurrentValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</DefaultValue>
+      <Options />
+    </InFilterTableItem2FilterMode>
+    <InFilterTableItem3SettingNo>
+      <CurrentValue>3</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>3</DefaultValue>
+      <Options />
+    </InFilterTableItem3SettingNo>
+    <InFilterTableItem3GeneralInput>
+      <CurrentValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom12to15</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableGeneralInputHeaderFrom12to15</DefaultValue>
+      <Options />
+    </InFilterTableItem3GeneralInput>
+    <InFilterTableItem3InputFilter>
+      <CurrentValue>BuiltInIOSettingInFilterTableInputFilter1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableInputFilter1</DefaultValue>
+      <Options />
+    </InFilterTableItem3InputFilter>
+    <InFilterTableItem3FilterMode>
+      <CurrentValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingInFilterTableFilterModeOnFilterOffFilterEnabled</DefaultValue>
+      <Options />
+    </InFilterTableItem3FilterMode>
+    <LoadRejectionTable>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </LoadRejectionTable>
+    <LoadRejectionTableTableItemMaximumCount>
+      <CurrentValue>10</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>10</DefaultValue>
+      <Options />
+    </LoadRejectionTableTableItemMaximumCount>
+    <LoadRejectionTableItem0SettingNoOutput>
+      <CurrentValue>0</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem0SettingNoOutput>
+    <LoadRejectionTableItem0OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem0OutputMode>
+    <LoadRejectionTableItem1SettingNoOutput>
+      <CurrentValue>1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>1</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem1SettingNoOutput>
+    <LoadRejectionTableItem1OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem1OutputMode>
+    <LoadRejectionTableItem2SettingNoOutput>
+      <CurrentValue>2</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>2</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem2SettingNoOutput>
+    <LoadRejectionTableItem2OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem2OutputMode>
+    <LoadRejectionTableItem3SettingNoOutput>
+      <CurrentValue>3</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>3</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem3SettingNoOutput>
+    <LoadRejectionTableItem3OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem3OutputMode>
+    <LoadRejectionTableItem4SettingNoOutput>
+      <CurrentValue>4</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>4</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem4SettingNoOutput>
+    <LoadRejectionTableItem4OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem4OutputMode>
+    <LoadRejectionTableItem5SettingNoOutput>
+      <CurrentValue>5</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>5</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem5SettingNoOutput>
+    <LoadRejectionTableItem5OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem5OutputMode>
+    <LoadRejectionTableItem6SettingNoOutput>
+      <CurrentValue>6</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>6</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem6SettingNoOutput>
+    <LoadRejectionTableItem6OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem6OutputMode>
+    <LoadRejectionTableItem7SettingNoOutput>
+      <CurrentValue>7</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>7</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem7SettingNoOutput>
+    <LoadRejectionTableItem7OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem7OutputMode>
+    <LoadRejectionTableItem8SettingNoOutput>
+      <CurrentValue>8</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>8</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem8SettingNoOutput>
+    <LoadRejectionTableItem8OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem8OutputMode>
+    <LoadRejectionTableItem9SettingNoOutput>
+      <CurrentValue>9</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>9</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem9SettingNoOutput>
+    <LoadRejectionTableItem9OutputMode>
+      <CurrentValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>BuiltInIOSettingLoadRejectionTableOutputModeOff</DefaultValue>
+      <Options />
+    </LoadRejectionTableItem9OutputMode>
+  </BuiltInIOSetting>
+</data>

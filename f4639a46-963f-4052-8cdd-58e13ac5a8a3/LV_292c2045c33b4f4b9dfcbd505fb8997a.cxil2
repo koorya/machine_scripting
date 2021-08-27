@@ -1,0 +1,41 @@
+{IMPORT<ULs.cxip>}
+MODULE NX END_MODULE {USING<\\NX>}
+INTERFACE LV_292c2045c33b4f4b9dfcbd505fb8997a
+VAR
+    _dmmy : BOOL;
+END_VAR
+__VAR_SYSTEM CONSTANT
+    P_On : BOOL;
+    P_Off : BOOL;
+    P_CY : BOOL;
+    P_First_RunMode : BOOL;
+    P_First_Run : BOOL;
+__END_VAR
+__VAR_SYSTEM
+    P_PRGER : BOOL;
+__END_VAR
+VAR_EXTERNAL CONSTANT
+    _EC_ErrSta : WORD;
+END_VAR
+VAR_EXTERNAL
+    FC1_command : WORD;
+    FC2_command : WORD;
+    K2 : BOOL;
+    FC2_reset_error : BOOL;
+    FC1_reset_error : BOOL;
+    K1 : BOOL;
+END_VAR
+VAR
+    resetECError_instance : ResetECError;
+    EC_Stage : UINT;
+    FC_reset_stage : INT := INT#0;
+    TON_instance : TON;
+    reset_cnt : INT := INT#0;
+END_VAR
+END_INTERFACE
+MODULE NX
+TYPE
+ _dummy4 : (_dummydummy4 := 4);
+END_TYPE
+END_MODULE
+
