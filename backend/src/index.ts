@@ -15,6 +15,8 @@ import { FSMController } from "./fsm_controller";
 import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
 import e = require("express");
 
+import * as MyTypes from "~shared/types/types";
+
 const algorithms_path = "config/algorithms.json";
 const default_algorithms_path = "config/default_algorithms.json";
 
@@ -136,20 +138,19 @@ app.get("/image", (req, res) => {
 });
 // cycle_state
 app.get("/controller_status", (request, response) => {
-  response.send(
-    JSON.stringify({
-      state: plc_controller.state,
-      scenario_status: {
-        name: plc_controller.scenario?.name,
-        step_index: plc_controller.scenario?.index,
-      },
-      machine_status: {
-        state: fsm.state,
-        cycle_step: fsm.cycle_state,
-        current_level: fsm.current_level,
-      },
-    })
-  );
+  const controller_status: MyTypes.ControllerStatus = {
+    state: plc_controller.state,
+    scenario_status: {
+      name: plc_controller.scenario?.name,
+      step_index: plc_controller.scenario?.index,
+    },
+    machine_status: {
+      state: fsm.state,
+      cycle_step: fsm.cycle_state,
+      current_level: fsm.current_level,
+    },
+  };
+  response.send(JSON.stringify(controller_status));
 });
 // get_all_states
 app.get("/get_all_states", (request, response) => {
@@ -176,11 +177,18 @@ app.post("/compile_scenario", (req, res) => {
 });
 app.post("/is_scenario_valid", (req, res) => {
   console.log(req.body);
-  let compiled = req.body.compiled_scenario;
-  const starting_condition = req.body.starting_condition;
-  starting_condition.level = parseInt(starting_condition.level);
+  const scenario_req: MyTypes.ScenarioErrorRequest = {
+    compiled_scenario: req.body.compiled_scenario,
+    starting_condition: {
+      level: parseInt(req.body.starting_condition.level),
+      state: req.body.starting_condition.state,
+    },
+  };
 
-  getCompiledScenarioError(compiled, starting_condition).then((err) => {
+  getCompiledScenarioError(
+    scenario_req.compiled_scenario,
+    scenario_req.starting_condition
+  ).then((err) => {
     console.log(err);
     if (err != null) res.send(err);
     else res.send({});

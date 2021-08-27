@@ -2,6 +2,8 @@ import * as fs from "fs";
 
 import * as StateMachine from "javascript-state-machine";
 import { fsm_config, transitions } from "./state_machine_cfg";
+import * as MyTypes from "~shared/types/types";
+
 fsm_config.transitions.push({
   name: "goto",
   from: "*",
@@ -33,8 +35,8 @@ function compileScenario(scenario: string) {
 
 async function getCompiledScenarioError(
   cmdlist: string[],
-  init: { state: string; level: number } = null
-) {
+  init: MyTypes.ScenarioStartCondition = null
+): Promise<MyTypes.ScenarioError> {
   if (init != null) {
     await fsm.goto(init.state);
     fsm.current_level = init.level;
