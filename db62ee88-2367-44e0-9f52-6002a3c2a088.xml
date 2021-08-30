@@ -13,3 +13,4 @@ _EN=Variables
 ++D=BOOL	N=Y2	G=VAR_EXTERNAL
 ++D=BOOL	N=start_pushout_crab_handle	G=VAR_EXTERNAL
 ++D=INT	N=pushout_crab_state	G=VAR_EXTERNAL
+++D=STRING[255]	N=status_message	G=VAR_EXTERNAL

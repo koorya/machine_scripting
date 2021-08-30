@@ -21,3 +21,4 @@ _EN=Variables
 ++D=BOOL	N=SQ44	G=VAR_EXTERNAL
 ++D=BOOL	N=start_pushin_crab_handle	G=VAR_EXTERNAL
 ++D=INT	N=pushin_crab_state	G=VAR_EXTERNAL
+++D=STRING[255]	N=status_message	G=VAR_EXTERNAL
