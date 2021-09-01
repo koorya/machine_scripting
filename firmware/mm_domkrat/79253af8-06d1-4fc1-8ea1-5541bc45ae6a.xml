@@ -1,0 +1,14 @@
+[SLWD version=1.0]
+_EN=Variables
++GN=VAR	GVT=DefaultGroup
+++D=ResetECError	N=resetECError_instance	G=VAR
+++D=UINT	N=EC_Stage	G=VAR
+++D=INT	N=FC_reset_stage	IV=0	G=VAR
+++D=TON	N=TON_instance	G=VAR
+++D=INT	N=reset_cnt	IV=0	G=VAR
++GN=VAR_EXTERNAL	GA=External	GVT=ExternalGroup
+++D=WORD	N=_EC_ErrSta	Const=1	G=VAR_EXTERNAL
+++D=WORD	N=FC1_command	G=VAR_EXTERNAL
+++D=WORD	N=FC2_command	G=VAR_EXTERNAL
+++D=BOOL	N=K2	G=VAR_EXTERNAL
+++D=BOOL	N=FC2_reset_error	G=VAR_EXTERNAL

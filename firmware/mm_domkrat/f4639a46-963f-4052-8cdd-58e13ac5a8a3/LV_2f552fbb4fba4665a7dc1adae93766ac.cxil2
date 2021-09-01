@@ -1,0 +1,36 @@
+{IMPORT<ULs.cxip>}
+MODULE NX END_MODULE {USING<\\NX>}
+INTERFACE LV_2f552fbb4fba4665a7dc1adae93766ac
+VAR
+    _dmmy : BOOL;
+END_VAR
+__VAR_SYSTEM CONSTANT
+    P_On : BOOL;
+    P_Off : BOOL;
+    P_CY : BOOL;
+    P_First_RunMode : BOOL;
+    P_First_Run : BOOL;
+__END_VAR
+__VAR_SYSTEM
+    P_PRGER : BOOL;
+__END_VAR
+VAR_EXTERNAL
+    Y18 : BOOL;
+    SQ48 : BOOL;
+    SQ47 : BOOL;
+    SQ46 : BOOL;
+    SQ45 : BOOL;
+    Y16 : BOOL;
+    Y17 : BOOL;
+    Y1 : BOOL;
+    Y2 : BOOL;
+    start_pushout_crab_handle : BOOL;
+    pushout_crab_state : INT;
+END_VAR
+END_INTERFACE
+MODULE NX
+TYPE
+ _dummy4 : (_dummydummy4 := 4);
+END_TYPE
+END_MODULE
+

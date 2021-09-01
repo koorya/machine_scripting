@@ -1,0 +1,25 @@
+<StructuredTextModel xmlns="http://schemas.datacontract.org/2004/07/Omron.Cxap.Modules.StructuredText.Core" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Text>;&#xD;
+;&#xD;
+&#xD;
+  IF (_EC_ErrSta&lt;&gt;0) THEN // Controller error in EtherCAT Master Function Module.&#xD;
+    CASE EC_Stage OF&#xD;
+    0 : // Initialize&#xD;
+      ResetECError_instance(Execute:=FALSE);&#xD;
+      EC_Stage:=INT#1;&#xD;
+    1 : // Resetting Controller error in EtherCAT Master Function Module.&#xD;
+      ResetECError_instance(Execute:=TRUE);&#xD;
+      IF (ResetECError_instance.Done=TRUE) THEN&#xD;
+        EC_Stage:=INT#99; // Normal end&#xD;
+      END_IF;&#xD;
+      IF (ResetECError_instance.Error=TRUE) THEN&#xD;
+        EC_Stage:=INT#98; // Error end&#xD;
+      END_IF;&#xD;
+    99 : // Processing after normal end&#xD;
+      EC_Stage:=INT#0;&#xD;
+    98 : // Processing after error end.&#xD;
+      EC_Stage:=INT#0;&#xD;
+    END_CASE;&#xD;
+  END_IF;&#xD;
+&#xD;
+&#xD;
+</Text></StructuredTextModel>

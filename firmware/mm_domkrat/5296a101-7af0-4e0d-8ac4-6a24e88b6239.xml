@@ -1,0 +1,1422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<data>
+  <NexCpuEipTcpIp>
+    <NexCpuEipTcpIpIPAddressSetting>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpIPAddressSetting>
+    <NexCpuEipTcpIpIPAddressSettingSettingOptions>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+        <Option>EnumElement3</Option>
+      </Options>
+    </NexCpuEipTcpIpIPAddressSettingSettingOptions>
+    <NexCpuEipTcpIpIPAddressSettingIPAddress>
+      <CurrentValue>172.16.201.89</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>192.168.250.1</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpIPAddressSettingIPAddress>
+    <NexCpuEipTcpIpIPAddressSettingSubnetMask>
+      <CurrentValue>255.255.255.0</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>255.255.255.0</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpIPAddressSettingSubnetMask>
+    <NexCpuEipTcpIpDefaultGateway>
+      <CurrentValue>172.16.201.1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpDefaultGateway>
+    <NexCpuEipTcpIpDNSUseSetting>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipTcpIpDNSUseSetting>
+    <NexCpuEipTcpIpDNSPriorityServer>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpDNSPriorityServer>
+    <NexCpuEipTcpIpDNSSecondaryServer>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpDNSSecondaryServer>
+    <NexCpuEipTcpIpDNSDomainName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpDNSDomainName>
+    <NexCpuEipTcpIpDNSDomainNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpDNSDomainNameValue2>
+    <NexCpuEipTcpIpHostIPAddressTable>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTable>
+    <NexCpuEipTcpIpHostIPAddressTableTableItemMaximumCount>
+      <CurrentValue>6</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>6</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableTableItemMaximumCount>
+    <NexCpuEipTcpIpHostIPAddressTableTableItemCount>
+      <CurrentValue>1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableTableItemCount>
+    <NexCpuEipTcpIpIsKeepAlive>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipTcpIpIsKeepAlive>
+    <NexCpuEipTcpIpKeepAliveSuperviseTime>
+      <CurrentValue>300</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>300</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpKeepAliveSuperviseTime>
+    <NexCpuEipTcpIpKeepAliveSuperviseTimeValue2>
+      <CurrentValue>NexCpuEipTcpIpKeepAliveSuperviseTimeUnit</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipTcpIpKeepAliveSuperviseTimeUnit</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpKeepAliveSuperviseTimeValue2>
+    <NexCpuEipTcpIpLingerOptions>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipTcpIpLingerOptions>
+    <NexCpuEipTcpIpRouterTable>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTable>
+    <NexCpuEipTcpIpRouterTableTableItemMaximumCount>
+      <CurrentValue>8</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>8</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableTableItemMaximumCount>
+    <NexCpuEipTcpIpRouterTableTableItemCount>
+      <CurrentValue>1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0</DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableTableItemCount>
+    <NexCpuEipTcpIpHostIPAddressTableItem0HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem0HostName>
+    <NexCpuEipTcpIpHostIPAddressTableItem0IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem0IPAddress>
+    <NexCpuEipTcpIpHostIPAddressTableItem1HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem1HostName>
+    <NexCpuEipTcpIpHostIPAddressTableItem1IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem1IPAddress>
+    <NexCpuEipTcpIpHostIPAddressTableItem2HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem2HostName>
+    <NexCpuEipTcpIpHostIPAddressTableItem2IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem2IPAddress>
+    <NexCpuEipTcpIpHostIPAddressTableItem3HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem3HostName>
+    <NexCpuEipTcpIpHostIPAddressTableItem3IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem3IPAddress>
+    <NexCpuEipTcpIpHostIPAddressTableItem4HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem4HostName>
+    <NexCpuEipTcpIpHostIPAddressTableItem4IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem4IPAddress>
+    <NexCpuEipTcpIpHostIPAddressTableItem5HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem5HostName>
+    <NexCpuEipTcpIpHostIPAddressTableItem5IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpHostIPAddressTableItem5IPAddress>
+    <NexCpuEipTcpIpRouterTableItem0Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem0Gateway>
+    <NexCpuEipTcpIpRouterTableItem0IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem0IPAddress>
+    <NexCpuEipTcpIpRouterTableItem0IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem0IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem1Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem1Gateway>
+    <NexCpuEipTcpIpRouterTableItem1IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem1IPAddress>
+    <NexCpuEipTcpIpRouterTableItem1IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem1IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem2Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem2Gateway>
+    <NexCpuEipTcpIpRouterTableItem2IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem2IPAddress>
+    <NexCpuEipTcpIpRouterTableItem2IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem2IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem3Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem3Gateway>
+    <NexCpuEipTcpIpRouterTableItem3IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem3IPAddress>
+    <NexCpuEipTcpIpRouterTableItem3IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem3IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem4Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem4Gateway>
+    <NexCpuEipTcpIpRouterTableItem4IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem4IPAddress>
+    <NexCpuEipTcpIpRouterTableItem4IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem4IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem5Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem5Gateway>
+    <NexCpuEipTcpIpRouterTableItem5IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem5IPAddress>
+    <NexCpuEipTcpIpRouterTableItem5IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem5IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem6Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem6Gateway>
+    <NexCpuEipTcpIpRouterTableItem6IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem6IPAddress>
+    <NexCpuEipTcpIpRouterTableItem6IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem6IPAddressMask>
+    <NexCpuEipTcpIpRouterTableItem7Gateway>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem7Gateway>
+    <NexCpuEipTcpIpRouterTableItem7IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem7IPAddress>
+    <NexCpuEipTcpIpRouterTableItem7IPAddressMask>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipTcpIpRouterTableItem7IPAddressMask>
+  </NexCpuEipTcpIp>
+  <NexCpuEipLinkSetting>
+    <NexCpuEipLink>
+      <CurrentValue>NexCpuEipLinkAuto</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipLinkAuto</DefaultValue>
+      <Options>
+        <Option>NexCpuEipLinkAuto</Option>
+        <Option>NexCpuEipLink10MBpsHalfDuplex</Option>
+        <Option>NexCpuEipLink10MBpsFullDuplex</Option>
+        <Option>NexCpuEipLink100MBpsHalfDuplex</Option>
+        <Option>NexCpuEipLink100MBpsFullDuplex</Option>
+      </Options>
+    </NexCpuEipLink>
+  </NexCpuEipLinkSetting>
+  <NexCpuEipFTP>
+    <NexCpuEipFTPUseSetting>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipFTPUseSetting>
+    <NexCpuEipFTPPortSetting>
+      <CurrentValue>21</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>21</DefaultValue>
+      <Options />
+    </NexCpuEipFTPPortSetting>
+    <NexCpuEipFTPPortSettingValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipFTPPortSettingValue2>
+    <NexCpuEipFTPLoninName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFTPLoninName>
+    <NexCpuEipFTPLoninNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipFTPLoninNameValue2>
+    <NexCpuEipFTPPassword>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFTPPassword>
+    <NexCpuEipFTPPasswordValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipFTPPasswordValue2>
+  </NexCpuEipFTP>
+  <NexCpuEipNTP>
+    <NexCpuEipNTPUseSetting>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipNTPUseSetting>
+    <NexCpuEipNTPPortSetting>
+      <CurrentValue>123</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>123</DefaultValue>
+      <Options />
+    </NexCpuEipNTPPortSetting>
+    <NexCpuEipNTPPortSettingValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipNTPPortSettingValue2>
+    <NexCpuEipNTPServerSpecify>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipNTPServerSpecify>
+    <NexCpuEipNTPIPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipNTPIPAddress>
+    <NexCpuEipNTPHostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipNTPHostName>
+    <NexCpuEipNTPHostNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipNTPHostNameValue2>
+    <NexCpuEipNTPTiming>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipNTPTiming>
+    <NexCpuEipNTPSpecifiedTime>
+      <CurrentValue>00:00:00</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>00:00:00</DefaultValue>
+      <Options />
+    </NexCpuEipNTPSpecifiedTime>
+    <NexCpuEipNTPSpecifiedInterval>
+      <CurrentValue>60</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>60</DefaultValue>
+      <Options />
+    </NexCpuEipNTPSpecifiedInterval>
+    <NexCpuEipNTPSpecifiedIntervalValue2>
+      <CurrentValue>NexCpuEipNTPSpecifiedIntervalUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipNTPSpecifiedIntervalUnit</DefaultValue>
+      <Options />
+    </NexCpuEipNTPSpecifiedIntervalValue2>
+    <NexCpuEipNTPTimeout>
+      <CurrentValue>10</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>10</DefaultValue>
+      <Options />
+    </NexCpuEipNTPTimeout>
+    <NexCpuEipNTPTimeoutValue2>
+      <CurrentValue>NexCpuEipNTPTimeoutUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipNTPTimeoutUnit</DefaultValue>
+      <Options />
+    </NexCpuEipNTPTimeoutValue2>
+  </NexCpuEipNTP>
+  <NexCpuEipSNMP>
+    <NexCpuEipSNMPUseSetting>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPUseSetting>
+    <NexCpuEipSNMPPortSetting>
+      <CurrentValue>161</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>161</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPPortSetting>
+    <NexCpuEipSNMPPortSettingValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPPortSettingValue2>
+    <NexCpuEipSNMPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPAddress>
+    <NexCpuEipSNMPAddressValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPAddressValue2>
+    <NexCpuEipSNMPLocation>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPLocation>
+    <NexCpuEipSNMPLocationValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPLocationValue2>
+    <NexCpuEipSNMPSendTrap>
+      <CurrentValue>False</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>False</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPSendTrap>
+    <NexCpuEipSNMPTemp>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTemp>
+    <NexCpuEipSNMPRecognitionWay1>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPRecognitionWay1>
+    <NexCpuEipSNMPIPAddress1>
+      <CurrentValue>0.0.0.0</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0.0.0.0</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPIPAddress1>
+    <NexCpuEipSNMPHostName1>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPHostName1>
+    <NexCpuEipSNMPHostName1Value2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPHostName1Value2>
+    <NexCpuEipSNMPCommunityName1>
+      <CurrentValue>public</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>public</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPCommunityName1>
+    <NexCpuEipSNMPCommunityName1Value2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPCommunityName1Value2>
+    <NexCpuEipSNMPRecognition2Use>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPRecognition2Use>
+    <NexCpuEipSNMPRecognitionWay2>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPRecognitionWay2>
+    <NexCpuEipSNMPIPAddress2>
+      <CurrentValue>0.0.0.0</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0.0.0.0</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPIPAddress2>
+    <NexCpuEipSNMPHostName2>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPHostName2>
+    <NexCpuEipSNMPHostName2Value2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPHostName2Value2>
+    <NexCpuEipSNMPCommunityName2>
+      <CurrentValue>public</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>public</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPCommunityName2>
+    <NexCpuEipSNMPCommunityName2Value2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPCommunityName2Value2>
+  </NexCpuEipSNMP>
+  <NexCpuEipSNMPTrap>
+    <NexCpuEipSNMPTrapUseSetting>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPTrapUseSetting>
+    <NexCpuEipSNMPTrapPortSetting>
+      <CurrentValue>162</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>162</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrapPortSetting>
+    <NexCpuEipSNMPTrapPortSettingValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrapPortSettingValue2>
+    <NexCpuEipSNMPTrapTemp>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrapTemp>
+    <NexCpuEipSNMPTrap1IPAddressAndHostName>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPTrap1IPAddressAndHostName>
+    <NexCpuEipSNMPTrap1IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap1IPAddress>
+    <NexCpuEipSNMPTrap1HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap1HostName>
+    <NexCpuEipSNMPTrap1HostNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap1HostNameValue2>
+    <NexCpuEipSNMPTrap1CommunityName>
+      <CurrentValue>public</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>public</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap1CommunityName>
+    <NexCpuEipSNMPTrap1CommunityNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap1CommunityNameValue2>
+    <NexCpuEipSNMPTrap1Version>
+      <CurrentValue>NexCpuEipSNMPVersion2</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipSNMPVersion2</DefaultValue>
+      <Options>
+        <Option>NexCpuEipSNMPVersion1</Option>
+        <Option>NexCpuEipSNMPVersion2</Option>
+      </Options>
+    </NexCpuEipSNMPTrap1Version>
+    <NexCpuEipSNMPTrap2Use>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPTrap2Use>
+    <NexCpuEipSNMPTrap2IPAddressAndHostName>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipSNMPTrap2IPAddressAndHostName>
+    <NexCpuEipSNMPTrap2IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap2IPAddress>
+    <NexCpuEipSNMPTrap2HostName>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap2HostName>
+    <NexCpuEipSNMPTrap2HostNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap2HostNameValue2>
+    <NexCpuEipSNMPTrap2CommunityName>
+      <CurrentValue>public</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>public</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap2CommunityName>
+    <NexCpuEipSNMPTrap2CommunityNameValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipSNMPTrap2CommunityNameValue2>
+    <NexCpuEipSNMPTrap2Version>
+      <CurrentValue>NexCpuEipSNMPVersion2</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipSNMPVersion2</DefaultValue>
+      <Options>
+        <Option>NexCpuEipSNMPVersion1</Option>
+        <Option>NexCpuEipSNMPVersion2</Option>
+      </Options>
+    </NexCpuEipSNMPTrap2Version>
+  </NexCpuEipSNMPTrap>
+  <NexCpuEipFINSSetting>
+    <NexCpuEipFINSSettingFINSIPAddressSettingEIPNodeAddress>
+      <CurrentValue>89</CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>1</DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingEIPNodeAddress>
+    <NexCpuEipFINSFINSUdpPort>
+      <CurrentValue>9600</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>9600</DefaultValue>
+      <Options />
+    </NexCpuEipFINSFINSUdpPort>
+    <NexCpuEipFINSFINSUdpPortValue2>
+      <CurrentValue>NexCpuEipEmptyUnit</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>NexCpuEipEmptyUnit</DefaultValue>
+      <Options />
+    </NexCpuEipFINSFINSUdpPortValue2>
+    <NexCpuEipFINSSettingFINSIPAddressSetting>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSetting>
+    <NexCpuEipFINSSettingFINSIPAddressSettingSettingOptions>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+        <Option>EnumElement3</Option>
+      </Options>
+    </NexCpuEipFINSSettingFINSIPAddressSettingSettingOptions>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTable>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>false</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTable>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableTableItemCount>
+      <CurrentValue>1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>0</DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableTableItemCount>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableTableItemMaximumCount>
+      <CurrentValue>32</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>32</DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableTableItemMaximumCount>
+    <NexCpuEipFINSDestinationIPAddressConversion>
+      <CurrentValue>EnumElement1</CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue>EnumElement1</DefaultValue>
+      <Options>
+        <Option>EnumElement1</Option>
+        <Option>EnumElement2</Option>
+      </Options>
+    </NexCpuEipFINSDestinationIPAddressConversion>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem0NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem0NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem0IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem0IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem1NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem1NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem1IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem1IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem2NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem2NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem2IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem2IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem3NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem3NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem3IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem3IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem4NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem4NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem4IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem4IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem5NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem5NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem5IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem5IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem6NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem6NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem6IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem6IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem7NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem7NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem7IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem7IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem8NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem8NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem8IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem8IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem9NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem9NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem9IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem9IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem10NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem10NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem10IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem10IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem11NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem11NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem11IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem11IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem12NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem12NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem12IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem12IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem13NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem13NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem13IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem13IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem14NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem14NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem14IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem14IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem15NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem15NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem15IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem15IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem16NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem16NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem16IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem16IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem17NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem17NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem17IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem17IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem18NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem18NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem18IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem18IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem19NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem19NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem19IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem19IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem20NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem20NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem20IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem20IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem21NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem21NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem21IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem21IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem22NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem22NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem22IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem22IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem23NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem23NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem23IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem23IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem24NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem24NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem24IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem24IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem25NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem25NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem25IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem25IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem26NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem26NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem26IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem26IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem27NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem27NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem27IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem27IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem28NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem28NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem28IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem28IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem29NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem29NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem29IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem29IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem30NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem30NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem30IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem30IPAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem31NodeAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem31NodeAddress>
+    <NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem31IPAddress>
+      <CurrentValue></CurrentValue>
+      <IsEnabled>true</IsEnabled>
+      <IsVisible>true</IsVisible>
+      <DefaultValue></DefaultValue>
+      <Options />
+    </NexCpuEipFINSSettingFINSIPAddressSettingAddressTableItem31IPAddress>
+  </NexCpuEipFINSSetting>
+</data>

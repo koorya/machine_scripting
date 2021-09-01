@@ -1,0 +1,15 @@
+<StructuredTextModel xmlns="http://schemas.datacontract.org/2004/07/Omron.Cxap.Modules.StructuredText.Core" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Text>BB1 := 10*(16 * BYTE_TO_UINT(IFM_BB1[0]) + BYTE_TO_UINT( SHR(IFM_BB1[1],4)))-20;&#xD;
+BB2 := 10*(16 * BYTE_TO_UINT(IFM_BB2[0]) + BYTE_TO_UINT( SHR(IFM_BB2[1],4)))-20;&#xD;
+BB3 := 10*(16 * BYTE_TO_UINT(IFM_BB3[0]) + BYTE_TO_UINT( SHR(IFM_BB3[1],4)))-20;&#xD;
+BB4 := 10*(16 * BYTE_TO_UINT(IFM_BB4[0]) + BYTE_TO_UINT( SHR(IFM_BB4[1],4)))-20;&#xD;
+BB5 := 10*(16 * BYTE_TO_UINT(IFM_BB5[0]) + BYTE_TO_UINT( SHR(IFM_BB5[1],4)))-20;&#xD;
+BB6 := 10*(16 * BYTE_TO_UINT(IFM_BB6[0]) + BYTE_TO_UINT( SHR(IFM_BB6[1],4)))-20;&#xD;
+BB7 := 10*(16 * BYTE_TO_UINT(IFM_BB7[0]) + BYTE_TO_UINT( SHR(IFM_BB7[1],4)))-20;&#xD;
+BB8 := 10*(16 * BYTE_TO_UINT(IFM_BB8[0]) + BYTE_TO_UINT( SHR(IFM_BB8[1],4)))-20;&#xD;
+&#xD;
+BB9:=256 * BYTE_TO_UINT(IFM_BB9[0]) + BYTE_TO_UINT( IFM_BB9[1]) + 224 -22;&#xD;
+BB10:=256 * BYTE_TO_UINT(IFM_BB10[0]) + BYTE_TO_UINT(IFM_BB10[1]) + 236 -22;&#xD;
+BB11:=256 * BYTE_TO_UINT(IFM_BB11[0]) + BYTE_TO_UINT(IFM_BB11[1]) + 235 -22;&#xD;
+BB12:=256 * BYTE_TO_UINT(IFM_BB12[0]) + BYTE_TO_UINT(IFM_BB12[1]) + 223 -22;&#xD;
+BB13:=256 * BYTE_TO_UINT(SICK_BB13[0]) + BYTE_TO_UINT(SICK_BB13[1])-820;&#xD;
+</Text></StructuredTextModel>
