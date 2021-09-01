@@ -5,7 +5,6 @@ import Col from "react-bootstrap/Col";
 import Tab from "react-bootstrap/Tab";
 import ListGroup from "react-bootstrap/ListGroup";
 import Image from "react-bootstrap/Image";
-import Toast from "react-bootstrap/Toast";
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
@@ -13,8 +12,9 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Alert from "react-bootstrap/Alert";
 import Accordion from "react-bootstrap/Accordion";
 import ToggleButton from "react-bootstrap/ToggleButton";
+import * as MyTypes from "./types";
 
-function Jumbotron(props) {
+function Jumbotron(props: any) {
   return (
     <div
       style={{
@@ -30,7 +30,7 @@ function Jumbotron(props) {
 }
 
 function useCmds() {
-  const [cmds, setCmds] = useState([]);
+  const [cmds, setCmds] = useState<string[]>([]);
   useEffect(() => {
     const cmds_upd = setInterval(() => {
       fetch("http://localhost:5001/commands")
@@ -47,7 +47,7 @@ function useCmds() {
   return cmds;
 }
 function useCycState() {
-  const [val, setVal] = useState(null);
+  const [val, setVal] = useState<MyTypes.ControllerStatus | null>(null);
   useEffect(() => {
     const upd = setInterval(() => {
       fetch("http://localhost:5001/controller_status")
@@ -65,12 +65,12 @@ function useCycState() {
 }
 
 function GraphImage() {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   useEffect(() => {
     const image_upd = setInterval(() => {
       fetch("http://localhost:5001/image")
         .then((res) => res.text())
-        .then((res) => {
+        .then((res: string) => {
           setImage(res);
         });
     }, 100);
@@ -83,7 +83,7 @@ function GraphImage() {
     <Image src={`data:image/svg+xml;base64,${image}`} alt="states" fluid />
   );
 }
-const sendCommand = (cmd) => {
+const sendCommand = (cmd: MyTypes.Command) => {
   fetch("http://localhost:5001/command", {
     method: "POST",
     body: JSON.stringify(cmd),
@@ -111,10 +111,14 @@ function El() {
     </>
   );
 }
-function CurrentState({ machine_status }) {
+function CurrentState({
+  machine_status,
+}: {
+  machine_status: MyTypes.MachineStatus | undefined;
+}) {
   return (
     <div>
-      {machine_status != null ? (
+      {machine_status != undefined ? (
         <>
           state: {machine_status.state} <br />
           step: {machine_status.cycle_step}
@@ -144,12 +148,12 @@ function useAllStates() {
   return allStates;
 }
 
-function useCompile(script) {
+function useCompile(script: string) {
   const [compiled, setCompiled] = useState([]);
   useEffect(() => {
     const controller = new AbortController();
 
-    async function fetchData(abortSignal) {
+    async function fetchData(abortSignal: AbortSignal) {
       try {
         const res = await fetch("http://localhost:5001/compile_scenario", {
           method: "POST",
@@ -172,32 +176,36 @@ function useCompile(script) {
   return compiled;
 }
 
-function useValidation(condition, scenario) {
-  const [error, setError] = useState({});
+function useValidation(
+  condition: MyTypes.ScenarioStartCondition,
+  scenario: string[]
+) {
+  const [error, setError] = useState<MyTypes.ScenarioError | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
-    if (scenario && scenario.length == 0) {
-      setError({ error: "scenario is empty" });
-    } else {
-      async function fetchData(abortSignal) {
-        try {
-          const res = await fetch("http://localhost:5001/is_scenario_valid", {
-            method: "POST",
-            body: JSON.stringify({
-              compiled_scenario: scenario,
-              starting_condition: condition,
-            }),
-            headers: { "Content-Type": "application/json" },
-            signal: abortSignal,
-          });
+    async function fetchData(abortSignal: AbortSignal) {
+      try {
+        const scenario_req: MyTypes.ScenarioErrorRequest = {
+          compiled_scenario: scenario,
+          starting_condition: condition,
+        };
+        const res = await fetch("http://localhost:5001/is_scenario_valid", {
+          method: "POST",
+          body: JSON.stringify(scenario_req),
+          headers: { "Content-Type": "application/json" },
+          signal: abortSignal,
+        });
 
-          const res_data = await res.json();
-          setError(res_data);
-        } catch {
-          console.log("useValidation: fetch aborted");
-        }
+        const res_data = await res.json();
+        setError(res_data);
+      } catch {
+        console.log("useValidation: fetch aborted");
       }
+    }
+    if (scenario && scenario.length == 0) {
+      setError({ error: "scenario is empty", index: -1 });
+    } else {
       fetchData(controller.signal);
     }
     return () => {
@@ -207,8 +215,20 @@ function useValidation(condition, scenario) {
   return error;
 }
 
-function Scenario({ value, mode = "edit", saveCallback, current_index }) {
-  const [script, setScript] = useState(value.script);
+type ScenarioProps = {
+  value: any;
+  mode?: string;
+  saveCallback: ({}: MyTypes.ScenarioDefenition) => void;
+  current_index?: number | null;
+};
+
+function Scenario({
+  value,
+  mode = "edit",
+  saveCallback,
+  current_index,
+}: ScenarioProps) {
+  const [script, setScript] = useState<string>(value.script);
   const [condition, setCondition] = useState(value.starting_condition);
   const [name, setName] = useState(value.name);
 
@@ -216,20 +236,20 @@ function Scenario({ value, mode = "edit", saveCallback, current_index }) {
   const error = useValidation(condition, sc);
   const all_states = useAllStates();
 
-  const handleChangeScript = (el) => {
+  const handleChangeScript = (el: any) => {
     setScript(el.target.value);
   };
-  const handleChangeLevel = (el) => {
+  const handleChangeLevel = (el: any) => {
     const new_condition = Object.assign({}, condition);
     new_condition.level = el.target.value;
     setCondition(new_condition);
   };
-  const handleChangeState = (el) => {
+  const handleChangeState = (el: any) => {
     const new_condition = Object.assign({}, condition);
     new_condition.state = el.target.value;
     setCondition(new_condition);
   };
-  const handleChangeName = (el) => {
+  const handleChangeName = (el: any) => {
     setName(el.target.value);
   };
 
@@ -364,14 +384,14 @@ function Scenario({ value, mode = "edit", saveCallback, current_index }) {
                 <ListGroup>
                   {sc?.map((el, index) => (
                     <ListGroup.Item
-                      size="sm"
+                      // size="sm"
                       key={"Scenario_btn" + el + "_" + index}
                       variant={
                         error?.index === index
                           ? "danger"
                           : current_index === index
                           ? "info"
-                          : null
+                          : undefined
                       }
                     >
                       {el}
@@ -386,8 +406,8 @@ function Scenario({ value, mode = "edit", saveCallback, current_index }) {
     </Alert>
   );
 }
-function Scenarios({ status }) {
-  const [scenarios, setScenarios] = useState([
+function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
+  const [scenarios, setScenarios] = useState<MyTypes.ScenarioDefenition[]>([
     {
       name: "scenario 1",
       starting_condition: {
@@ -433,17 +453,15 @@ function Scenarios({ status }) {
     },
     script: "[]",
   };
-  useEffect(
-    () =>
-      fetch("http://localhost:5001/scenarios")
-        .then((res) => res.json())
-        .then((res) => {
-          setScenarios(res);
-        }),
-    []
-  );
+  useEffect(() => {
+    fetch("http://localhost:5001/scenarios")
+      .then((res) => res.json())
+      .then((res) => {
+        setScenarios(res);
+      });
+  }, []);
 
-  const handleSaveScenario = (scenario) => {
+  const handleSaveScenario = (scenario: MyTypes.ScenarioDefenition) => {
     const scenarios_copy = scenarios.slice();
     const element = scenarios_copy.find((sc, index) => {
       if (sc.name === scenario.name) {
@@ -531,35 +549,9 @@ function Scenarios({ status }) {
     </Jumbotron>
   );
 }
-const ExampleToast = ({ children }) => {
-  const [show, toggleShow] = useState(true);
-
-  return (
-    <>
-      {!show && <Button onClick={() => toggleShow(true)}>Show Toast</Button>}
-      <Toast show={show} onClose={() => toggleShow(false)}>
-        <Toast.Header>
-          <strong className="mr-auto">React-Bootstrap</strong>
-        </Toast.Header>
-        <Toast.Body>{children}</Toast.Body>
-      </Toast>
-    </>
-  );
-};
 
 function App() {
   const st = useCycState();
-  //   state: plc_controller.state,
-  //   scenario_status: {
-  //     name: plc_controller.scenario.name,
-  //     sptep_index: plc_controller.scenario.index,
-  //   },
-  //   machine_status: {
-  //     state: fsm.state,
-  //     cycle_step: fsm.cycle_state,
-  //     current_level: fsm.current_level,
-  //   },
-  // })
 
   return (
     <Container fluid>

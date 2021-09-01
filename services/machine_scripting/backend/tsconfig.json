@@ -2,6 +2,8 @@
   "compilerOptions": {
     "allowJs": true,
     "target": "ES5",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": { "~shared/*": ["../shared/*"] },
+    "rootDirs": ["./src", "../shared"]
   }
 }
