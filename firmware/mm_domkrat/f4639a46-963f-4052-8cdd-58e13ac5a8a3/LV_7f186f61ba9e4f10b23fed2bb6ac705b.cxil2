@@ -65,7 +65,7 @@ VAR_EXTERNAL
     Y19 : BOOL;
     Y20 : BOOL;
     start_from_upcrcyc_to_init_handle : BOOL;
-    up_from_upcrcyc_to_init_state : INT;
+    from_upcrcyc_to_init_state : INT;
     liftmech : \\LIFTMECH_TYPE;
 END_VAR
 END_INTERFACE

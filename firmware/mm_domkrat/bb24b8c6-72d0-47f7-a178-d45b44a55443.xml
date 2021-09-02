@@ -181,7 +181,7 @@ _EN=Variables
 ++D=BOOL	N=start_pushout_crab_handle	NTP=PublicationOnly	G=VAR_GLOBAL
 ++D=INT	N=pushout_crab_state	NTP=PublicationOnly	G=VAR_GLOBAL
 ++D=BOOL	N=start_from_upcrcyc_to_init_handle	NTP=PublicationOnly	G=VAR_GLOBAL
-++D=INT	N=up_from_upcrcyc_to_init_state	NTP=PublicationOnly	G=VAR_GLOBAL
+++D=INT	N=from_upcrcyc_to_init_state	NTP=PublicationOnly	G=VAR_GLOBAL
 ++D=BOOL	N=start_down_crab_cycle_handle	NTP=PublicationOnly	G=VAR_GLOBAL
 ++D=INT	N=down_crab_cycle_state	NTP=PublicationOnly	G=VAR_GLOBAL
 ++D=BOOL	N=start_from_hold_to_init_handle	NTP=PublicationOnly	G=VAR_GLOBAL

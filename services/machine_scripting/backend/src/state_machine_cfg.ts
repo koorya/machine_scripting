@@ -109,7 +109,7 @@ const fsm_config = {
     onLeaveLandingBottomFrameToPins: function (lifecycle) {
       return new Promise((resolve, reject) => {
         this.cycleExecutor({
-          cycle_name: "up_from_upcrcyc_to_init",
+          cycle_name: "from_upcrcyc_to_init",
           lifecycle: lifecycle,
           resolve: () => {
             resolve(null);
