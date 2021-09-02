@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sysmac schemaVersion="1">
-  <Entity type="Solution" subtype="" id="82a26025-06e1-4483-9b7e-8993b3df9d5e" name="Пусконаладка на эталоне" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="08/30/2021 19:00:55" trackingId="01751e51-85e1-4f4e-b99a-410762bb027b">
+  <Entity type="Solution" subtype="" id="82a26025-06e1-4483-9b7e-8993b3df9d5e" name="Пусконаладка на эталоне" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="09/02/2021 19:14:13" trackingId="01751e51-85e1-4f4e-b99a-410762bb027b">
     <AccessInfos />
     <ChildEntities>
       <Entity type="SolutionCustomColors" subtype="" id="dc8782df-6123-49d3-b656-07264c2e2025" name="" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="01/20/2021 17:03:53" trackingId="f9b58033-9f3c-4442-9022-d57f3b76126e">
@@ -706,7 +706,7 @@
                       </Entity>
                     </ChildEntities>
                   </Entity>
-                  <Entity type="Program" subtype="StructuredText" id="7424e883-5d9c-4b42-a831-2e88eede22ec" name="from_upcrcyc_to_init" version="0" dateCreated="03/26/2021 18:11:04" dateLastModified="08/30/2021 19:00:55" author="Puakt" trackingId="7f186f61-ba9e-4f10-b23f-ed2bb6ac705b" DN="from_upcrcyc_to_init">
+                  <Entity type="Program" subtype="StructuredText" id="7424e883-5d9c-4b42-a831-2e88eede22ec" name="from_upcrcyc_to_init" version="0" dateCreated="03/26/2021 18:11:04" dateLastModified="09/02/2021 19:14:13" author="Puakt" trackingId="7f186f61-ba9e-4f10-b23f-ed2bb6ac705b" DN="from_upcrcyc_to_init">
                     <AccessInfos />
                     <ChildEntities>
                       <Entity type="DebugProgramSetting" subtype="" id="abb1ac42-7592-45fa-9893-6cc9b527cbb5" name="DebugProgramSetting0,00" version="0" dateCreated="03/26/2021 18:11:04" dateLastModified="03/26/2021 18:12:03" trackingId="9f37104d-dafc-41de-9558-6f0f3c16d23e">
@@ -722,7 +722,7 @@
                           </Entity>
                         </ChildEntities>
                       </Entity>
-                      <Entity type="PouBody" subtype="StructuredText" id="256dcbde-6f59-4e89-a044-cb22a49e3002" name="Program Body" version="0.2" dateCreated="03/26/2021 18:11:04" dateLastModified="08/30/2021 19:00:55" trackingId="a43d18d8-49df-4f72-aa5e-21e9edb74549">
+                      <Entity type="PouBody" subtype="StructuredText" id="256dcbde-6f59-4e89-a044-cb22a49e3002" name="Program Body" version="0.2" dateCreated="03/26/2021 18:11:04" dateLastModified="09/02/2021 19:14:13" trackingId="a43d18d8-49df-4f72-aa5e-21e9edb74549">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="0bf1b4d5-9423-4a83-a0b1-1a09039f06c6" name="Source" version="0" dateCreated="03/26/2021 18:11:04" dateLastModified="03/26/2021 18:11:04" trackingId="1feff67c-32b8-43b5-a749-4ad854097d0b">
