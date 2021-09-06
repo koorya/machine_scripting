@@ -69,6 +69,7 @@ VAR_EXTERNAL
     down_crab_cycle_state : INT;
     down_frame_cycle_state : INT;
     liftmech : \\LIFTMECH_TYPE;
+    status_message : STRING[255];
 END_VAR
 VAR
     minbb : INT;

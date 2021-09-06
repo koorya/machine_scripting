@@ -68,6 +68,7 @@ VAR_EXTERNAL
     SQ27 : BOOL;
     maxbb_glob : INT;
     liftmech : \\LIFTMECH_TYPE;
+    status_message : STRING[255];
 END_VAR
 VAR
     minbb : INT;

@@ -62,3 +62,4 @@ _EN=Variables
 ++D=INT	N=down_crab_cycle_state	G=VAR_EXTERNAL
 ++D=INT	N=down_frame_cycle_state	G=VAR_EXTERNAL
 ++D=LIFTMECH_TYPE	N=liftmech	G=VAR_EXTERNAL
+++D=STRING[255]	N=status_message	G=VAR_EXTERNAL

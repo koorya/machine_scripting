@@ -26,6 +26,7 @@ VAR_EXTERNAL
     Y2 : BOOL;
     start_pushout_crab_handle : BOOL;
     pushout_crab_state : INT;
+    status_message : STRING[255];
 END_VAR
 END_INTERFACE
 MODULE NX

@@ -36,6 +36,7 @@ VAR_EXTERNAL
     Y6 : BOOL;
     Y7 : BOOL;
     liftmech : \\LIFTMECH_TYPE;
+    status_message : STRING[255];
 END_VAR
 END_INTERFACE
 MODULE NX

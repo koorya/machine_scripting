@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sysmac schemaVersion="1">
-  <Entity type="Solution" subtype="" id="82a26025-06e1-4483-9b7e-8993b3df9d5e" name="Пусконаладка на эталоне" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="09/02/2021 19:14:13" trackingId="01751e51-85e1-4f4e-b99a-410762bb027b">
+  <Entity type="Solution" subtype="" id="82a26025-06e1-4483-9b7e-8993b3df9d5e" name="Пусконаладка на эталоне" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="09/06/2021 13:16:19" trackingId="01751e51-85e1-4f4e-b99a-410762bb027b">
     <AccessInfos />
     <ChildEntities>
       <Entity type="SolutionCustomColors" subtype="" id="dc8782df-6123-49d3-b656-07264c2e2025" name="" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="01/20/2021 17:03:53" trackingId="f9b58033-9f3c-4442-9022-d57f3b76126e">
@@ -543,7 +543,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="bfe6f1be-67ae-422b-8e28-9f7042948e1e" name="PouBodySourceHolder" version="0" dateCreated="03/25/2021 17:32:43" dateLastModified="05/11/2021 18:15:39" trackingId="53d97309-419e-4a80-9dd7-9825de351f0a">
+                          <Entity type="PouBodySourceHolder" subtype="" id="bfe6f1be-67ae-422b-8e28-9f7042948e1e" name="PouBodySourceHolder" version="0" dateCreated="03/25/2021 17:32:43" dateLastModified="09/06/2021 12:56:20" trackingId="53d97309-419e-4a80-9dd7-9825de351f0a">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -574,7 +574,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="11045803-79fd-40ed-94b5-9786e0a9e812" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 10:42:49" dateLastModified="05/11/2021 18:15:39" trackingId="34f81c31-03e7-448b-a63c-73774d6fee56">
+                          <Entity type="PouBodySourceHolder" subtype="" id="11045803-79fd-40ed-94b5-9786e0a9e812" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 10:42:49" dateLastModified="09/06/2021 12:56:20" trackingId="34f81c31-03e7-448b-a63c-73774d6fee56">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -605,7 +605,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="1aad8904-74e8-436c-9708-75abdeda20d7" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 11:36:45" dateLastModified="08/23/2021 13:41:55" trackingId="aea42946-b0f8-4a20-b686-5e1931a4309b">
+                          <Entity type="PouBodySourceHolder" subtype="" id="1aad8904-74e8-436c-9708-75abdeda20d7" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 11:36:45" dateLastModified="09/06/2021 12:56:20" trackingId="aea42946-b0f8-4a20-b686-5e1931a4309b">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -636,7 +636,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="c1ccfbad-fb67-42cb-90d5-453b278688ab" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 14:40:02" dateLastModified="08/23/2021 13:48:05" trackingId="09130922-d5d1-4961-93ef-84963c389ca0">
+                          <Entity type="PouBodySourceHolder" subtype="" id="c1ccfbad-fb67-42cb-90d5-453b278688ab" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 14:40:02" dateLastModified="09/06/2021 12:56:20" trackingId="09130922-d5d1-4961-93ef-84963c389ca0">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -667,7 +667,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="47c67880-be7f-4448-868f-667be726bd1e" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 15:30:57" dateLastModified="05/11/2021 18:15:39" trackingId="29f92703-c432-4054-8656-9aa6fc3a70b6">
+                          <Entity type="PouBodySourceHolder" subtype="" id="47c67880-be7f-4448-868f-667be726bd1e" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 15:30:57" dateLastModified="09/06/2021 12:56:20" trackingId="29f92703-c432-4054-8656-9aa6fc3a70b6">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -698,7 +698,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="50ca6805-bb27-4d12-adb0-67849674bc0c" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 16:24:10" dateLastModified="08/23/2021 13:48:05" trackingId="c5b67949-9223-4190-9be6-15c75d310ab0">
+                          <Entity type="PouBodySourceHolder" subtype="" id="50ca6805-bb27-4d12-adb0-67849674bc0c" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 16:24:10" dateLastModified="09/06/2021 12:56:20" trackingId="c5b67949-9223-4190-9be6-15c75d310ab0">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -729,7 +729,7 @@
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="3661aef4-cdca-4513-af76-a354abaff851" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 18:11:04" dateLastModified="05/11/2021 18:15:39" trackingId="20ca4dcd-f723-4c9a-849c-ebc2c57c58e3">
+                          <Entity type="PouBodySourceHolder" subtype="" id="3661aef4-cdca-4513-af76-a354abaff851" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 18:11:04" dateLastModified="09/06/2021 12:56:20" trackingId="20ca4dcd-f723-4c9a-849c-ebc2c57c58e3">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -737,14 +737,14 @@
                       </Entity>
                     </ChildEntities>
                   </Entity>
-                  <Entity type="Program" subtype="StructuredText" id="7b2c4de8-c1cd-43a5-97d2-7859e56606fa" name="down_crab_cycle" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="05/12/2021 17:19:30" author="Puakt" trackingId="318184fb-056a-4c15-9d0a-a22525eb1422" DN="down_crab_cycle">
+                  <Entity type="Program" subtype="StructuredText" id="7b2c4de8-c1cd-43a5-97d2-7859e56606fa" name="down_crab_cycle" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="09/06/2021 12:56:20" author="Puakt" trackingId="318184fb-056a-4c15-9d0a-a22525eb1422" DN="down_crab_cycle">
                     <AccessInfos />
                     <ChildEntities>
                       <Entity type="DebugProgramSetting" subtype="" id="a980d316-fb56-41b4-93b1-170081f748f9" name="DebugProgramSetting0,00" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="03/26/2021 21:00:13" trackingId="82ffedeb-b11b-4740-8a60-832850174a33">
                         <AccessInfos />
                         <ChildEntities />
                       </Entity>
-                      <Entity type="Variables" subtype="StructuredText" id="6cbeb492-6e26-4508-a12c-6128f37f11c2" name="Variables" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="05/11/2021 18:15:39" trackingId="800cdf02-0303-4730-a3d7-4e5705a62be9">
+                      <Entity type="Variables" subtype="StructuredText" id="6cbeb492-6e26-4508-a12c-6128f37f11c2" name="Variables" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="09/06/2021 12:36:01" trackingId="800cdf02-0303-4730-a3d7-4e5705a62be9">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="c7b2959f-bbb8-4442-8b9b-1a523dc4027b" name="Source" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="03/26/2021 20:42:34" trackingId="d64c2239-84d9-46c6-ada4-256997a5cb67">
@@ -753,14 +753,14 @@
                           </Entity>
                         </ChildEntities>
                       </Entity>
-                      <Entity type="PouBody" subtype="StructuredText" id="1381cf97-472f-4489-9495-6112bf69c294" name="Program Body" version="0.2" dateCreated="03/26/2021 20:42:34" dateLastModified="05/12/2021 17:19:30" trackingId="cea2e52e-ad24-4bee-a0ae-7a1daa80de96">
+                      <Entity type="PouBody" subtype="StructuredText" id="1381cf97-472f-4489-9495-6112bf69c294" name="Program Body" version="0.2" dateCreated="03/26/2021 20:42:34" dateLastModified="09/06/2021 12:56:20" trackingId="cea2e52e-ad24-4bee-a0ae-7a1daa80de96">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="8cea6ab9-82c6-41fd-bf35-df8a3ad7d8c9" name="Source" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="03/26/2021 20:42:34" trackingId="c379ec4b-7437-415d-b24a-72e8f4eb1fb9">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="54878415-532e-40bc-9ca4-42d7009f2442" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="05/12/2021 17:19:30" trackingId="0e25bc3f-06c6-425e-9f83-565e859e56e8">
+                          <Entity type="PouBodySourceHolder" subtype="" id="54878415-532e-40bc-9ca4-42d7009f2442" name="PouBodySourceHolder" version="0" dateCreated="03/26/2021 20:42:34" dateLastModified="09/06/2021 13:16:19" trackingId="0e25bc3f-06c6-425e-9f83-565e859e56e8">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -768,14 +768,14 @@
                       </Entity>
                     </ChildEntities>
                   </Entity>
-                  <Entity type="Program" subtype="StructuredText" id="4c1a7b8e-226e-4dff-9ade-00c4421e0db5" name="from_hold_to_init" version="0" dateCreated="04/01/2021 11:56:21" dateLastModified="08/23/2021 13:48:05" author="Puakt" trackingId="8cf39a31-0fb7-44c6-9d6f-06e8e0d1f74a" DN="from_hold_to_init">
+                  <Entity type="Program" subtype="StructuredText" id="4c1a7b8e-226e-4dff-9ade-00c4421e0db5" name="from_hold_to_init" version="0" dateCreated="04/01/2021 11:56:21" dateLastModified="09/06/2021 12:36:01" author="Puakt" trackingId="8cf39a31-0fb7-44c6-9d6f-06e8e0d1f74a" DN="from_hold_to_init">
                     <AccessInfos />
                     <ChildEntities>
                       <Entity type="DebugProgramSetting" subtype="" id="23520daf-79bd-4fbc-ab99-0ecee7c71979" name="DebugProgramSetting0,00" version="0" dateCreated="04/01/2021 11:56:22" dateLastModified="04/01/2021 12:34:22" trackingId="660b2b11-3bde-43a0-b74c-6119a222fdb8">
                         <AccessInfos />
                         <ChildEntities />
                       </Entity>
-                      <Entity type="Variables" subtype="StructuredText" id="b889f2b0-4af8-451b-8d73-fe39e15fb0a1" name="Variables" version="0" dateCreated="04/01/2021 11:56:21" dateLastModified="08/23/2021 13:48:05" trackingId="c406eaf5-66ea-4f8b-b6e8-77f7885291dd">
+                      <Entity type="Variables" subtype="StructuredText" id="b889f2b0-4af8-451b-8d73-fe39e15fb0a1" name="Variables" version="0" dateCreated="04/01/2021 11:56:21" dateLastModified="09/06/2021 12:36:01" trackingId="c406eaf5-66ea-4f8b-b6e8-77f7885291dd">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="68c5f687-0f66-47b4-9426-3fb40aa05893" name="Source" version="0" dateCreated="04/01/2021 11:56:22" dateLastModified="04/01/2021 11:56:22" trackingId="6bef0919-16cb-4ece-82d0-bfadb710d1b4">
@@ -784,14 +784,14 @@
                           </Entity>
                         </ChildEntities>
                       </Entity>
-                      <Entity type="PouBody" subtype="StructuredText" id="2da70e61-a854-4790-8ebb-6645dbdeb759" name="Program Body" version="0.2" dateCreated="04/01/2021 11:56:22" dateLastModified="08/23/2021 13:48:05" trackingId="237cc100-6852-4d4a-8931-8fc64c3d0fc3">
+                      <Entity type="PouBody" subtype="StructuredText" id="2da70e61-a854-4790-8ebb-6645dbdeb759" name="Program Body" version="0.2" dateCreated="04/01/2021 11:56:22" dateLastModified="09/06/2021 12:36:01" trackingId="237cc100-6852-4d4a-8931-8fc64c3d0fc3">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="41fc13b0-2f59-4329-9556-cc1e8e7eab8a" name="Source" version="0" dateCreated="04/01/2021 11:56:22" dateLastModified="04/01/2021 11:56:22" trackingId="be0804e6-5e09-4bb6-8a90-f81b431fde5f">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="129b8140-d6c6-4b6f-9bd4-90aa6df2fd89" name="PouBodySourceHolder" version="0" dateCreated="04/01/2021 11:56:22" dateLastModified="08/23/2021 14:04:24" trackingId="375b3c52-689f-44fe-bb48-cd9e73df7a0a">
+                          <Entity type="PouBodySourceHolder" subtype="" id="129b8140-d6c6-4b6f-9bd4-90aa6df2fd89" name="PouBodySourceHolder" version="0" dateCreated="04/01/2021 11:56:22" dateLastModified="09/06/2021 12:56:20" trackingId="375b3c52-689f-44fe-bb48-cd9e73df7a0a">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
@@ -799,14 +799,14 @@
                       </Entity>
                     </ChildEntities>
                   </Entity>
-                  <Entity type="Program" subtype="StructuredText" id="f2eb781a-046e-4f40-8ae8-3c8a578fa41a" name="down_frame_cycle" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="08/23/2021 13:50:21" author="Puakt" trackingId="e0c93457-e59b-4d1d-941f-3dc118d74dee" DN="down_frame_cycle">
+                  <Entity type="Program" subtype="StructuredText" id="f2eb781a-046e-4f40-8ae8-3c8a578fa41a" name="down_frame_cycle" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="09/06/2021 13:16:19" author="Puakt" trackingId="e0c93457-e59b-4d1d-941f-3dc118d74dee" DN="down_frame_cycle">
                     <AccessInfos />
                     <ChildEntities>
                       <Entity type="DebugProgramSetting" subtype="" id="5b4d8e9f-5142-4366-b23f-6fc5847b58d8" name="DebugProgramSetting0,00" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="04/01/2021 12:34:22" trackingId="8ba49382-b9f4-405e-8487-19eabe20aa23">
                         <AccessInfos />
                         <ChildEntities />
                       </Entity>
-                      <Entity type="Variables" subtype="StructuredText" id="d59dd639-d681-4891-ab07-53fc3f970d3f" name="Variables" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="08/23/2021 13:50:21" trackingId="c000b552-3cb0-4733-b1f3-7b38a59cdd7b">
+                      <Entity type="Variables" subtype="StructuredText" id="d59dd639-d681-4891-ab07-53fc3f970d3f" name="Variables" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="09/06/2021 13:16:19" trackingId="c000b552-3cb0-4733-b1f3-7b38a59cdd7b">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="1ea0e0d6-bcf9-4722-9576-1adce4205aab" name="Source" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="04/01/2021 12:07:53" trackingId="7914b4ab-2824-416c-8ad0-ac552410631d">
@@ -815,14 +815,14 @@
                           </Entity>
                         </ChildEntities>
                       </Entity>
-                      <Entity type="PouBody" subtype="StructuredText" id="154d9ac2-83dd-441f-a85b-032f41e0ac00" name="Program Body" version="0.2" dateCreated="04/01/2021 12:07:53" dateLastModified="08/23/2021 13:50:21" trackingId="8e13aa99-228b-465d-b066-6d489f388fb4">
+                      <Entity type="PouBody" subtype="StructuredText" id="154d9ac2-83dd-441f-a85b-032f41e0ac00" name="Program Body" version="0.2" dateCreated="04/01/2021 12:07:53" dateLastModified="09/06/2021 13:16:19" trackingId="8e13aa99-228b-465d-b066-6d489f388fb4">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="56f178fe-3b99-4ff2-b0fd-35790c7ace82" name="Source" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="04/01/2021 12:07:53" trackingId="ed345fdb-c48c-4ed1-8058-f7591fedc845">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>
-                          <Entity type="PouBodySourceHolder" subtype="" id="098e6b3b-4a80-49cd-a81a-669e00f5c384" name="PouBodySourceHolder" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="08/23/2021 14:04:24" trackingId="8887d66c-5d2e-4365-80ad-33adbba81cba">
+                          <Entity type="PouBodySourceHolder" subtype="" id="098e6b3b-4a80-49cd-a81a-669e00f5c384" name="PouBodySourceHolder" version="0" dateCreated="04/01/2021 12:07:53" dateLastModified="09/06/2021 13:16:19" trackingId="8887d66c-5d2e-4365-80ad-33adbba81cba">
                             <AccessInfos />
                             <ChildEntities />
                           </Entity>

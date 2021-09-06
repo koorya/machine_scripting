@@ -36,6 +36,7 @@ VAR_EXTERNAL
     start_from_hold_to_lift_crab_handle : BOOL;
     from_hold_to_lift_crab_state : INT;
     liftmech : \\LIFTMECH_TYPE;
+    status_message : STRING[255];
 END_VAR
 END_INTERFACE
 MODULE NX

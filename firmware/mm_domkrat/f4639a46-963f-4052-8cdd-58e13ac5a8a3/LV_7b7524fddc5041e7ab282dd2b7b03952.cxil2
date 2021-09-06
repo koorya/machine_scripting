@@ -35,6 +35,7 @@ VAR_EXTERNAL
     init_to_hold_state : INT;
     start_init_to_hold_handle : BOOL;
     liftmech : \\LIFTMECH_TYPE;
+    status_message : STRING[255];
 END_VAR
 END_INTERFACE
 MODULE NX

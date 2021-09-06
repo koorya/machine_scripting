@@ -34,6 +34,7 @@ VAR_EXTERNAL
     SQ44 : BOOL;
     start_pushin_crab_handle : BOOL;
     pushin_crab_state : INT;
+    status_message : STRING[255];
 END_VAR
 END_INTERFACE
 MODULE NX

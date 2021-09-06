@@ -22,3 +22,4 @@ _EN=Variables
 ++D=BOOL	N=start_from_hold_to_init_handle	G=VAR_EXTERNAL
 ++D=INT	N=from_hold_to_init_state	G=VAR_EXTERNAL
 ++D=LIFTMECH_TYPE	N=liftmech	G=VAR_EXTERNAL
+++D=STRING[255]	N=status_message	G=VAR_EXTERNAL

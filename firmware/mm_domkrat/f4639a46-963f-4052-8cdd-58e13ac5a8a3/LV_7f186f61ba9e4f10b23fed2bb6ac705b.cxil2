@@ -67,6 +67,7 @@ VAR_EXTERNAL
     start_from_upcrcyc_to_init_handle : BOOL;
     from_upcrcyc_to_init_state : INT;
     liftmech : \\LIFTMECH_TYPE;
+    status_message : STRING[255];
 END_VAR
 END_INTERFACE
 MODULE NX
