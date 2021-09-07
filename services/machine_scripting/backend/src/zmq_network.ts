@@ -19,6 +19,12 @@ async function readVar(names: string[]) {
   return JSON.parse(msg.toString()).PlcVarsArray.arr;
 }
 
+async function readVarToObj(names: string[]): Promise<{ [key: string]: any }> {
+  const plc_variables_obj = {};
+  (await readVar(names)).map((el) => (plc_variables_obj[el.name] = el.value));
+  return plc_variables_obj;
+}
+
 async function writeVar(vars: { [key: string]: any }) {
   await my_sock.send(
     JSON.stringify({
@@ -46,4 +52,4 @@ async function writeVar(vars: { [key: string]: any }) {
 //   if (flag1 == true) clearInterval(waiter);
 // }, 100);
 
-export { readVar, writeVar };
+export { readVar, writeVar, readVarToObj };

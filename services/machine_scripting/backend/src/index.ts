@@ -148,6 +148,7 @@ app.get("/controller_status", (request, response) => {
       state: fsm.state,
       cycle_step: fsm.cycle_state,
       current_level: fsm.current_level,
+      status_message: fsm.status_message,
     },
   };
   response.send(JSON.stringify(controller_status));

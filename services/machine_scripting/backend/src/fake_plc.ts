@@ -2,7 +2,7 @@ import * as zmq from "zeromq";
 
 const port = 5552;
 
-const vault = {};
+const vault = { status_message: "no mess" };
 
 function test(value: any, should_be: any) {
   return function (target) {
@@ -23,8 +23,11 @@ function doFakePlcLogic() {
         if (RegExp(`${name}_state$`).exec(element)) {
           vault[element] = 0;
           const cycle_interval = setInterval(() => {
-            if (vault[element] < 20) vault[element] += 1;
-            else {
+            if (vault[element] < 20) {
+              vault[element] += 1;
+              vault["status_message"] = `Cycle ${name} in ${vault[element]}.`;
+            } else {
+              vault["status_message"] = `Cycle ${name} complete.`;
               vault[element] = 99;
               clearInterval(cycle_interval);
             }

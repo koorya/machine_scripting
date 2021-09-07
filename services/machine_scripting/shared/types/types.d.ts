@@ -3,6 +3,7 @@ export type MachineStatus = {
   state: string;
   cycle_step: number;
   current_level: number;
+  status_message: string;
 };
 export type ScenarioStatus = {
   name: string;

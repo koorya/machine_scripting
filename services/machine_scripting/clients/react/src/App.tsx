@@ -124,6 +124,8 @@ function CurrentState({
           step: {machine_status.cycle_step}
           <br />
           level: {machine_status.current_level}
+          <br />
+          message: {machine_status.status_message}
         </>
       ) : (
         "not load"

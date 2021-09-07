@@ -1,16 +1,30 @@
 import * as fs from "fs";
 
+interface FsmData {
+  current_level: number;
+  top_level: number;
+  cycle_state: number;
+  status_message: string;
+}
+type FsmConfig = {
+  init: string;
+  transitions: any;
+  data: FsmData;
+  methods: { [key: string]: (arg0: any) => Promise<void> | void | boolean };
+};
+
 const transitions = JSON.parse(
   fs.readFileSync("src/transitions.json").toString()
 );
 
-const fsm_config = {
+const fsm_config: FsmConfig = {
   init: "on_pins_support",
   transitions: transitions,
   data: {
     current_level: 0,
     top_level: 4,
     cycle_state: 0,
+    status_message: "no",
   },
   methods: {
     cycleExecutor: function (props: {
@@ -195,4 +209,4 @@ const fsm_config = {
   },
 };
 
-export { fsm_config, transitions };
+export { fsm_config, transitions, FsmData };

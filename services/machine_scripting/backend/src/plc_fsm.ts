@@ -1,16 +1,26 @@
 import * as StateMachine from "javascript-state-machine";
-import { fsm_config, transitions } from "./state_machine_cfg";
+import { fsm_config, transitions, FsmData } from "./state_machine_cfg";
 import * as plc from "./zmq_network";
 
-var fsm = new StateMachine(fsm_config);
-// function switch controls cycle executing
-// in PLC.
-fsm.cycleExecutor = function (props: {
+type CycleExecutorProps = {
   cycle_name: string;
   lifecycle: any;
   resolve: () => void;
   reject: () => void;
-}) {
+};
+interface StateMachineType extends FsmData {
+  cycleExecutor: (props: CycleExecutorProps) => void;
+  onAfterTransition: (lifecycle: any) => void;
+  state: string;
+  transitions: () => string[];
+  history: string[];
+  allStates: () => string[];
+}
+
+var fsm: StateMachineType = new StateMachine(fsm_config);
+// function switch controls cycle executing
+// in PLC.
+fsm.cycleExecutor = function (props: CycleExecutorProps) {
   const cycle_name = props.cycle_name;
   const lifecycle = props.lifecycle;
   const resolve = props.resolve;
@@ -23,7 +33,12 @@ fsm.cycleExecutor = function (props: {
   plc.writeVar(var_obj).then(() => {
     var mon = setTimeout(() => null, 100);
     const run = async () => {
-      fsm.cycle_state = (await plc.readVar([`${cycle_name}_state`]))[0].value;
+      const plc_variables = await plc.readVarToObj([
+        `${cycle_name}_state`,
+        "status_message",
+      ]);
+      fsm.cycle_state = plc_variables[`${cycle_name}_state`];
+      fsm.status_message = plc_variables["status_message"];
       mon = setTimeout(run, 100);
       if (fsm.cycle_state == 98) {
         console.log("ошибка при исполнении цикла " + lifecycle.from);
