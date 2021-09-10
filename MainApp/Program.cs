@@ -78,7 +78,7 @@ namespace MainApp
 				if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
 				{
 					cnn_service.KillService();
-					listener_list.ForEach(delegate (Listener listener){listener.Stop();});
+					listener_list.ForEach(delegate (Listener listener) { listener.Stop(); });
 					working = false;
 				}
 				// Console.WriteLine(

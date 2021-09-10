@@ -73,7 +73,7 @@ namespace MainApp
 
 			}
 			else if (Object.ReferenceEquals(message.GetType(), typeof(PlcVarsArray)))
-			{ 
+			{
 				var plc_vars_array = message as PlcVarsArray;
 				plcvar_recived(plc_vars_array);
 				string answer_delegate_str = json_converter.JsonConverter.serialaze(message);

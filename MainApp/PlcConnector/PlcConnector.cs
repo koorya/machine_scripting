@@ -51,7 +51,7 @@ namespace PlcConnector_module
 			{
 				plc_con__.Active = true;
 				int wait_time = 0;
-				while ( wait_time < 30)
+				while (wait_time < 30)
 				{ //три секунды ожидаем
 					wait_time++;
 					await Task.Delay(100);
