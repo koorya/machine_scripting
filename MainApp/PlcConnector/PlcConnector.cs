@@ -78,7 +78,16 @@ namespace PlcConnector_module
 				if (plc.IsConnected)
 				{
 					var var_names = plc.plc_var_list.Keys.ToArray();
-					Hashtable var_hash = plc.ReadVariableMultiple(var_names);
+					Hashtable var_hash;
+					try
+					{
+						var_hash = plc.ReadVariableMultiple(var_names);
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e.Data);
+						continue;
+					}
 					foreach (var variable in plc.plc_var_list)
 					{
 						// Console.WriteLine("variable for read: {0}", variable.Key);
