@@ -56,6 +56,8 @@ namespace PlcConnector_module
 					wait_time++;
 					await Task.Delay(100);
 					Console.WriteLine("wait {0}", wait_time);
+					if (plc_con__.IsConnected)
+						wait_time = 30;
 				}
 
 				if (plc_con__.IsConnected)
