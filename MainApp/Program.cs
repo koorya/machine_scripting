@@ -70,20 +70,22 @@ namespace MainApp
 
 
 
-
+			int time = 0;
 			while (working)
 			{
-				Thread.Sleep(5000);
-				Console.WriteLine("Hello main thread. For exit press [ESC]");
+				Thread.Sleep(100);
+				time += 100;
+				if (time == 5000)
+				{
+					time = 0;
+					Console.WriteLine("Hello main thread. For exit press [ESC]");
+				}
 				if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
 				{
 					cnn_service.KillService();
 					listener_list.ForEach(delegate (Listener listener) { listener.Stop(); });
 					working = false;
 				}
-				// Console.WriteLine(
-				// 	json_converter.JsonConverter.serialaze(PlcConnector.getPlcVars())
-				// 	);
 			}
 			cnn_service.WaitForExit();
 		}
