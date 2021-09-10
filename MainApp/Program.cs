@@ -21,6 +21,7 @@ namespace MainApp
 			List<Listener> listener_list = new List<Listener>();
 			listener_list.Add(new Listener("tcp://*:5554"));
 			listener_list.Add(new Listener("tcp://*:5553"));
+			listener_list.Add(new Listener("tcp://*:5552"));
 
 			foreach (var listener in listener_list)
 			{
@@ -53,16 +54,21 @@ namespace MainApp
 				listener.plcvar_recived += (m) =>
 					{
 						Console.WriteLine(m);
+						if (m.update)
+						{
+							foreach (var upd_var in m.arr)
+							{
+								PlcConnector.updateSinglePlcVariable(upd_var);
+							}
+						}
+					};
 
-						PlcConnector.updatePlcVariablesByArray(m.arr);
-
-						// foreach(PlcVar plc_var in PlcConnector.plc_vars)
-						// {
-						// 	foreach(PlcVar req_var in m.arr)
-						// 		if(plc_var.id == req_var.id)
-						// 			plc_var.value = req_var.value;
-						// }
-
+				listener.plcvar_recived += (m) =>
+					{
+						if (!m.update)
+						{
+							PlcConnector.readFromPlcByArray(m.arr);
+						}
 					};
 
 				listener.Start();

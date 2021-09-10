@@ -107,12 +107,60 @@ namespace PlcConnector_module
 			}
 		}
 
-		public static void updatePlcVariablesByArray(PlcVar[] var_arr)
+		public static void updateSinglePlcVariable(PlcVar upd_var)
 		{
-			foreach (var upd_var in var_arr)
+			foreach (var plc in plc_conn)
 			{
-				plcvariable plc_var_ref = plc_vars[upd_var.id].valueref as plcvariable;
-				plc_var_ref.Plc_value = upd_var.value;
+				if (plc.IsConnected) plc.WriteVar(upd_var.name, upd_var.value);
+			}
+		}
+
+
+		public static Hashtable[] readFromPlcsByArrayOfNames(string[] arr)
+		{
+			Console.WriteLine(JsonConvert.SerializeObject(arr));
+			Hashtable[] var_hash = new Hashtable[0];
+			foreach (var plc in plc_conn)
+			{
+				if (plc.IsConnected)
+				{
+					try
+					{
+						Hashtable currentplc_table = plc.ReadVariableMultiple(arr);
+						var_hash.Append(currentplc_table);
+						Console.WriteLine("reading success");
+						foreach (var v in arr)
+						{
+							var value = currentplc_table[v];
+							Console.WriteLine(v + ": " + JsonConvert.SerializeObject(value));
+						}
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e.Data);
+						Console.WriteLine("May be, invalid variable list to read");
+						continue;
+					}
+				}
+			}
+			return var_hash;
+		}
+		public static void readFromPlcByArray(PlcVar[] var_arr)
+		{
+			string[] var_names = var_arr.Select(v => v.name).ToArray();
+			Hashtable[] hashtables = readFromPlcsByArrayOfNames(var_names);
+			if (hashtables.Length > 1)
+			{
+				Console.WriteLine("multiple plcs contain that variable");
+			}
+			if (hashtables.Length > 0)
+			{
+				var var_hash = hashtables[0];
+				foreach (var v in var_arr)
+				{
+					v.value = var_hash[v.name];
+					v.type = getMyType(var_hash[v.name]?.GetType());
+				}
 			}
 		}
 
