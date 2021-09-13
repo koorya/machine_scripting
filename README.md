@@ -7,9 +7,15 @@
 ### ZMQ API
 Сервис предоставляет доступ через запросы ZeroMQ, описание ниже
 
-    здесь описание
+    ServiceTask:{command: "kill"|"get all plc vars"}
+    
+    PlcVarsArray:{
+        arr: [{name: string; value?: any}, ...];
+        update?: bool; //should it update in plc, or just read
+        }
 
 ### Запуск сервиса
 
-    здесь запуск
+    cd MainApp
+    dotnet run
 
