@@ -35,7 +35,7 @@ namespace PlcConnector_module
 		{
 			plc_conn = new List<ExtCompolet>();
 
-			string fs = File.ReadAllText("./MainApp/user.json");
+			string fs = File.ReadAllText("./user.json");
 
 			List<ExtComp_serial> _deser = JsonConvert.DeserializeObject<List<ExtComp_serial>>(fs); // десериализация промежуточных объектов, 
 

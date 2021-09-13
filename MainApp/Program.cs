@@ -15,9 +15,6 @@ namespace MainApp
 			await PlcConnector.connect(new System.ComponentModel.Container());
 			// return;
 
-			var cnn_service = new ServiceStarter();
-			cnn_service.StartService();
-
 			List<Listener> listener_list = new List<Listener>();
 			listener_list.Add(new Listener("tcp://*:5554"));
 			listener_list.Add(new Listener("tcp://*:5553"));
@@ -34,15 +31,9 @@ namespace MainApp
 						rec.command = "default info";
 						if (m.command == "kill")
 						{
-							cnn_service.KillService();
 							working = false;
 							listener.Stop();
 							rec.command = "ok, kill";
-						}
-						else if (m.command == "capture")
-						{
-							var proc_resp = cnn_service.ProcessResponse(m);
-							return proc_resp;
 						}
 						else if (m.command == "get all plc vars")
 						{
@@ -88,12 +79,10 @@ namespace MainApp
 				}
 				if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
 				{
-					cnn_service.KillService();
 					listener_list.ForEach(delegate (Listener listener) { listener.Stop(); });
 					working = false;
 				}
 			}
-			cnn_service.WaitForExit();
 		}
 	}
 }
