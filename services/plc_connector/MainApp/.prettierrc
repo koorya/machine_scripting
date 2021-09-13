@@ -1,0 +1,10 @@
+{
+  "overrides": [
+    {
+      "files": ["*.json", "*.jsonc", ".babelrc", ".prettierrc"],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
+}
