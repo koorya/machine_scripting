@@ -9,8 +9,8 @@ import { resolve } from "path";
 import * as express from "express";
 import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
-import { fsm_config, transitions } from "./md/state_machine_cfg";
-import { plc_fsm } from "./md/plc_fsm";
+import { md_fsm_config, transitions } from "./md/state_machine_cfg";
+import { plc_fsm as md_plc_fsm } from "./md/plc_fsm";
 import { FSMController } from "./fsm_controller";
 import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
 import e = require("express");
@@ -29,16 +29,15 @@ const default_algorithms_path = "config/default_algorithms.json";
 // доступ по web +
 // передача точек пути для сдвига рамы -
 
-const funct = plc_fsm.onAfterTransition;
-plc_fsm.onAfterTransition = function (lifecycle) {
+const funct = md_plc_fsm.fsm.onAfterTransition;
+md_plc_fsm.fsm.onAfterTransition = function (lifecycle) {
   updateImage();
   funct(lifecycle);
   // fsm_sc.goto(fsm.state);
   // fsm_sc.current_level = fsm.current_level;
 };
-const fsm = plc_fsm;
 
-const plc_controller = new FSMController(fsm);
+const plc_controller = new FSMController(md_plc_fsm.fsm);
 
 let rendered_image = null;
 async function updateImage() {
@@ -61,7 +60,7 @@ async function updateImage() {
     (gg) =>
       // gg.output("svg", "test01.svg")
       {
-        gg.getNode(fsm.state).set("color", "red");
+        gg.getNode(md_plc_fsm.fsm.state).set("color", "red");
         // gg.set("ratio", "1.0");
         gg.output("svg", (buff) => {
           rendered_image = buff.toString("base64");
@@ -73,7 +72,9 @@ async function updateImage() {
 }
 function updateHistory() {
   console.log(
-    JSON.stringify(fsm.history) + "; can: " + JSON.stringify(fsm.transitions())
+    JSON.stringify(md_plc_fsm.fsm.history) +
+      "; can: " +
+      JSON.stringify(md_plc_fsm.fsm.transitions())
   );
 }
 // const history_upd = setInterval(updateHistory, 150);
@@ -87,10 +88,10 @@ app.get("/", (request, response) => {
   response.send("hello world");
 });
 app.get("/state", (request, response) => {
-  response.send(fsm.state);
+  response.send(md_plc_fsm.fsm.state);
 });
 app.get("/commands", (request, response) => {
-  response.send(fsm.transitions());
+  response.send(md_plc_fsm.fsm.transitions());
 });
 
 app.post("/command", (req, res) => {
@@ -145,17 +146,17 @@ app.get("/controller_status", (request, response) => {
       step_index: plc_controller.scenario?.index,
     },
     machine_status: {
-      state: fsm.state,
-      cycle_step: fsm.cycle_state,
-      current_level: fsm.current_level,
-      status_message: fsm.status_message,
+      state: md_plc_fsm.fsm.state,
+      cycle_step: md_plc_fsm.fsm.cycle_state,
+      current_level: md_plc_fsm.fsm.current_level,
+      status_message: md_plc_fsm.fsm.status_message,
     },
   };
   response.send(JSON.stringify(controller_status));
 });
 // get_all_states
 app.get("/get_all_states", (request, response) => {
-  response.send(JSON.stringify(fsm.allStates()));
+  response.send(JSON.stringify(md_plc_fsm.fsm.allStates()));
 });
 let scenarios = [];
 try {
@@ -188,6 +189,7 @@ app.post("/is_scenario_valid", (req, res) => {
 
   getCompiledScenarioError(
     scenario_req.compiled_scenario,
+    md_plc_fsm,
     scenario_req.starting_condition
   ).then((err) => {
     console.log(err);
@@ -203,30 +205,28 @@ app.post("/save_scenario", (req, res) => {
   scenario.starting_condition.level = parseInt(
     scenario.starting_condition.level
   );
-  getCompiledScenarioError(compiled, scenario.starting_condition).then(
-    (err) => {
-      console.log(err);
-      if (err != null) res.send(err);
-      else {
-        const found = scenarios.find((el, index) => {
-          if (el.name === scenario.name) {
-            scenarios[index] = scenario;
-            return true;
-          }
-        });
-        if (found == undefined) scenarios.push(scenario);
-        fs.writeFile(
-          algorithms_path,
-          JSON.stringify(scenarios, null, 2),
-          () => {
-            console.log("File uptaded");
-          }
-        );
+  getCompiledScenarioError(
+    compiled,
+    md_plc_fsm,
+    scenario.starting_condition
+  ).then((err) => {
+    console.log(err);
+    if (err != null) res.send(err);
+    else {
+      const found = scenarios.find((el, index) => {
+        if (el.name === scenario.name) {
+          scenarios[index] = scenario;
+          return true;
+        }
+      });
+      if (found == undefined) scenarios.push(scenario);
+      fs.writeFile(algorithms_path, JSON.stringify(scenarios, null, 2), () => {
+        console.log("File uptaded");
+      });
 
-        res.send(scenarios);
-      }
+      res.send(scenarios);
     }
-  );
+  });
 });
 
 app.listen(port, () => console.log(`running on port ${port}`));

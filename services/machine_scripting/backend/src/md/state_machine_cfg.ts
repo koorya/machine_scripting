@@ -1,23 +1,22 @@
 import * as fs from "fs";
+import { iFsmConfig, iTransition } from "../fsm_types";
 
-interface FsmData {
+interface iMD_FsmData {
   current_level: number;
   top_level: number;
   cycle_state: number;
   status_message: string;
 }
-type FsmConfig = {
-  init: string;
-  transitions: any;
-  data: FsmData;
-  methods: { [key: string]: (arg0: any) => Promise<void> | void | boolean };
-};
 
-const transitions = JSON.parse(
+interface iMD_FsmConfig extends iFsmConfig {
+  data: iMD_FsmData;
+}
+
+const transitions: iTransition[] = JSON.parse(
   fs.readFileSync("src/md/transitions.json").toString()
 );
 
-const fsm_config: FsmConfig = {
+const fsm_config: iMD_FsmConfig = {
   init: "on_pins_support",
   transitions: transitions,
   data: {
@@ -209,4 +208,4 @@ const fsm_config: FsmConfig = {
   },
 };
 
-export { fsm_config, transitions, FsmData };
+export { fsm_config as md_fsm_config, transitions, iMD_FsmData, iMD_FsmConfig };

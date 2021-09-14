@@ -1,17 +1,18 @@
 import * as fs from "fs";
 
 import * as StateMachine from "javascript-state-machine";
-import { fsm_config, transitions } from "./md/state_machine_cfg";
+import { md_fsm_config, transitions } from "./md/state_machine_cfg";
 import * as MyTypes from "~shared/types/types";
+import { iPLCStateMachine, iStateMachine } from "./fsm_types";
 
-fsm_config.transitions.push({
+md_fsm_config.transitions.push({
   name: "goto",
   from: "*",
   to: function (s) {
     return s;
   },
 });
-var fsm = new StateMachine(fsm_config);
+var fsm = new StateMachine(md_fsm_config);
 
 function compileScenario(scenario: string) {
   function repeat(val: any, counts: number) {
@@ -35,12 +36,11 @@ function compileScenario(scenario: string) {
 
 async function getCompiledScenarioError(
   cmdlist: string[],
+  fsm_plc: iPLCStateMachine<iStateMachine>,
   init: MyTypes.ScenarioStartCondition = null
 ): Promise<MyTypes.ScenarioError> {
-  if (init != null) {
-    await fsm.goto(init.state);
-    fsm.current_level = init.level;
-  }
+  const fsm = fsm_plc.virt.fsm;
+  await fsm_plc.virt.init(init);
 
   const eCommands = cmdlist[Symbol.iterator]();
   let curr_cmd = eCommands.next();
@@ -64,7 +64,6 @@ async function getCompiledScenarioError(
         error: "not valid in this env",
         index: index,
         cmd: curr_cmd.value,
-        level: fsm.current_level,
       };
     }
     index += 1;
