@@ -14,7 +14,7 @@ type FsmConfig = {
 };
 
 const transitions = JSON.parse(
-  fs.readFileSync("src/transitions.json").toString()
+  fs.readFileSync("src/md/transitions.json").toString()
 );
 
 const fsm_config: FsmConfig = {

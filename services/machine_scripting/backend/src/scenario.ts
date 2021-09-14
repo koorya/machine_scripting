@@ -1,7 +1,7 @@
 import * as fs from "fs";
 
 import * as StateMachine from "javascript-state-machine";
-import { fsm_config, transitions } from "./state_machine_cfg";
+import { fsm_config, transitions } from "./md/state_machine_cfg";
 import * as MyTypes from "~shared/types/types";
 
 fsm_config.transitions.push({

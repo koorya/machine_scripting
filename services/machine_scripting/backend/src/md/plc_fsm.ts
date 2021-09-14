@@ -1,6 +1,6 @@
 import * as StateMachine from "javascript-state-machine";
 import { fsm_config, transitions, FsmData } from "./state_machine_cfg";
-import * as plc from "./zmq_network";
+import * as plc from "../zmq_network";
 
 type CycleExecutorProps = {
   cycle_name: string;
@@ -16,8 +16,10 @@ interface StateMachineType extends FsmData {
   history: string[];
   allStates: () => string[];
 }
-
+// расширенный объект, помимо всех этих полей должно
+// быть поле с тестовым вариантом машины состояний
 var fsm: StateMachineType = new StateMachine(fsm_config);
+
 // function switch controls cycle executing
 // in PLC.
 fsm.cycleExecutor = function (props: CycleExecutorProps) {
