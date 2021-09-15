@@ -93,21 +93,25 @@ const sendCommand = (cmd: MyTypes.Command) => {
 
 function El() {
   const cmds = useCmds();
-  return cmds.includes("step") ? (
-    <Spinner animation="border" />
-  ) : (
+  return (
     <>
-      {cmds.map((cmd) => (
-        <Button
-          className="mx-1"
-          disabled={cmd === "step"}
-          key={cmd}
-          onClick={() => sendCommand({ command: "execCommand", payload: cmd })}
-          size="sm"
-        >
-          {cmd}
-        </Button>
-      ))}
+      {cmds.map((cmd) =>
+        cmd === "step" ? (
+          <Spinner key={cmd} animation="border" />
+        ) : (
+          <Button
+            className="mx-1"
+            disabled={cmd === "step"}
+            key={cmd}
+            onClick={() =>
+              sendCommand({ command: "execCommand", payload: cmd })
+            }
+            size="sm"
+          >
+            {cmd}
+          </Button>
+        )
+      )}
     </>
   );
 }
