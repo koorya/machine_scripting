@@ -2,6 +2,7 @@ import * as fs from "fs";
 
 import * as MyTypes from "~shared/types/types";
 import { Machines } from "~shared/types/types";
+import { parseCommand } from "./fsm_controller";
 import { iPLCStateMachine, iStateMachine } from "./fsm_types";
 
 function compileScenario(scenario: string) {
@@ -37,27 +38,30 @@ async function getCompiledScenarioError(
   let index = 0;
   while (!curr_cmd.done) {
     if (fsm.can("step")) await fsm.step();
-    if (fsm.cannot(curr_cmd.value)) {
+    const parced_cmd = parseCommand(curr_cmd.value);
+    if (fsm.cannot(parced_cmd.name)) {
       // console.log(fsm.transitions());
       // console.log("not valid");
       return {
         error: "not valid in this state",
         index: index,
-        cmd: curr_cmd.value,
+        cmd: parced_cmd.name,
       };
     }
-    const is_possible = await fsm[curr_cmd.value]();
+    const is_possible = await (fsm[parced_cmd.name] as (
+      ...arg
+    ) => Promise<boolean>)(parced_cmd.props);
     if (!is_possible) {
       // console.log(fsm.transitions());
       // console.log("not valid in this env");
       return {
         error: "not valid in this env",
         index: index,
-        cmd: curr_cmd.value,
+        cmd: parced_cmd.name,
       };
     }
     index += 1;
-    console.log(curr_cmd.value);
+    console.log(parced_cmd.name);
     curr_cmd = eCommands.next();
   }
   console.log("commands reading finish");

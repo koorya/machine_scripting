@@ -1,6 +1,7 @@
 import * as StateMachine from "javascript-state-machine";
+import { resolveModuleName } from "typescript";
 import * as MyTypes from "~shared/types/types";
-import { Machines, MM_adress } from "~shared/types/types";
+import { ExtractByType, Machines, MM_address } from "~shared/types/types";
 
 export interface iTransition {
   name: string;
@@ -12,7 +13,7 @@ export interface iFsmConfig {
   init: string;
   transitions: iTransition[];
   data: unknown;
-  methods: { [key: string]: (arg0: any) => Promise<void> | void | boolean };
+  methods: unknown;
 }
 
 export interface iCycleExecutorProps {
@@ -46,16 +47,37 @@ export type iData = {
     }
   | {
       type: "MM";
-      current_address: MM_adress;
+      current_address: MM_address;
     }
 );
-export type iMethods =
-  | {
-      type: "MD";
-    }
-  | {
-      type: "MM";
-    };
+export type ExcludeTypeProp<T, U> = {
+ [Property in keyof T as (Property extends U ? never : Property)]: T[Property];
+  
+}
+type BaseMethods = {
+  [key: string]: ((...args: any) => Promise<boolean|void> | void | boolean) | string;
+  onAfterTransition: (...args: any)=>Promise<boolean|void> | void | boolean;
+  cycleExecutor: (props: {
+    cycle_name: string;
+    lifecycle: any;
+    resolve: () => void;
+    reject: () => void;
+  }) => void;
+};
+export type iMethods = BaseMethods &
+  (
+    | {
+        type: "MD";
+      }
+    | {
+        type: "MM";
+        onBeforeSetAddres: (
+          lifecycle: unknown,
+          address: MM_address
+        ) => Promise<boolean|void> | void | boolean;
+      }
+  );
+
 
 export type iPLCStateMachine<machine> = {
   type: machine;

@@ -10,6 +10,20 @@ async function slowPrint(msg) {
     }, 1000);
   });
 }
+export function parseCommand(
+  command: string
+): { name: string; props: unknown } {
+  const props_str = /((?<=\(){.*})(?=(\)$))/.exec(command)?.[0];
+  const parced = {
+    name: /^[a-z]([\da-zA-Z])*/.exec(command)?.[0],
+    props: props_str
+      ? JSON.parse(props_str, (key: string, value: any) =>
+          key === "" ? value : parseInt(value)
+        )
+      : (null as unknown),
+  };
+  return parced;
+}
 
 var FSMController: new <type extends Machines>(
   fms: iPLCStateMachine<type>
@@ -55,18 +69,27 @@ var FSMController: new <type extends Machines>(
     };
   },
   methods: {
-    execCommandAsync: async function (command: string) {
+    execCommandAsync: async function (
+      command: string | { name: string; props: unknown }
+    ) {
       const fsm = this.fsm as iPLCStateMachine<Machines>;
       console.log(`command: "${command}" execution start`);
+
+      let parsed: { name: string; props: unknown };
+      if (typeof command === "string") parsed = parseCommand(command);
+      else parsed = command;
+
       console.log(`fsm state: ${fsm.fsm.state}`);
-      if (fsm.fsm.cannot(command)) console.log("invalid cmd");
+      if (fsm.fsm.cannot(parsed.name)) console.log("invalid cmd");
       else {
-        const is_command_exec = await fsm.fsm[command]();
+        const is_command_exec = await (fsm.fsm[parsed.name] as (
+          ...arg
+        ) => Promise<boolean>)(parsed.props);
         if (fsm.fsm.can("step")) await fsm.fsm.step();
         if (!is_command_exec) console.log("command exec error");
       }
       // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
-      console.log(`command: "${command}" execution finish`);
+      console.log(`command: "${parsed.name}" execution finish`);
       return;
     },
     onExecCommand: function (lifecycle, command: string) {

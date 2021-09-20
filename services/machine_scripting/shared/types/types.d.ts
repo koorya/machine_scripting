@@ -4,11 +4,11 @@ type ExtractByType<A, machine> = A extends { type: machine } ? A : never;
 
 export type Machines = "MM" | "MD";
 
-export type MM_adress = { cassete: number; pos: number };
+export type MM_address = { cassete: number; pos: number };
 
 export type ScenarioStartCondition = { state: string } & (
   | { type: "MD"; level: number }
-  | { type: "MM"; address: MM_adress }
+  | { type: "MM"; address: MM_address }
 );
 
 export type MachineStatus = {
