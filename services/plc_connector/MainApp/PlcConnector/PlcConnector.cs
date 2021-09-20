@@ -127,7 +127,7 @@ namespace PlcConnector_module
 					try
 					{
 						Hashtable currentplc_table = plc.ReadVariableMultiple(arr);
-						var_hash.Append(currentplc_table);
+						var_hash = var_hash.Append(currentplc_table).ToArray();
 						Console.WriteLine("reading success");
 						foreach (var v in arr)
 						{
@@ -147,6 +147,7 @@ namespace PlcConnector_module
 		}
 		public static void readFromPlcByArray(PlcVar[] var_arr)
 		{
+
 			string[] var_names = var_arr.Select(v => v.name).ToArray();
 			Hashtable[] hashtables = readFromPlcsByArrayOfNames(var_names);
 			if (hashtables.Length > 1)
