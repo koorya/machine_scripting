@@ -83,8 +83,9 @@ var FSMController: new <type extends Machines>(
       if (fsm.fsm.cannot(parsed.name)) console.log("invalid cmd");
       else {
         const is_command_exec = await (fsm.fsm[parsed.name] as (
-          ...arg
+          ...arg: any
         ) => Promise<boolean>)(parsed.props);
+
         if (fsm.fsm.can("step")) await fsm.fsm.step();
         if (!is_command_exec) console.log("command exec error");
       }

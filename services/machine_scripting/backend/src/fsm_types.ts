@@ -12,7 +12,7 @@ export interface iTransition {
 export interface iFsmConfig {
   init: string;
   transitions: iTransition[];
-  data: unknown;
+  data: {is_test?: boolean};
   methods: unknown;
 }
 

@@ -70,7 +70,9 @@ var plc_fsm: iPLCStateMachine<"MM"> = {
           },
         },
       ],
+      data: { ...fsm_config.data, is_test: true },
     }),
+
     init: async (value: ExtractByType<ScenarioStartCondition, "MM">) => {
       console.log(`init exec: ${JSON.stringify(value, null, 2)}`);
       if (value != null) {
