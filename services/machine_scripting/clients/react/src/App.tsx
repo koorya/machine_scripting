@@ -122,12 +122,16 @@ function CurrentState({
 }) {
   return (
     <div>
-      {machine_status != undefined ? (
+      {machine_status !== undefined ? (
         <>
           state: {machine_status.state} <br />
           step: {machine_status.cycle_step}
           <br />
-          level: {machine_status.current_level}
+          {machine_status.type === "MD" ? `level: ${machine_status.level}` : ""}
+          {machine_status.type === "MM"
+            ? `cassete: ${machine_status.address.cassete} <br/>
+          pos: ${machine_status.address.pos}`
+            : ""}
           <br />
           message: {machine_status.status_message}
         </>
@@ -417,6 +421,7 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     {
       name: "scenario 1",
       starting_condition: {
+        type: "MD",
         level: 2,
         state: "on_pins_support",
       },
@@ -426,6 +431,7 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     {
       name: "scenario 2",
       starting_condition: {
+        type: "MD",
         level: 1,
         state: "on_pins_support",
       },
@@ -435,6 +441,7 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     {
       name: "scenario 3",
       starting_condition: {
+        type: "MD",
         level: 0,
         state: "on_pins_support",
       },
@@ -444,6 +451,7 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     {
       name: "scenario 4",
       starting_condition: {
+        type: "MD",
         level: 3,
         state: "on_pins_support",
       },

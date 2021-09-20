@@ -1,4 +1,7 @@
 import * as StateMachine from "javascript-state-machine";
+import * as MyTypes from "~shared/types/types";
+import { Machines, MM_adress } from "~shared/types/types";
+
 export interface iTransition {
   name: string;
   from: string;
@@ -22,6 +25,7 @@ export interface iStateMachine {
   cycleExecutor: (props: iCycleExecutorProps) => void;
   onAfterTransition: (lifecycle: any) => void;
   state: string;
+  init: string;
   transitions: () => string[];
   history: string[];
   allStates: () => string[];
@@ -31,10 +35,54 @@ export interface iStateMachine {
   step: () => Promise<boolean>;
 }
 
-export interface iPLCStateMachine<i_fsm> {
-  fsm: i_fsm;
-  virt: { fsm: i_fsm; init: (value: { state: string; level: number }) => void };
-}
+export type iData = {
+  init: string;
+  cycle_state: number;
+  status_message: string;
+} & (
+  | {
+      type: "MD";
+      level: number;
+    }
+  | {
+      type: "MM";
+      current_address: MM_adress;
+    }
+);
+export type iMethods =
+  | {
+      type: "MD";
+    }
+  | {
+      type: "MM";
+    };
+
+export type iPLCStateMachine<machine> = {
+  type: machine;
+  fsm: iStateMachine &
+    MyTypes.ExtractByType<iData, machine> &
+    MyTypes.ExtractByType<iMethods, machine>;
+  virt: {
+    fsm: iStateMachine &
+      MyTypes.ExtractByType<iData, machine> &
+      MyTypes.ExtractByType<iMethods, machine>;
+    init: (value: MyTypes.ScenarioStartCondition) => void;
+  };
+};
 export function new_StateMachine<i_config, i_fsm>(config: i_config): i_fsm {
   return new StateMachine(config) as i_fsm;
+}
+
+export interface iController extends iStateMachine {
+  execCommand: (c: string) => boolean | Promise<boolean>;
+  execScenario: (scenario: {
+    name: string;
+    commands: string[];
+  }) => Promise<boolean>;
+  scenario: {
+    name: string;
+    commands: string[];
+    index: number;
+  };
+  fsm: iPLCStateMachine<Machines>;
 }

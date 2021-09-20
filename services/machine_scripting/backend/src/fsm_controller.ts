@@ -1,4 +1,6 @@
 import * as StateMachine from "javascript-state-machine";
+import { iController, iPLCStateMachine, iStateMachine } from "./fsm_types";
+import { Machines } from "./types/types";
 
 async function slowPrint(msg) {
   return new Promise((resolve, reject) => {
@@ -9,7 +11,9 @@ async function slowPrint(msg) {
   });
 }
 
-var FSMController = StateMachine.factory({
+var FSMController: new <type extends Machines>(
+  fms: iPLCStateMachine<type>
+) => iController = StateMachine.factory({
   init: "available",
   transitions: [
     {
@@ -43,7 +47,7 @@ var FSMController = StateMachine.factory({
       to: "executing_scenario",
     },
   ],
-  data: function (fsm) {
+  data: function <type extends Machines>(fsm: iPLCStateMachine<type>) {
     return {
       fsm: fsm,
       should_stop: false,
@@ -52,12 +56,13 @@ var FSMController = StateMachine.factory({
   },
   methods: {
     execCommandAsync: async function (command: string) {
+      const fsm = this.fsm as iPLCStateMachine<Machines>;
       console.log(`command: "${command}" execution start`);
-      console.log(`fsm state: ${this.fsm.state}`);
-      if (this.fsm.cannot(command)) console.log("invalid cmd");
+      console.log(`fsm state: ${fsm.fsm.state}`);
+      if (fsm.fsm.cannot(command)) console.log("invalid cmd");
       else {
-        const is_command_exec = await this.fsm[command]();
-        if (this.fsm.can("step")) await this.fsm.step();
+        const is_command_exec = await fsm.fsm[command]();
+        if (fsm.fsm.can("step")) await fsm.fsm.step();
         if (!is_command_exec) console.log("command exec error");
       }
       // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
@@ -65,7 +70,8 @@ var FSMController = StateMachine.factory({
       return;
     },
     onExecCommand: function (lifecycle, command: string) {
-      if (this.fsm.cannot(command)) return false;
+      const fsm = this.fsm as iPLCStateMachine<Machines>;
+      if (fsm.fsm.cannot(command)) return false;
 
       console.log(this.execCommandAsync);
       this.execCommandAsync(command).then(() => {

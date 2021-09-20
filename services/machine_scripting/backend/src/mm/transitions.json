@@ -1,0 +1,7 @@
+[
+  { "name": "setAddres", "from": "standby", "to": "ready_to_mount" },
+  { "name": "mount", "from": "ready_to_mount", "to": "mounting_st1" },
+  { "name": "step", "from": "mounting_st1", "to": "cam_inspection" },
+  { "name": "camOk", "from": "cam_inspection", "to": "mounting_st2" },
+  { "name": "step", "from": "mounting_st2", "to": "standby" }
+]

@@ -1,18 +1,8 @@
 import * as fs from "fs";
 
-import * as StateMachine from "javascript-state-machine";
-import { md_fsm_config, transitions } from "./md/state_machine_cfg";
 import * as MyTypes from "~shared/types/types";
+import { Machines } from "~shared/types/types";
 import { iPLCStateMachine, iStateMachine } from "./fsm_types";
-
-md_fsm_config.transitions.push({
-  name: "goto",
-  from: "*",
-  to: function (s) {
-    return s;
-  },
-});
-var fsm = new StateMachine(md_fsm_config);
 
 function compileScenario(scenario: string) {
   function repeat(val: any, counts: number) {
@@ -36,7 +26,7 @@ function compileScenario(scenario: string) {
 
 async function getCompiledScenarioError(
   cmdlist: string[],
-  fsm_plc: iPLCStateMachine<iStateMachine>,
+  fsm_plc: iPLCStateMachine<Machines>,
   init: MyTypes.ScenarioStartCondition = null
 ): Promise<MyTypes.ScenarioError> {
   const fsm = fsm_plc.virt.fsm;
@@ -74,4 +64,4 @@ async function getCompiledScenarioError(
   return null;
 }
 
-export { fsm as fsm_sc, getCompiledScenarioError, compileScenario };
+export { getCompiledScenarioError, compileScenario };

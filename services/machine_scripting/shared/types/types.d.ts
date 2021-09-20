@@ -1,10 +1,21 @@
 export type Command = { command: string; payload?: any };
+
+type ExtractByType<A, machine> = A extends { type: machine } ? A : never;
+
+export type Machines = "MM" | "MD";
+
+export type MM_adress = { cassete: number; pos: number };
+
+export type ScenarioStartCondition = { state: string } & (
+  | { type: "MD"; level: number }
+  | { type: "MM"; address: MM_adress }
+);
+
 export type MachineStatus = {
-  state: string;
   cycle_step: number;
-  current_level: number;
   status_message: string;
-};
+} & ScenarioStartCondition;
+
 export type ScenarioStatus = {
   name: string;
   step_index: number;
@@ -12,10 +23,16 @@ export type ScenarioStatus = {
 export type ControllerStatus = {
   state: string;
   scenario_status?: ScenarioStatus;
-  machine_status: MachineStatus;
-};
-
-export type ScenarioStartCondition = { level: number; state: string };
+} & (
+  | {
+      type: "MD";
+      machine_status: ExtractByType<MachineStatus, "MD">;
+    }
+  | {
+      type: "MM";
+      machine_status: ExtractByType<MachineStatus, "MM">;
+    }
+);
 
 export type ScenarioError = {
   error: string;

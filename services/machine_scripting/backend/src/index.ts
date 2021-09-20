@@ -4,18 +4,19 @@ import * as StateMachineHistory from "javascript-state-machine/lib/history.js";
 
 import * as graphviz from "graphviz";
 import * as fs from "fs";
-import { resolve } from "path";
 
 import * as express from "express";
 import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
-import { md_fsm_config, transitions } from "./md/state_machine_cfg";
-import { plc_fsm as md_plc_fsm } from "./md/plc_fsm";
+
+import { plc_fsm, transitions } from "./mm/plc_fsm";
+
 import { FSMController } from "./fsm_controller";
-import { fsm_sc, getCompiledScenarioError, compileScenario } from "./scenario";
+import { getCompiledScenarioError, compileScenario } from "./scenario";
 import e = require("express");
 
 import * as MyTypes from "~shared/types/types";
+import { iPLCStateMachine } from "./fsm_types";
 
 const algorithms_path = "config/algorithms.json";
 const default_algorithms_path = "config/default_algorithms.json";
@@ -29,15 +30,15 @@ const default_algorithms_path = "config/default_algorithms.json";
 // доступ по web +
 // передача точек пути для сдвига рамы -
 
-const funct = md_plc_fsm.fsm.onAfterTransition;
-md_plc_fsm.fsm.onAfterTransition = function (lifecycle) {
+const funct = plc_fsm.fsm.onAfterTransition;
+plc_fsm.fsm.onAfterTransition = function (lifecycle) {
   updateImage();
   funct(lifecycle);
   // fsm_sc.goto(fsm.state);
   // fsm_sc.current_level = fsm.current_level;
 };
 
-const plc_controller = new FSMController(md_plc_fsm.fsm);
+const plc_controller = new FSMController(plc_fsm);
 
 let rendered_image = null;
 async function updateImage() {
@@ -51,7 +52,7 @@ async function updateImage() {
     }
   });
   var fsm_image = new StateMachine({
-    init: "on_pins_support",
+    init: plc_fsm.fsm.init,
     transitions: tran,
   });
 
@@ -60,7 +61,7 @@ async function updateImage() {
     (gg) =>
       // gg.output("svg", "test01.svg")
       {
-        gg.getNode(md_plc_fsm.fsm.state).set("color", "red");
+        gg.getNode(plc_fsm.fsm.state).set("color", "red");
         // gg.set("ratio", "1.0");
         gg.output("svg", (buff) => {
           rendered_image = buff.toString("base64");
@@ -68,13 +69,12 @@ async function updateImage() {
         console.log("rendered");
       }
   );
-  resolve();
 }
 function updateHistory() {
   console.log(
-    JSON.stringify(md_plc_fsm.fsm.history) +
+    JSON.stringify(plc_fsm.fsm.history) +
       "; can: " +
-      JSON.stringify(md_plc_fsm.fsm.transitions())
+      JSON.stringify(plc_fsm.fsm.transitions())
   );
 }
 // const history_upd = setInterval(updateHistory, 150);
@@ -88,10 +88,10 @@ app.get("/", (request, response) => {
   response.send("hello world");
 });
 app.get("/state", (request, response) => {
-  response.send(md_plc_fsm.fsm.state);
+  response.send(plc_controller.fsm.fsm.state);
 });
 app.get("/commands", (request, response) => {
-  response.send(md_plc_fsm.fsm.transitions());
+  response.send(plc_controller.fsm.fsm.transitions());
 });
 
 app.post("/command", (req, res) => {
@@ -139,24 +139,52 @@ app.get("/image", (req, res) => {
 });
 // cycle_state
 app.get("/controller_status", (request, response) => {
-  const controller_status: MyTypes.ControllerStatus = {
+  let controller_status: MyTypes.ControllerStatus = {
     state: plc_controller.state,
     scenario_status: {
       name: plc_controller.scenario?.name,
       step_index: plc_controller.scenario?.index,
     },
-    machine_status: {
-      state: md_plc_fsm.fsm.state,
-      cycle_step: md_plc_fsm.fsm.cycle_state,
-      current_level: md_plc_fsm.fsm.current_level,
-      status_message: md_plc_fsm.fsm.status_message,
-    },
+    type: undefined,
+    machine_status: undefined,
   };
-  response.send(JSON.stringify(controller_status));
+  if (plc_controller.fsm.type === "MD") {
+    const fsm = plc_controller.fsm as iPLCStateMachine<"MD">;
+    const machine_status: MyTypes.ExtractByType<MyTypes.MachineStatus, "MD"> = {
+      type: fsm.type,
+      state: fsm.fsm.state,
+      cycle_step: fsm.fsm.cycle_state,
+      status_message: fsm.fsm.status_message,
+      level: fsm.fsm.level,
+    };
+    controller_status = {
+      ...controller_status,
+      type: "MD",
+      machine_status: machine_status,
+    } as MyTypes.ExtractByType<MyTypes.ControllerStatus, "MD">;
+    response.send(JSON.stringify(controller_status));
+  } else if (plc_controller.fsm.type === "MM") {
+    const fsm = plc_controller.fsm as iPLCStateMachine<"MM">;
+    const machine_status: MyTypes.ExtractByType<MyTypes.MachineStatus, "MM"> = {
+      type: fsm.type,
+      state: fsm.fsm.state,
+      cycle_step: fsm.fsm.cycle_state,
+      address: fsm.fsm.current_address,
+      status_message: fsm.fsm.status_message,
+    };
+    controller_status = {
+      ...controller_status,
+      type: "MM",
+      machine_status: machine_status,
+    } as MyTypes.ExtractByType<MyTypes.ControllerStatus, "MM">;
+    response.send(JSON.stringify(controller_status));
+  } else {
+    response.send(JSON.stringify({ error: "invalid type of machine" }));
+  }
 });
 // get_all_states
 app.get("/get_all_states", (request, response) => {
-  response.send(JSON.stringify(md_plc_fsm.fsm.allStates()));
+  response.send(JSON.stringify(plc_controller.fsm.fsm.allStates()));
 });
 let scenarios = [];
 try {
@@ -182,14 +210,16 @@ app.post("/is_scenario_valid", (req, res) => {
   const scenario_req: MyTypes.ScenarioErrorRequest = {
     compiled_scenario: req.body.compiled_scenario,
     starting_condition: {
+      type: req.body.type,
       level: parseInt(req.body.starting_condition.level),
+      address: req.body.starting_condition.address,
       state: req.body.starting_condition.state,
     },
   };
 
   getCompiledScenarioError(
     scenario_req.compiled_scenario,
-    md_plc_fsm,
+    plc_controller.fsm,
     scenario_req.starting_condition
   ).then((err) => {
     console.log(err);
@@ -207,7 +237,7 @@ app.post("/save_scenario", (req, res) => {
   );
   getCompiledScenarioError(
     compiled,
-    md_plc_fsm,
+    plc_controller.fsm,
     scenario.starting_condition
   ).then((err) => {
     console.log(err);
