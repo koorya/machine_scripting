@@ -2,7 +2,88 @@ import * as zmq from "zeromq";
 
 const port = 5552;
 
-const vault = { status_message: "no mess" };
+const md_vault: { name: string; value: unknown }[] = [
+  { name: "status_message", value: "no mess" },
+];
+
+interface P_type {
+  Start: boolean;
+  Run: boolean;
+  Done: boolean;
+  Skip: boolean;
+  Reset: boolean;
+}
+function makeP(): P_type {
+  return {
+    Start: false,
+    Done: false,
+    Run: false,
+    Skip: false,
+    Reset: false,
+  };
+}
+function makePArr(n: number): P_type[] {
+  return [...Array(n)].map(() => makeP());
+}
+const mm_vault = {
+  P200: makePArr(10),
+  P300: makePArr(5),
+  P400: makePArr(8),
+  P500: makePArr(4),
+  P600: makePArr(4),
+  P700: makePArr(7),
+  P800: makePArr(9),
+};
+const mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
+
+function doMMLogic() {
+  for (var xxx in mm_vault) {
+    const pxxx = mm_vault[xxx] as P_type[];
+    if (pxxx[0].Start == true) {
+      pxxx[0].Start = false;
+      pxxx[0].Run = true;
+      pxxx[1].Start = true;
+    }
+    pxxx.forEach((p_step, index) => {
+      if (index == 0) return;
+
+      if (p_step.Run) {
+        p_step.Done = true;
+        console.log(`${xxx}[${index}] complete`);
+      }
+      if (p_step.Done && p_step.Run) {
+        p_step.Run = false;
+        if (index + 1 < pxxx.length) {
+          pxxx[index + 1].Start = true;
+        } else {
+          pxxx[0].Run = false;
+          pxxx[0].Done = true;
+          console.log(`${xxx} complete`);
+        }
+      }
+      if (p_step.Start) {
+        p_step.Start = false;
+        p_step.Run = true;
+      }
+    });
+    if (pxxx[0].Reset)
+      pxxx.forEach((p) => {
+        for (var prop in p) p[prop] = false;
+      });
+  }
+  if (mm_vault.P200[0].Start) {
+    mm_vault.P200[0].Start = false;
+    mm_vault.P200[0].Run = true;
+    mm_vault.P200[1].Start = true;
+  }
+  // console.log(mm_vault.P200);
+}
+
+function mm_run() {
+  doMMLogic();
+  setTimeout(mm_run, 200);
+}
+mm_run();
 
 function test(value: any, should_be: any) {
   return function (target) {
@@ -13,32 +94,38 @@ function test(value: any, should_be: any) {
 }
 
 function doFakePlcLogic() {
-  const start_reg = /^start_(\w+)_handle$/;
-  const state_reg = /(w+)_state$/;
+  function doMDLogic() {
+    const start_reg = /^start_(\w+)_handle$/;
+    const state_reg = /(w+)_state$/;
 
-  Object.keys(vault).forEach((element) => {
-    const name = start_reg.exec(element)?.[1];
-    if (name != null && vault[element]) {
-      Object.keys(vault).forEach((element) => {
-        if (RegExp(`${name}_state$`).exec(element)) {
-          vault[element] = 0;
-          const cycle_interval = setInterval(() => {
-            if (vault[element] < 20) {
-              vault[element] += 1;
-              vault["status_message"] = `Cycle ${name} in ${vault[element]}.`;
-            } else {
-              vault["status_message"] = `Cycle ${name} complete.`;
-              vault[element] = 99;
-              clearInterval(cycle_interval);
-            }
-            console.log(vault);
-          }, 200);
-        }
-      });
-      vault[element] = false;
-    }
-  });
-  console.log(vault);
+    md_vault.forEach((element_start) => {
+      const name = start_reg.exec(element_start.name)?.[1];
+      if (name != null && element_start.value) {
+        element_start.value = false;
+        const element_state = md_vault.find((element) =>
+          RegExp(`${name}_state$`).exec(element.name)
+        ) as { name: string; value: number };
+        if (element_state == undefined) return;
+        element_state.value = 0;
+        const cycle_interval = setInterval(() => {
+          if (element_state.value < 20) {
+            element_state.value += 1;
+            md_vault[
+              "status_message"
+            ] = `Cycle ${name} in ${element_state.value}.`;
+          } else {
+            md_vault["status_message"] = `Cycle ${name} complete.`;
+            element_state.value = 99;
+            clearInterval(cycle_interval);
+          }
+          console.log(element_state);
+        }, 200);
+      }
+    });
+  }
+
+  doMDLogic();
+  console.log(md_vault);
 }
 
 class SocketServer {
@@ -66,13 +153,26 @@ const srv_inst = new SocketServer(port, (mess) => {
   const rec_obj = JSON.parse(mess);
   if (!rec_obj.PlcVarsArray.update) {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
-      element["value"] = vault[element.name];
+      element["value"] = undefined;
+      const md_var = md_vault.find((value) => value.name == element.name);
+      if (md_var != undefined) element["value"] = md_var.value;
+      else {
+        const a = mm_var_regexp.exec(element.name);
+        if (a) element.value = mm_vault[a[1]][a[2]][a[3]];
+      }
     });
   } else {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
-      vault[element.name] = element["value"];
+      const md_var = md_vault.find((value) => value.name == element.name);
+      const a = mm_var_regexp.exec(element.name);
+      console.log(md_var);
+      console.log(a);
+      if (md_var != undefined) md_var.value = element["value"];
+      else if (a) {
+        mm_vault[a[1]][a[2]][a[3]] = element.value;
+      } else md_vault.push({ name: element.name, value: element["value"] });
     });
-    console.log(vault);
+    console.log(md_vault);
     doFakePlcLogic();
   }
 
