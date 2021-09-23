@@ -41,17 +41,22 @@ function doMMLogic() {
     const pxxx = mm_vault[xxx] as P_type[];
     if (pxxx[0].Start == true) {
       pxxx[0].Start = false;
-      pxxx[0].Run = true;
-      pxxx[1].Start = true;
+      if (pxxx[0].Skip) {
+        pxxx[0].Done = true;
+        console.log(`${xxx} skiped`);
+      } else {
+        pxxx[0].Run = true;
+        pxxx[1].Start = true;
+      }
     }
     pxxx.forEach((p_step, index) => {
       if (index == 0) return;
 
-      if (p_step.Run) {
-        p_step.Done = true;
-        console.log(`${xxx}[${index}] complete`);
-      }
-      if (p_step.Done && p_step.Run) {
+      if ((p_step.Done && p_step.Run) || (p_step.Start && p_step.Skip)) {
+        if (p_step.Skip) {
+          p_step.Done = true;
+          console.log(`${xxx}[${index}] skiped`);
+        }
         p_step.Run = false;
         if (index + 1 < pxxx.length) {
           pxxx[index + 1].Start = true;
@@ -63,7 +68,21 @@ function doMMLogic() {
       }
       if (p_step.Start) {
         p_step.Start = false;
-        p_step.Run = true;
+        if (!p_step.Skip) {
+          p_step.Run = true;
+          let t = 0;
+          const run = () => {
+            t += 10;
+            if (t < 100) {
+              setTimeout(run, 100);
+              console.log(`${xxx}[${index}] ${t}%`);
+            } else {
+              p_step.Done = true;
+              console.log(`${xxx}[${index}] complete`);
+            }
+          };
+          run();
+        }
       }
     });
     if (pxxx[0].Reset)
@@ -78,10 +97,13 @@ function doMMLogic() {
   }
   // console.log(mm_vault.P200);
 }
-
+mm_vault.P200[3].Skip = true;
+mm_vault.P200[5].Skip = true;
+mm_vault.P200[8].Skip = true;
+mm_vault.P200[9].Skip = true;
 function mm_run() {
   doMMLogic();
-  setTimeout(mm_run, 200);
+  setTimeout(mm_run, 50);
 }
 mm_run();
 
