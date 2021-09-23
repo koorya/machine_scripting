@@ -71,14 +71,15 @@ function doMMLogic() {
         if (!p_step.Skip) {
           p_step.Run = true;
           let t = 0;
+          const p_name = xxx.slice(0);
           const run = () => {
             t += 10;
             if (t < 100) {
               setTimeout(run, 100);
-              console.log(`${xxx}[${index}] ${t}%`);
+              console.log(`${p_name}[${index}] ${t}%`);
             } else {
               p_step.Done = true;
-              console.log(`${xxx}[${index}] complete`);
+              console.log(`${p_name}[${index}] complete`);
             }
           };
           run();
