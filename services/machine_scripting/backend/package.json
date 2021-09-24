@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "npx concurrently \"npm:server\" \"npm:client\"",
     "start_dev": "npx concurrently \"npm:fake_plc\" \"npm:server_nodemon\" \"npm:client\"",
-    "fake_plc": "npx ts-node ./src/fake_plc.ts",
+    "fake_plc": "npx nodemon --exec \"ts-node ./src/fake_plc.ts\"",
     "server_nodemon": "npx nodemon --exec \"ts-node ./src/index.ts\"",
     "server": "npx ts-node ./src/index.ts",
     "client": "npm --prefix ../clients/react start"
@@ -20,6 +20,7 @@
     "@types/zeromq": "^5.2.0",
     "concurrently": "^6.2.1",
     "cors": "^2.8.5",
+    "dialog": "^0.3.1",
     "express": "^4.17.1",
     "graphviz": "0.0.9",
     "javascript-state-machine": "^3.1.0",
