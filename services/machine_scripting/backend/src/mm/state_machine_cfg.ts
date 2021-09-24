@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { WatchDirectoryFlags } from "typescript";
 import { ExtractByType, MM_address } from "~shared/types/types";
 import {
   iFsmConfig,
@@ -12,6 +13,23 @@ import * as plc from "../zmq_network";
 const transitions: iTransition[] = JSON.parse(
   fs.readFileSync("src/mm/transitions.json").toString()
 );
+type P200_Conf = {
+  skip: number[];
+};
+
+async function executeProgram(name: string, config: { skip: number[] }) {
+  await plc.writeVarByName(`${name}[0].Reset`, true);
+  await plc.waitForPlcVar(`${name}[0].Reset`, false);
+
+  const plc_vars = {};
+  for (var step_number of config.skip) {
+    plc_vars[`${name}[${step_number}].Skip`] = true;
+  }
+  await plc.writeVar(plc_vars);
+
+  console.log(`!!! ${name} STARTED !!!`);
+  await plc.writeVarByName(`${name}[0].Start`, true);
+}
 
 const init: string = "standby";
 const fsm_config: iFsmConfig & {
@@ -69,46 +87,136 @@ const fsm_config: iFsmConfig & {
         setTimeout(mon, 100);
       });
     },
-    onBeforeMount: async function (lifecycle) {
+
+    onAfterP200Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
+      if (this.is_test) return true;
+      await executeProgram("P200", config);
+      return true;
+    },
+    onLeaveP200: async function (lifecycle) {
+      if (this.is_test) return true;
+      await plc.waitForPlcVar("P200[0].Done", true);
+      await plc.writeVar({ "P200[0].Reset": true });
+      return true;
+    },
+
+    onAfterP300Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
+      if (this.is_test) return true;
+      await executeProgram("P300", config);
+      return true;
+    },
+    onLeaveP300: async function (lifecycle) {
       if (this.is_test) return true;
 
-      console.log("!!! P200 STARTED !!!");
-      await plc.writeVar({
-        "P200[0].Start": true,
-      });
+      await plc.waitForPlcVar("P300[0].Done", true);
+      await plc.writeVar({ "P300[0].Reset": true });
       return true;
     },
-    onLeaveMountingSt1: async function () {
+
+    onAfterP400Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
       if (this.is_test) return true;
-      return new Promise((resolve, reject) => {
-        let mon: NodeJS.Timeout;
-        const run = async () => {
-          const plc_variables = await plc.readVarToObj([`P500[0].Done`]);
-          if (plc_variables[`P500[0].Done`] != true) mon = setTimeout(run, 200);
-          else resolve();
-        };
-        run();
-      });
-    },
-    onBeforeCamOk: async function () {
-      if (this.is_test) return true;
-      await plc.writeVar({
-        "P600[0].Start": true,
-      });
+      await executeProgram("P400", config);
       return true;
     },
-    onLeaveMountingSt2: async function () {
+    onLeaveP400: async function (lifecycle) {
       if (this.is_test) return true;
-      return new Promise((resolve, reject) => {
-        let mon: NodeJS.Timeout;
-        const run = async () => {
-          const plc_variables = await plc.readVarToObj([`P800[0].Done`]);
-          if (plc_variables[`P800[0].Done`] != true) mon = setTimeout(run, 200);
-          else resolve();
-        };
-        run();
-      });
+      await plc.waitForPlcVar("P400[0].Done", true);
+      await plc.writeVar({ "P400[0].Reset": true });
+      return true;
     },
+
+    onAfterP500Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
+      if (this.is_test) return true;
+      await executeProgram("P500", config);
+      return true;
+    },
+    onLeaveP500: async function (lifecycle) {
+      if (this.is_test) return true;
+      await plc.waitForPlcVar("P500[0].Done", true);
+      await plc.writeVar({ "P500[0].Reset": true });
+      return true;
+    },
+
+    onAfterP600Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
+      if (this.is_test) return true;
+      await executeProgram("P600", config);
+      return true;
+    },
+    onLeaveP600: async function (lifecycle) {
+      if (this.is_test) return true;
+
+      await plc.waitForPlcVar("P600[0].Done", true);
+      await plc.writeVar({ "P600[0].Reset": true });
+      return true;
+    },
+
+    onLeaveCamInspection: async function () {
+      if (this.is_test) return true;
+      var exec = require("child_process").exec;
+      async function execute(command) {
+        return new Promise((resolve, reject) => {
+          exec(command, function (error, stdout, stderr) {
+            resolve(stdout);
+          });
+        });
+      }
+      let ok = (await execute("node ./src/is_cam_ok.js")) as string;
+      console.log("executed process");
+      console.log(ok);
+      if (!/^Ok/.exec(ok)) {
+        console.log("Cam check failed");
+        return false;
+      }
+      return true;
+    },
+
+    onAfterP700Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
+      if (this.is_test) return true;
+      await executeProgram("P700", config);
+      return true;
+    },
+    onLeaveP700: async function (lifecycle) {
+      if (this.is_test) return true;
+
+      await plc.waitForPlcVar("P700[0].Done", true);
+      await plc.writeVar({ "P700[0].Reset": true });
+      return true;
+    },
+
+    onAfterP800Start: async function (
+      lifecycle,
+      config: P200_Conf = { skip: [] }
+    ) {
+      if (this.is_test) return true;
+      await executeProgram("P800", config);
+      return true;
+    },
+    onLeaveP800: async function (lifecycle) {
+      if (this.is_test) return true;
+
+      await plc.waitForPlcVar("P800[0].Done", true);
+      await plc.writeVar({ "P800[0].Reset": true });
+      return true;
+    },
+
     onAfterTransition: function (lifecycle) {
       return true;
     },

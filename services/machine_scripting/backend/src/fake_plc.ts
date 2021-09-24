@@ -26,11 +26,11 @@ function makePArr(n: number): P_type[] {
   return [...Array(n)].map(() => makeP());
 }
 const mm_vault = {
-  P200: makePArr(10),
+  P200: makePArr(7),
   P300: makePArr(5),
   P400: makePArr(8),
-  P500: makePArr(4),
-  P600: makePArr(4),
+  P500: makePArr(7),
+  P600: makePArr(7),
   P700: makePArr(7),
   P800: makePArr(9),
 };
@@ -86,10 +86,12 @@ function doMMLogic() {
         }
       }
     });
-    if (pxxx[0].Reset)
+    if (pxxx[0].Reset) {
+      console.log(`${xxx} Reset`);
       pxxx.forEach((p) => {
         for (var prop in p) p[prop] = false;
       });
+    }
   }
   if (mm_vault.P200[0].Start) {
     mm_vault.P200[0].Start = false;
@@ -98,10 +100,6 @@ function doMMLogic() {
   }
   // console.log(mm_vault.P200);
 }
-mm_vault.P200[3].Skip = true;
-mm_vault.P200[5].Skip = true;
-mm_vault.P200[8].Skip = true;
-mm_vault.P200[9].Skip = true;
 function mm_run() {
   doMMLogic();
   setTimeout(mm_run, 50);
@@ -188,8 +186,7 @@ const srv_inst = new SocketServer(port, (mess) => {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
       const md_var = md_vault.find((value) => value.name == element.name);
       const a = mm_var_regexp.exec(element.name);
-      console.log(md_var);
-      console.log(a);
+
       if (md_var != undefined) md_var.value = element["value"];
       else if (a) {
         mm_vault[a[1]][a[2]][a[3]] = element.value;

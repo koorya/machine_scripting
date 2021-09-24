@@ -25,6 +25,22 @@ async function readVarToObj(names: string[]): Promise<{ [key: string]: any }> {
   return plc_variables_obj;
 }
 
+async function waitForPlcVar(
+  name: string,
+  value: any,
+  t: number = 200
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let mon: NodeJS.Timeout;
+    const run = async () => {
+      const plc_variables = await readVarToObj([name]);
+      if (plc_variables[name] != value) mon = setTimeout(run, t);
+      else resolve();
+    };
+    run();
+  });
+}
+
 async function writeVar(vars: { [key: string]: any }) {
   await my_sock.send(
     JSON.stringify({
@@ -40,6 +56,11 @@ async function writeVar(vars: { [key: string]: any }) {
   var [msg] = await my_sock.receive();
   return JSON.parse(msg.toString()).PlcVarsArray.arr;
 }
+async function writeVarByName(name: string, value: any) {
+  const pv = {};
+  pv[name] = value;
+  await writeVar(pv);
+}
 
 // readVar(["flag1", "flag2"]).then((m) => {
 //   console.log(m);
@@ -52,4 +73,4 @@ async function writeVar(vars: { [key: string]: any }) {
 //   if (flag1 == true) clearInterval(waiter);
 // }, 100);
 
-export { readVar, writeVar, readVarToObj };
+export { readVar, writeVar, readVarToObj, waitForPlcVar, writeVarByName };

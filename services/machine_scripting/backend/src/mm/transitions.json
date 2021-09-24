@@ -1,8 +1,13 @@
 [
   { "name": "setAddres", "from": "standby", "to": "ready_to_mount" },
   { "name": "setAddres", "from": "ready_to_mount", "to": "ready_to_mount" },
-  { "name": "mount", "from": "ready_to_mount", "to": "mounting_st1" },
-  { "name": "step", "from": "mounting_st1", "to": "cam_inspection" },
-  { "name": "camOk", "from": "cam_inspection", "to": "mounting_st2" },
-  { "name": "step", "from": "mounting_st2", "to": "standby" }
+  { "name": "p200Start", "from": "ready_to_mount", "to": "p200" },
+  { "name": "p300Start", "from": "p200", "to": "p300" },
+  { "name": "p400Start", "from": "p300", "to": "p400" },
+  { "name": "p500Start", "from": "p400", "to": "p500" },
+  { "name": "p600Start", "from": "p500", "to": "p600" },
+  { "name": "p800Start", "from": "p700", "to": "p800" },
+  { "name": "step", "from": "p600", "to": "cam_inspection" },
+  { "name": "p700Start", "from": "cam_inspection", "to": "p700" },
+  { "name": "step", "from": "p800", "to": "standby" }
 ]
