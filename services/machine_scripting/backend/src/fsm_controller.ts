@@ -16,11 +16,7 @@ export function parseCommand(
   const props_str = /((?<=\(){.*})(?=(\)$))/.exec(command)?.[0];
   const parced = {
     name: /^[a-z]([\da-zA-Z])*/.exec(command)?.[0],
-    props: props_str
-      ? JSON.parse(props_str, (key: string, value: any) =>
-          key === "" ? value : parseInt(value)
-        )
-      : (null as unknown),
+    props: props_str ? JSON.parse(props_str) : (undefined as unknown),
   };
   return parced;
 }
