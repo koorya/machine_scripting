@@ -1,4 +1,12 @@
 <StructuredTextModel xmlns="http://schemas.datacontract.org/2004/07/Omron.Cxap.Modules.StructuredText.Core" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Text>;&#xD;
+// Цикл подъема верхней рамы на 1 ступень.&#xD;
+// Смысловое описание что происходит оформлено в виде&#xD;
+// status_message := 'initialization';&#xD;
+// таким образом помимо бесполезных при работе программмы &#xD;
+// комментариев получается информативный вывод состояния наружу.&#xD;
+&#xD;
+&#xD;
+&#xD;
 CASE up_frame_cycle_state OF&#xD;
 	0 : // Начальное положение домкрата&#xD;
 		if start_up_frame_cycle_handle = True then&#xD;
@@ -47,7 +55,6 @@ CASE up_frame_cycle_state OF&#xD;
 	6:;&#xD;
 	&#xD;
 	99 :; // Processing after normal end&#xD;
-	  //up_frame_cycle_state:=INT#0;&#xD;
 	98 :; // Processing after error end.&#xD;
 		//&#xD;
 END_CASE;</Text></StructuredTextModel>

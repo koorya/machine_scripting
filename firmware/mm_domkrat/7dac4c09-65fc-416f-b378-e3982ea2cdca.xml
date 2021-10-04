@@ -1,7 +1,11 @@
 <StructuredTextModel xmlns="http://schemas.datacontract.org/2004/07/Omron.Cxap.Modules.StructuredText.Core" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Text>;&#xD;
-;&#xD;
+//Пересчет показаний от датчиков давления. Показания в атм.&#xD;
+&#xD;
+//коэфициенты были получены экпериментально&#xD;
 BP1 := (BP1_raw - 184) * 0.815217;&#xD;
 BP2 := (BP2_raw - 184) * 0.815217;&#xD;
+&#xD;
+// верхнее значение 600 атм. дискретность токового входа 8000 ед&#xD;
 BP3 := INT_TO_LREAL(BP3_raw * 600) / 8000.0;&#xD;
 BP4 := INT_TO_LREAL(BP4_raw * 600) / 8000.0;&#xD;
 &#xD;

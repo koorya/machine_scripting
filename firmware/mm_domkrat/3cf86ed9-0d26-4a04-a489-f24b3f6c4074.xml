@@ -1,5 +1,8 @@
 <StructuredTextModel xmlns="http://schemas.datacontract.org/2004/07/Omron.Cxap.Modules.StructuredText.Core" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Text>;&#xD;
 ;&#xD;
+// Логика для защиты от частого сброса при сбоях ПЧ после перегрузки.&#xD;
+// Сброс частотника требовался на самом старте пусконалаки, когда были допущены&#xD;
+// ошибки внутри гидросистемы.&#xD;
 &#xD;
 case FC_reset_stage of&#xD;
 	0:&#xD;
