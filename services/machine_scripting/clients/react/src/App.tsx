@@ -13,6 +13,7 @@ import Alert from "react-bootstrap/Alert";
 import Accordion from "react-bootstrap/Accordion";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
+import { ButtonGroup, Dropdown, Nav, Tabs } from "react-bootstrap";
 
 function Jumbotron(props: any) {
   return (
@@ -279,6 +280,11 @@ function Scenario({
   };
   return (
     <Alert variant={error?.error ? "warning" : "light"}>
+      <Row>
+        <Col>
+          <h4>Scenario: {name}</h4>
+        </Col>
+      </Row>
       {mode === "edit" ? (
         <>
           <Row className="align-items-center">
@@ -344,48 +350,51 @@ function Scenario({
           </Row>
         </>
       ) : (
-        <>
-          <Button
-            className="mx-1"
-            onClick={() => {
-              sendCommand({
-                command: "execScenario",
-                payload: {
-                  name: name,
-                  commands: sc,
-                },
-              });
-            }}
-          >
-            Run
-          </Button>
-          <Button
-            className="mx-1"
-            onClick={() => {
-              sendCommand({ command: "pause" });
-            }}
-          >
-            Pause
-          </Button>
-          <Button
-            className="mx-1"
-            onClick={() => {
-              sendCommand({ command: "resume" });
-            }}
-          >
-            Resume
-          </Button>
-          <Button
-            className="mx-1"
-            onClick={() => {
-              sendCommand({ command: "stop" });
-            }}
-          >
-            Stop
-          </Button>
-        </>
+        <></>
       )}
       <Row>
+        {mode === "edit" ? (
+          ""
+        ) : (
+          <Col xs="2">
+            <div className="d-grid gap-1">
+              <Button
+                onClick={() => {
+                  sendCommand({
+                    command: "execScenario",
+                    payload: {
+                      name: name,
+                      commands: sc,
+                    },
+                  });
+                }}
+              >
+                Run
+              </Button>
+              <Button
+                onClick={() => {
+                  sendCommand({ command: "pause" });
+                }}
+              >
+                Pause
+              </Button>
+              <Button
+                onClick={() => {
+                  sendCommand({ command: "resume" });
+                }}
+              >
+                Resume
+              </Button>
+              <Button
+                onClick={() => {
+                  sendCommand({ command: "stop" });
+                }}
+              >
+                Stop
+              </Button>
+            </div>
+          </Col>
+        )}
         <Col>
           <Accordion defaultActiveKey="0" className="py-1">
             <Accordion.Item eventKey="0">
@@ -497,70 +506,85 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
         if (!res?.error) setScenarios(res);
       });
   };
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const radios = [
+    { name: "Use", value: 0 },
+    { name: "Edit", value: 1 },
+  ];
   return (
-    <Jumbotron>
-      <Tab.Container id="list-group-tabs-example">
-        <Row>
-          <Col>
-            <ListGroup>
+    <Tab.Container
+      id="list-group-tabs-example"
+      defaultActiveKey="create_new_scenario"
+    >
+      <Row>
+        <Col>
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              Select scenario
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="create_new_scenario">
+                Create new item
+              </Dropdown.Item>
+              <Dropdown.Divider />
               {scenarios.map((element) => (
-                <ListGroup.Item
+                <Dropdown.Item
                   key={element.name}
-                  action
-                  href={`#${element.name}`}
+                  // action
+                  eventKey={`${element.name}`}
                 >
                   {element?.name}
-                </ListGroup.Item>
+                </Dropdown.Item>
               ))}
-            </ListGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Accordion className="py-1">
-              <Accordion.Header>Create new scenario</Accordion.Header>
-              <Accordion.Body>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Col>
+        <Col>
+          <ButtonGroup>
+            {radios.map((radio, idx) => (
+              <ToggleButton
+                key={idx}
+                id={`radio-${idx}`}
+                type="radio"
+                variant="outline-success"
+                name="radio"
+                value={radio.value}
+                checked={radio.value ? editMode : !editMode}
+                onChange={(e) => setEditMode(radio.value ? true : false)}
+              >
+                {radio.name}
+              </ToggleButton>
+            ))}
+          </ButtonGroup>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <Tab.Content>
+            {scenarios.map((element) => (
+              <Tab.Pane key={element.name} eventKey={`${element.name}`}>
                 <Scenario
-                  value={def_scenario}
+                  key={`scenario_${element.name}`}
+                  value={element}
+                  current_index={
+                    status?.name === element.name ? status?.step_index : null
+                  }
                   saveCallback={handleSaveScenario}
+                  mode={editMode ? "edit" : "use"}
                 />
-              </Accordion.Body>
-            </Accordion>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <ToggleButton
-              id="toggle-check"
-              className="mb-2"
-              type="checkbox"
-              variant="outline-primary"
-              checked={editMode}
-              value="1"
-              onChange={(e) => setEditMode(e.currentTarget.checked)}
-            >
-              Edit mode
-            </ToggleButton>
-            <Tab.Content>
-              {scenarios.map((element) => (
-                <Tab.Pane key={element.name} eventKey={`#${element.name}`}>
-                  <Scenario
-                    key={`scenario_${element.name}`}
-                    value={element}
-                    current_index={
-                      status?.name === element.name ? status?.step_index : null
-                    }
-                    saveCallback={handleSaveScenario}
-                    mode={editMode ? "edit" : "use"}
-                  />
-                </Tab.Pane>
-              ))}
-            </Tab.Content>
-          </Col>
-        </Row>
-      </Tab.Container>
-    </Jumbotron>
+              </Tab.Pane>
+            ))}
+            <Tab.Pane eventKey={"create_new_scenario"}>
+              <Scenario
+                value={def_scenario}
+                saveCallback={handleSaveScenario}
+              />
+            </Tab.Pane>
+          </Tab.Content>
+        </Col>
+      </Row>
+    </Tab.Container>
   );
 }
 
@@ -574,9 +598,22 @@ function App() {
           <GraphImage />
         </Col>
         <Col xs={4}>
-          <Scenarios status={st?.scenario_status} />
           <Jumbotron>
-            <El />
+            <Tabs
+              defaultActiveKey="scenario"
+              id="graph-controll"
+              className="mb-3"
+            >
+              <Tab eventKey="commands" title="Direct control">
+                <El />
+              </Tab>
+              <Tab eventKey="scenario" title="By scenario">
+                <Scenarios status={st?.scenario_status} />
+              </Tab>
+            </Tabs>
+          </Jumbotron>
+          <Jumbotron>
+            <h4>Debug info</h4>
             <CurrentState machine_status={st?.machine_status} />
             <pre>{JSON.stringify(st, null, 2)}</pre>
           </Jumbotron>
