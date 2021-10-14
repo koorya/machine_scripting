@@ -1,6 +1,6 @@
 export type Command = { command: string; payload?: any };
 
-type ExtractByType<A, machine> = A extends { type: machine } ? A : never;
+type ExtractByType<A, type> = A extends { type: type } ? A : never;
 
 export type Machines = "MM" | "MD";
 
@@ -50,4 +50,61 @@ export type ScenarioDefenition = {
   name: string;
   starting_condition: ScenarioStartCondition;
   script: string;
+};
+
+export type RequestMatching =
+  | {
+      type: "commands";
+      response: string[];
+      method: "GET";
+    }
+  | {
+      type: "controller_status";
+      response: MyTypes.ControllerStatus | null;
+      method: "GET";
+    }
+  | {
+      type: "image";
+      response: string | null;
+      method: "GET";
+    }
+  | {
+      type: "command";
+      response: unknown;
+      request: unknown;
+      method: "POST";
+    }
+  | {
+      type: "get_all_states";
+      response: string[];
+      method: "GET";
+    }
+  | {
+      type: "compile_scenario";
+      response: string[];
+      request: unknown;
+      method: "POST";
+    }
+  | {
+      type: "is_scenario_valid";
+      response: ScenarioError | {};
+      request: unknown;
+      method: "POST";
+    }
+  | {
+      type: "scenarios";
+      response: ScenarioDefenition[];
+      method: "GET";
+    }
+  | {
+      type: "save_scenario";
+      response: ScenarioDefenition[];
+      request: ScenarioDefenition;
+      method: "POST";
+    };
+// адрес, порт, название запроса, формат ответа
+export type RequestDefenition = {
+  address: string;
+  port: number;
+  data: RequestMatching;
 };
