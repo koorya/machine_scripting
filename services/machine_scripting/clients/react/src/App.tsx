@@ -13,7 +13,7 @@ import Alert from "react-bootstrap/Alert";
 import Accordion from "react-bootstrap/Accordion";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
-import { ButtonGroup, Dropdown, Nav, Tabs } from "react-bootstrap";
+import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
 
 function Jumbotron(props: any) {
   return (
@@ -29,7 +29,6 @@ function Jumbotron(props: any) {
     </div>
   );
 }
-
 function useCmds() {
   const [cmds, setCmds] = useState<string[]>([]);
   useEffect(() => {
@@ -92,7 +91,7 @@ const sendCommand = (cmd: MyTypes.Command) => {
   }).then((res) => res.text().then((res) => console.log(res)));
 };
 
-function El() {
+function DirectControls() {
   const cmds = useCmds();
   return (
     <>
@@ -146,10 +145,7 @@ function CurrentState({
 function useAllStates() {
   const [allStates, setAllStates] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5001/get_all_states", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
+    fetch("http://localhost:5001/get_all_states")
       .then((res) => res.json())
       .then((res) => {
         setAllStates(res);
@@ -214,7 +210,7 @@ function useValidation(
         console.log("useValidation: fetch aborted");
       }
     }
-    if (scenario && scenario.length == 0) {
+    if (scenario && scenario.length === 0) {
       setError({ error: "scenario is empty", index: -1 });
     } else {
       fetchData(controller.signal);
@@ -229,7 +225,7 @@ function useValidation(
 type ScenarioProps = {
   value: any;
   mode?: string;
-  saveCallback: ({}: MyTypes.ScenarioDefenition) => void;
+  saveCallback: (saveprop: MyTypes.ScenarioDefenition) => void;
   current_index?: number | null;
 };
 
@@ -595,23 +591,40 @@ function App() {
     <Container fluid>
       <Row>
         <Col>
-          <GraphImage />
+          <Tabs id="page">
+            <Tab eventKey="mm" title="MM">
+              <Container fluid>
+                <Row>
+                  <Col>
+                    <GraphImage />
+                  </Col>
+                  <Col xs={4}>
+                    <Jumbotron>
+                      <Tabs
+                        defaultActiveKey="scenario"
+                        id="graph-controll"
+                        className="mb-3"
+                      >
+                        <Tab eventKey="commands" title="Direct control">
+                          <DirectControls />
+                        </Tab>
+                        <Tab eventKey="scenario" title="By scenario">
+                          <Scenarios status={st?.scenario_status} />
+                        </Tab>
+                      </Tabs>
+                    </Jumbotron>
+                  </Col>
+                </Row>
+              </Container>
+            </Tab>
+            <Tab eventKey="md" title="MD">
+              DOmkrat
+            </Tab>
+          </Tabs>
         </Col>
-        <Col xs={4}>
-          <Jumbotron>
-            <Tabs
-              defaultActiveKey="scenario"
-              id="graph-controll"
-              className="mb-3"
-            >
-              <Tab eventKey="commands" title="Direct control">
-                <El />
-              </Tab>
-              <Tab eventKey="scenario" title="By scenario">
-                <Scenarios status={st?.scenario_status} />
-              </Tab>
-            </Tabs>
-          </Jumbotron>
+      </Row>
+      <Row>
+        <Col>
           <Jumbotron>
             <h4>Debug info</h4>
             <CurrentState machine_status={st?.machine_status} />
