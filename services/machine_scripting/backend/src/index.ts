@@ -108,10 +108,10 @@ app.post("/command", (req, res) => {
         plc_controller.can("execCommand") &&
         plc_controller.execCommand(payload)
       )
-        res.send("valid cmd");
-      else res.send("invalid cmd");
+        res.send(JSON.stringify("valid cmd"));
+      else res.send(JSON.stringify("invalid cmd"));
     } catch {
-      res.send("error durind command executing");
+      res.send(JSON.stringify("error durind command executing"));
     }
   else if (cmd === "execScenario")
     try {
@@ -119,22 +119,22 @@ app.post("/command", (req, res) => {
         plc_controller.can("execScenario") &&
         plc_controller.execScenario(payload)
       )
-        res.send("valid cmd");
-      else res.send("invalid cmd");
+        res.send(JSON.stringify("valid cmd"));
+      else res.send(JSON.stringify("invalid cmd"));
     } catch {
-      res.send("error durind command executing");
+      res.send(JSON.stringify("error durind command executing"));
     }
   else if (plc_controller.can(cmd)) {
     plc_controller[cmd]();
-    res.send("exec simple command");
-  } else res.send("invalid req");
+    res.send(JSON.stringify("exec simple command"));
+  } else res.send(JSON.stringify("invalid req"));
 });
 app.get("/image", (req, res) => {
   if (rendered_image === null) {
-    updateImage().then(() => res.send(rendered_image));
+    updateImage().then(() => res.send(JSON.stringify(rendered_image)));
     console.log(rendered_image);
   } else {
-    res.send(rendered_image);
+    res.send(JSON.stringify(rendered_image));
   }
 });
 // cycle_state

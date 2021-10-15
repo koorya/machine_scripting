@@ -56,16 +56,19 @@ export type RequestMatching =
   | {
       type: "commands";
       response: string[];
+      request: unknown;
       method: "GET";
     }
   | {
       type: "controller_status";
-      response: MyTypes.ControllerStatus | null;
+      response: ControllerStatus | null;
+      request: unknown;
       method: "GET";
     }
   | {
       type: "image";
       response: string | null;
+      request: unknown;
       method: "GET";
     }
   | {
@@ -77,23 +80,25 @@ export type RequestMatching =
   | {
       type: "get_all_states";
       response: string[];
+      request: unknown;
       method: "GET";
     }
   | {
       type: "compile_scenario";
       response: string[];
-      request: unknown;
+      request: { script: string };
       method: "POST";
     }
   | {
       type: "is_scenario_valid";
-      response: ScenarioError | {};
-      request: unknown;
+      response: ScenarioError | null;
+      request: ScenarioErrorRequest;
       method: "POST";
     }
   | {
       type: "scenarios";
       response: ScenarioDefenition[];
+      request: unknown;
       method: "GET";
     }
   | {
@@ -102,9 +107,3 @@ export type RequestMatching =
       request: ScenarioDefenition;
       method: "POST";
     };
-// адрес, порт, название запроса, формат ответа
-export type RequestDefenition = {
-  address: string;
-  port: number;
-  data: RequestMatching;
-};

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -14,6 +14,9 @@ import Accordion from "react-bootstrap/Accordion";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
 import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
+import { API } from "./api";
+
+const mm_api = new API("http://localhost", 5001);
 
 function Jumbotron(props: any) {
   return (
@@ -33,11 +36,7 @@ function useCmds() {
   const [cmds, setCmds] = useState<string[]>([]);
   useEffect(() => {
     const cmds_upd = setInterval(() => {
-      fetch("http://localhost:5001/commands")
-        .then((res) => res.json())
-        .then((res) => {
-          setCmds(res);
-        });
+      mm_api.getByAPI_get("commands").then((value) => setCmds(value));
     }, 100);
     return () => {
       console.log("useCmds is unmounted");
@@ -50,11 +49,7 @@ function useCycState() {
   const [val, setVal] = useState<MyTypes.ControllerStatus | null>(null);
   useEffect(() => {
     const upd = setInterval(() => {
-      fetch("http://localhost:5001/controller_status")
-        .then((res) => res.json())
-        .then((res) => {
-          setVal(res);
-        });
+      mm_api.getByAPI_get("controller_status").then((value) => setVal(value));
     }, 100);
     return () => {
       console.log("useCmds is unmounted");
@@ -68,11 +63,7 @@ function GraphImage() {
   const [image, setImage] = useState<string | null>(null);
   useEffect(() => {
     const image_upd = setInterval(() => {
-      fetch("http://localhost:5001/image")
-        .then((res) => res.text())
-        .then((res: string) => {
-          setImage(res);
-        });
+      mm_api.getByAPI_get("image").then((value) => setImage(value));
     }, 100);
     return () => {
       console.log("useimage is unmounted");
@@ -84,11 +75,7 @@ function GraphImage() {
   );
 }
 const sendCommand = (cmd: MyTypes.Command) => {
-  fetch("http://localhost:5001/command", {
-    method: "POST",
-    body: JSON.stringify(cmd),
-    headers: { "Content-Type": "application/json" },
-  }).then((res) => res.text().then((res) => console.log(res)));
+  mm_api.getByAPI_post("command", cmd).then((res) => console.log(res));
 };
 
 function DirectControls() {
@@ -143,33 +130,26 @@ function CurrentState({
 }
 
 function useAllStates() {
-  const [allStates, setAllStates] = useState([]);
+  const [allStates, setAllStates] = useState<string[]>([]);
   useEffect(() => {
-    fetch("http://localhost:5001/get_all_states")
-      .then((res) => res.json())
-      .then((res) => {
-        setAllStates(res);
-      });
+    mm_api.getByAPI_get("get_all_states").then((value) => setAllStates(value));
     return () => {};
   }, []);
   return allStates;
 }
 
 function useCompile(script: string) {
-  const [compiled, setCompiled] = useState([]);
+  const [compiled, setCompiled] = useState<string[]>([]);
   useEffect(() => {
     const controller = new AbortController();
 
     async function fetchData(abortSignal: AbortSignal) {
       try {
-        const res = await fetch("http://localhost:5001/compile_scenario", {
-          method: "POST",
-          body: JSON.stringify({ script: script }),
-          headers: { "Content-Type": "application/json" },
-          signal: abortSignal,
-        });
-
-        const res_data = await res.json();
+        const res_data = await mm_api.getByAPI_post(
+          "compile_scenario",
+          { script: script },
+          abortSignal
+        );
         setCompiled(res_data);
       } catch {
         console.log("useCompile: fetch aborted");
@@ -197,14 +177,12 @@ function useValidation(
           compiled_scenario: scenario,
           starting_condition: condition,
         };
-        const res = await fetch("http://localhost:5001/is_scenario_valid", {
-          method: "POST",
-          body: JSON.stringify(scenario_req),
-          headers: { "Content-Type": "application/json" },
-          signal: abortSignal,
-        });
 
-        const res_data = await res.json();
+        const res_data = await mm_api.getByAPI_post(
+          "is_scenario_valid",
+          scenario_req,
+          abortSignal
+        );
         setError(res_data);
       } catch {
         console.log("useValidation: fetch aborted");
@@ -473,11 +451,7 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     script: "[]",
   };
   useEffect(() => {
-    fetch("http://localhost:5001/scenarios")
-      .then((res) => res.json())
-      .then((res) => {
-        setScenarios(res);
-      });
+    mm_api.getByAPI_get("scenarios").then((value) => setScenarios(value));
   }, []);
 
   const handleSaveScenario = (scenario: MyTypes.ScenarioDefenition) => {
@@ -491,16 +465,9 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     });
     if (element === undefined) scenarios_copy.push(scenario);
     setScenarios(scenarios_copy);
-
-    fetch("http://localhost:5001/save_scenario", {
-      method: "POST",
-      body: JSON.stringify(scenario),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (!res?.error) setScenarios(res);
-      });
+    mm_api.getByAPI_post("save_scenario", scenario).then((value) => {
+      setScenarios(value);
+    });
   };
   const [editMode, setEditMode] = useState(false);
   const radios = [
@@ -583,10 +550,8 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     </Tab.Container>
   );
 }
-
 function App() {
   const st = useCycState();
-
   return (
     <Container fluid>
       <Row>
