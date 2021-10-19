@@ -1,5 +1,3 @@
-export type Command = { command: string; payload?: any };
-
 type ExtractByType<A, type> = A extends { type: type } ? A : never;
 
 export type Machines = "MM" | "MD";
@@ -78,9 +76,28 @@ export type RequestMatching =
       method: "GET";
     }
   | {
-      type: "command";
-      response: unknown;
-      request: unknown;
+      type: "exec_graph_command";
+      response: { result: string };
+      request: {
+        command: string;
+      };
+      method: "POST";
+    }
+  | {
+      type: "exec_controller_command";
+      response: { result: string };
+      request: {
+        command: string;
+      };
+      method: "POST";
+    }
+  | {
+      type: "exec_scenario";
+      response: { result: string };
+      request: {
+        name: string;
+        commands: string[];
+      };
       method: "POST";
     }
   | {
@@ -91,13 +108,19 @@ export type RequestMatching =
     }
   | {
       type: "compile_scenario";
-      response: string[];
+      response: {
+        compiled: string[];
+        status: "ok" | "fail";
+      };
       request: { script: string };
       method: "POST";
     }
   | {
       type: "is_scenario_valid";
-      response: ScenarioError | null;
+      response: {
+        status: "ok" | "notok";
+        details: ScenarioError;
+      };
       request: ScenarioErrorRequest;
       method: "POST";
     }
@@ -109,7 +132,10 @@ export type RequestMatching =
     }
   | {
       type: "save_scenario";
-      response: ScenarioDefenition[];
+      response: {
+        status: "ok" | "fail";
+        scenarios: ScenarioDefenition[];
+      };
       request: ScenarioDefenition;
       method: "POST";
     };

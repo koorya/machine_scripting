@@ -74,9 +74,6 @@ function GraphImage() {
     <Image src={`data:image/svg+xml;base64,${image}`} alt="states" fluid />
   );
 }
-const sendCommand = (cmd: MyTypes.Command) => {
-  mm_api.getByAPI_post("command", cmd).then((res) => console.log(res));
-};
 
 function DirectControls() {
   const cmds = useCmds();
@@ -91,7 +88,9 @@ function DirectControls() {
             disabled={cmd === "step"}
             key={cmd}
             onClick={() =>
-              sendCommand({ command: "execCommand", payload: cmd })
+              mm_api
+                .getByAPI_post("exec_graph_command", { command: cmd })
+                .then((res) => console.log(res))
             }
             size="sm"
           >
@@ -150,7 +149,8 @@ function useCompile(script: string) {
           { script: script },
           abortSignal
         );
-        setCompiled(res_data);
+        setCompiled(res_data.compiled);
+        console.log(res_data.status);
       } catch {
         console.log("useCompile: fetch aborted");
       }
@@ -183,7 +183,8 @@ function useValidation(
           scenario_req,
           abortSignal
         );
-        setError(res_data);
+        console.log(`scenario validation ${res_data.status}`);
+        setError(res_data.details);
       } catch {
         console.log("useValidation: fetch aborted");
       }
@@ -334,12 +335,9 @@ function Scenario({
             <div className="d-grid gap-1">
               <Button
                 onClick={() => {
-                  sendCommand({
-                    command: "execScenario",
-                    payload: {
-                      name: name,
-                      commands: sc,
-                    },
+                  mm_api.getByAPI_post("exec_scenario", {
+                    name: name,
+                    commands: sc,
                   });
                 }}
               >
@@ -347,21 +345,27 @@ function Scenario({
               </Button>
               <Button
                 onClick={() => {
-                  sendCommand({ command: "pause" });
+                  mm_api.getByAPI_post("exec_controller_command", {
+                    command: "pause",
+                  });
                 }}
               >
                 Pause
               </Button>
               <Button
                 onClick={() => {
-                  sendCommand({ command: "resume" });
+                  mm_api.getByAPI_post("exec_controller_command", {
+                    command: "resume",
+                  });
                 }}
               >
                 Resume
               </Button>
               <Button
                 onClick={() => {
-                  sendCommand({ command: "stop" });
+                  mm_api.getByAPI_post("exec_controller_command", {
+                    command: "stop",
+                  });
                 }}
               >
                 Stop
@@ -466,7 +470,8 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     if (element === undefined) scenarios_copy.push(scenario);
     setScenarios(scenarios_copy);
     mm_api.getByAPI_post("save_scenario", scenario).then((value) => {
-      setScenarios(value);
+      setScenarios(value.scenarios);
+      console.log(`scenario validation on saving: ${value.status}`);
     });
   };
   const [editMode, setEditMode] = useState(false);

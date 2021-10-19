@@ -5,7 +5,7 @@ import { Machines } from "~shared/types/types";
 import { parseCommand } from "./fsm_controller";
 import { iPLCStateMachine, iStateMachine } from "./fsm_types";
 
-function compileScenario(scenario: string) {
+function compileScenario(scenario: string): string[] {
   function repeat(val: any, counts: number) {
     return [
       ...Array(counts)
@@ -13,16 +13,15 @@ function compileScenario(scenario: string) {
         .map((el) => val),
     ];
   }
-  let compiled = null;
   try {
-    compiled = Function(`return function(repeat){ return ` + scenario + `;}`)()(
-      repeat
-    );
+    const compiled = Function(
+      `return function(repeat){ return ` + scenario + `;}`
+    )()(repeat) as string[];
     return compiled;
   } catch {
     console.log("invalid script!");
+    throw new Error("invalid script!");
   }
-  return null;
 }
 
 async function getCompiledScenarioError(

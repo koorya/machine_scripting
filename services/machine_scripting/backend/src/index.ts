@@ -20,6 +20,7 @@ import { iPLCStateMachine } from "./fsm_types";
 import {
   IResponse,
   ReqTypes_get,
+  ReqTypes_post,
   RequestMatching,
   ScenarioDefenition,
 } from "~shared/types/types";
@@ -105,32 +106,54 @@ try {
   scenarios = JSON.parse(fs.readFileSync(default_algorithms_path).toString());
 }
 
-type EndPointResponse<T extends ReqTypes_get> = Extract<
-  RequestMatching,
-  { type: T }
->["response"];
-type EndPointFunction<T extends ReqTypes_get> = () => Promise<
+type EndPointResponse<T> = Extract<RequestMatching, { type: T }>["response"];
+type EndPointRequest<T> = Extract<RequestMatching, { type: T }>["request"];
+type EndPointFunctionGet<T extends ReqTypes_get> = () => Promise<
   EndPointResponse<T>
 >;
-type EndPointType<T extends ReqTypes_get> = {
-  name: T;
-  data: EndPointFunction<T>;
-};
-type EndPointCreator = <T extends ReqTypes_get>(
-  arg0: T,
-  arg1: EndPointFunction<T>
-) => EndPointType<T>;
+type EndPointFunctionPost<T extends ReqTypes_post> = (
+  arg0: EndPointRequest<T>
+) => Promise<EndPointResponse<T>>;
 
-const createEndPoint: EndPointCreator = (arg0, arg1) => {
+type EndPointTypeGet<T extends ReqTypes_get> = {
+  name: T;
+  data: EndPointFunctionGet<T>;
+};
+type EndPointTypePost<T extends ReqTypes_post> = {
+  name: T;
+  data: EndPointFunctionPost<T>;
+};
+type EndPointCreatorGet = <T extends ReqTypes_get>(
+  arg0: T,
+  arg1: EndPointFunctionGet<T>
+) => EndPointTypeGet<T>;
+
+type EndPointCreatorPost = <T extends ReqTypes_post>(
+  arg0: T,
+  arg1: EndPointFunctionPost<T>
+) => EndPointTypePost<T>;
+
+const createEndPointGet: EndPointCreatorGet = (arg0, arg1) => {
   return {
     name: arg0,
     data: arg1,
+    method: "GET",
   };
 };
 
-const end_points = [
-  createEndPoint("commands", async () => plc_controller.fsm.fsm.transitions()),
-  createEndPoint("controller_status", async () => {
+const createEndPointPost: EndPointCreatorPost = (arg0, arg1) => {
+  return {
+    name: arg0,
+    data: arg1,
+    method: "POST",
+  };
+};
+
+const end_points_get = [
+  createEndPointGet("commands", async () =>
+    plc_controller.fsm.fsm.transitions()
+  ),
+  createEndPointGet("controller_status", async () => {
     let controller_status: MyTypes.ControllerStatus = {
       state: plc_controller.state,
       scenario_status: {
@@ -180,22 +203,22 @@ const end_points = [
       throw new Error("Mathine type not valid");
     }
   }),
-  createEndPoint("image", async () => {
+  createEndPointGet("image", async () => {
     if (rendered_image === null) {
       await updateImage();
       console.log(rendered_image);
     }
     return rendered_image;
   }),
-  createEndPoint("get_all_states", async () =>
+  createEndPointGet("get_all_states", async () =>
     plc_controller.fsm.fsm.allStates()
   ),
-  createEndPoint("scenarios", async () => {
+  createEndPointGet("scenarios", async () => {
     return scenarios;
   }),
 ];
 
-end_points.forEach((end_point) => {
+end_points_get.forEach((end_point) => {
   app.get(`/${end_point.name}`, async (request, response, next) => {
     try {
       const data = await end_point.data();
@@ -206,100 +229,117 @@ end_points.forEach((end_point) => {
   });
 });
 
-app.post("/command", (req, res) => {
-  console.log(req.body);
-  console.log(
-    `cnt_state: ${plc_controller.state}; trs: ${plc_controller.transitions()}`
-  );
-  let cmd = req.body.command;
-  const payload = req.body.payload;
+const end_points_post = [
+  createEndPointPost("exec_graph_command", async (req) => {
+    console.log(req);
+    console.log(
+      `cnt_state: ${plc_controller.state}; trs: ${plc_controller.transitions()}`
+    );
 
-  if (cmd === "execCommand")
     try {
       if (
         plc_controller.can("execCommand") &&
-        plc_controller.execCommand(payload)
+        plc_controller.execCommand(req.command)
       )
-        res.send(JSON.stringify("valid cmd"));
-      else res.send(JSON.stringify("invalid cmd"));
+        return { result: "valid cmd" };
+      else return { result: "invalid cmd" };
     } catch {
-      res.send(JSON.stringify("error durind command executing"));
+      throw new Error("error durind command executing");
     }
-  else if (cmd === "execScenario")
+  }),
+
+  createEndPointPost("exec_scenario", async (req) => {
     try {
       if (
         plc_controller.can("execScenario") &&
-        plc_controller.execScenario(payload)
+        plc_controller.execScenario(req)
       )
-        res.send(JSON.stringify("valid cmd"));
-      else res.send(JSON.stringify("invalid cmd"));
+        return { result: "valid cmd" };
+      else return { result: "invalid cmd" };
     } catch {
-      res.send(JSON.stringify("error durind command executing"));
+      throw new Error("error durind command executing");
     }
-  else if (plc_controller.can(cmd)) {
-    plc_controller[cmd]();
-    res.send(JSON.stringify("exec simple command"));
-  } else res.send(JSON.stringify("invalid req"));
-});
+  }),
+  createEndPointPost("exec_controller_command", async (req) => {
+    try {
+      if (plc_controller.can(req.command)) {
+        plc_controller[req.command]();
+        return { result: "exec simple command" };
+      } else return { result: "invalid req" };
+    } catch {
+      throw new Error("error durind command executing");
+    }
+  }),
+  createEndPointPost("compile_scenario", async (req) => {
+    console.log(req);
+    try {
+      const compiled = compileScenario(req.script);
+      console.log(compiled);
+      return { compiled: compiled, status: "ok" };
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2));
+      return { compiled: [], status: "fail" };
+    }
+  }),
+  createEndPointPost("is_scenario_valid", async (req) => {
+    console.log(req);
+    try {
+      const err = await getCompiledScenarioError(
+        req.compiled_scenario,
+        plc_controller.fsm,
+        req.starting_condition
+      );
+      console.log(err);
+      if (err != null) return { status: "notok", details: err };
+      else return { status: "ok", details: null };
+    } catch {
+      console.log("is_scenario_valid: getCompiledScenarioError error");
+    }
+  }),
+  createEndPointPost("save_scenario", async (req) => {
+    const scenario = req;
+    console.log(scenario);
 
-app.post("/compile_scenario", (req, res) => {
-  console.log(req.body);
-  let script = req.body.script;
-  const compiled = compileScenario(script);
-  console.log(compiled);
-  if (compiled != null) res.send(compiled);
-  else res.send([]);
-});
-app.post("/is_scenario_valid", (req, res) => {
-  console.log(req.body);
-  const scenario_req: MyTypes.ScenarioErrorRequest = {
-    compiled_scenario: req.body.compiled_scenario,
-    starting_condition: {
-      type: req.body.type,
-      level: parseInt(req.body.starting_condition.level),
-      address: req.body.starting_condition.address,
-      state: req.body.starting_condition.state,
-    },
-  };
+    const compiled = compileScenario(scenario.script);
+    try {
+      const err = await getCompiledScenarioError(
+        compiled,
+        plc_controller.fsm,
+        scenario.starting_condition
+      );
+      console.log(err);
+      if (err != null) return { status: "fail", scenarios: scenarios };
+      else {
+        const found = scenarios.find((el, index) => {
+          if (el.name === scenario.name) {
+            scenarios[index] = scenario;
+            return true;
+          }
+        });
+        if (found == undefined) scenarios.push(scenario);
+        fs.writeFile(
+          algorithms_path,
+          JSON.stringify(scenarios, null, 2),
+          () => {
+            console.log("File uptaded");
+          }
+        );
 
-  getCompiledScenarioError(
-    scenario_req.compiled_scenario,
-    plc_controller.fsm,
-    scenario_req.starting_condition
-  ).then((err) => {
-    console.log(err);
-    if (err != null) res.send(err);
-    else res.send({});
-  });
-});
-app.post("/save_scenario", (req, res) => {
-  console.log(req.body);
-  const scenario = req.body;
-  console.log(scenario);
-  const compiled = compileScenario(scenario.script);
-  scenario.starting_condition.level = parseInt(
-    scenario.starting_condition.level
-  );
-  getCompiledScenarioError(
-    compiled,
-    plc_controller.fsm,
-    scenario.starting_condition
-  ).then((err) => {
-    console.log(err);
-    if (err != null) res.send(err);
-    else {
-      const found = scenarios.find((el, index) => {
-        if (el.name === scenario.name) {
-          scenarios[index] = scenario;
-          return true;
-        }
-      });
-      if (found == undefined) scenarios.push(scenario);
-      fs.writeFile(algorithms_path, JSON.stringify(scenarios, null, 2), () => {
-        console.log("File uptaded");
-      });
+        return { status: "ok", scenarios: scenarios };
+      }
+    } catch {
+      console.log("fail while save new scenario");
+    }
+  }),
+];
 
-      res.send(scenarios);
+end_points_post.forEach((end_point) => {
+  app.post(`/${end_point.name}`, async (request, response, next) => {
+    try {
+      const data = await end_point.data(request.body);
+      response.json(data);
+    } catch (error) {
+      return next(error);
     }
   });
 });
