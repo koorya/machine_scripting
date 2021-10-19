@@ -1,19 +1,4 @@
-import { ExtractByType, RequestMatching } from "./types";
-
-type ReqTypes_get<T = RequestMatching> = T extends { type: any; method: "GET" }
-  ? T["type"]
-  : never;
-type ReqTypes_post<T = RequestMatching> = T extends {
-  type: any;
-  method: "POST";
-}
-  ? T["type"]
-  : never;
-type IResponse<type> = ExtractByType<RequestMatching, type>["response"];
-type IRequest<type extends ReqTypes_post> = ExtractByType<
-  RequestMatching,
-  type
->["request"];
+import { IRequest, IResponse, ReqTypes_get, ReqTypes_post } from "./types";
 
 export class API {
   address: string;
@@ -54,6 +39,7 @@ export class API {
         resolve(await ret.json());
       } catch {
         console.log("POST catch");
+        reject();
       }
     });
   }

@@ -17,6 +17,12 @@ import e = require("express");
 
 import * as MyTypes from "~shared/types/types";
 import { iPLCStateMachine } from "./fsm_types";
+import {
+  IResponse,
+  ReqTypes_get,
+  RequestMatching,
+  ScenarioDefenition,
+} from "~shared/types/types";
 
 const algorithms_path = "config/algorithms.json";
 const default_algorithms_path = "config/default_algorithms.json";
@@ -90,8 +96,114 @@ app.get("/", (request, response) => {
 app.get("/state", (request, response) => {
   response.send(plc_controller.fsm.fsm.state);
 });
-app.get("/commands", (request, response) => {
-  response.send(plc_controller.fsm.fsm.transitions());
+
+let scenarios: ScenarioDefenition[] = [];
+try {
+  scenarios = JSON.parse(fs.readFileSync(algorithms_path).toString());
+} catch {
+  console.log("algorithms.json is empty");
+  scenarios = JSON.parse(fs.readFileSync(default_algorithms_path).toString());
+}
+
+type EndPointResponse<T extends ReqTypes_get> = Extract<
+  RequestMatching,
+  { type: T }
+>["response"];
+type EndPointFunction<T extends ReqTypes_get> = () => Promise<
+  EndPointResponse<T>
+>;
+type EndPointType<T extends ReqTypes_get> = {
+  name: T;
+  data: EndPointFunction<T>;
+};
+type EndPointCreator = <T extends ReqTypes_get>(
+  arg0: T,
+  arg1: EndPointFunction<T>
+) => EndPointType<T>;
+
+const createEndPoint: EndPointCreator = (arg0, arg1) => {
+  return {
+    name: arg0,
+    data: arg1,
+  };
+};
+
+const end_points = [
+  createEndPoint("commands", async () => plc_controller.fsm.fsm.transitions()),
+  createEndPoint("controller_status", async () => {
+    let controller_status: MyTypes.ControllerStatus = {
+      state: plc_controller.state,
+      scenario_status: {
+        name: plc_controller.scenario?.name,
+        step_index: plc_controller.scenario?.index,
+      },
+      type: undefined,
+      machine_status: undefined,
+    };
+    if (plc_controller.fsm.type === "MD") {
+      const fsm = plc_controller.fsm as iPLCStateMachine<"MD">;
+      const machine_status: MyTypes.ExtractByType<
+        MyTypes.MachineStatus,
+        "MD"
+      > = {
+        type: fsm.type,
+        state: fsm.fsm.state,
+        cycle_step: fsm.fsm.cycle_state,
+        status_message: fsm.fsm.status_message,
+        level: fsm.fsm.level,
+      };
+      controller_status = {
+        ...controller_status,
+        type: "MD",
+        machine_status: machine_status,
+      } as MyTypes.ExtractByType<MyTypes.ControllerStatus, "MD">;
+      return controller_status;
+    } else if (plc_controller.fsm.type === "MM") {
+      const fsm = plc_controller.fsm as iPLCStateMachine<"MM">;
+      const machine_status: MyTypes.ExtractByType<
+        MyTypes.MachineStatus,
+        "MM"
+      > = {
+        type: fsm.type,
+        state: fsm.fsm.state,
+        cycle_step: fsm.fsm.cycle_state,
+        address: fsm.fsm.current_address,
+        status_message: fsm.fsm.status_message,
+      };
+      controller_status = {
+        ...controller_status,
+        type: "MM",
+        machine_status: machine_status,
+      } as MyTypes.ExtractByType<MyTypes.ControllerStatus, "MM">;
+      return controller_status;
+    } else {
+      throw new Error("Mathine type not valid");
+    }
+  }),
+  createEndPoint("image", async () => {
+    if (rendered_image === null) {
+      await updateImage();
+      console.log(rendered_image);
+    }
+    return rendered_image;
+  }),
+  createEndPoint("get_all_states", async () =>
+    plc_controller.fsm.fsm.allStates()
+  ),
+  createEndPoint("scenarios", async () => {
+    return scenarios;
+  }),
+];
+
+end_points.forEach((end_point) => {
+  app.get(`/${end_point.name}`, async (request, response, next) => {
+    try {
+      const data = await end_point.data();
+      response.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
 });
 
 app.post("/command", (req, res) => {
@@ -129,74 +241,7 @@ app.post("/command", (req, res) => {
     res.send(JSON.stringify("exec simple command"));
   } else res.send(JSON.stringify("invalid req"));
 });
-app.get("/image", (req, res) => {
-  if (rendered_image === null) {
-    updateImage().then(() => res.send(JSON.stringify(rendered_image)));
-    console.log(rendered_image);
-  } else {
-    res.send(JSON.stringify(rendered_image));
-  }
-});
-// cycle_state
-app.get("/controller_status", (request, response) => {
-  let controller_status: MyTypes.ControllerStatus = {
-    state: plc_controller.state,
-    scenario_status: {
-      name: plc_controller.scenario?.name,
-      step_index: plc_controller.scenario?.index,
-    },
-    type: undefined,
-    machine_status: undefined,
-  };
-  if (plc_controller.fsm.type === "MD") {
-    const fsm = plc_controller.fsm as iPLCStateMachine<"MD">;
-    const machine_status: MyTypes.ExtractByType<MyTypes.MachineStatus, "MD"> = {
-      type: fsm.type,
-      state: fsm.fsm.state,
-      cycle_step: fsm.fsm.cycle_state,
-      status_message: fsm.fsm.status_message,
-      level: fsm.fsm.level,
-    };
-    controller_status = {
-      ...controller_status,
-      type: "MD",
-      machine_status: machine_status,
-    } as MyTypes.ExtractByType<MyTypes.ControllerStatus, "MD">;
-    response.send(JSON.stringify(controller_status));
-  } else if (plc_controller.fsm.type === "MM") {
-    const fsm = plc_controller.fsm as iPLCStateMachine<"MM">;
-    const machine_status: MyTypes.ExtractByType<MyTypes.MachineStatus, "MM"> = {
-      type: fsm.type,
-      state: fsm.fsm.state,
-      cycle_step: fsm.fsm.cycle_state,
-      address: fsm.fsm.current_address,
-      status_message: fsm.fsm.status_message,
-    };
-    controller_status = {
-      ...controller_status,
-      type: "MM",
-      machine_status: machine_status,
-    } as MyTypes.ExtractByType<MyTypes.ControllerStatus, "MM">;
-    response.send(JSON.stringify(controller_status));
-  } else {
-    response.send(JSON.stringify({ error: "invalid type of machine" }));
-  }
-});
-// get_all_states
-app.get("/get_all_states", (request, response) => {
-  response.send(JSON.stringify(plc_controller.fsm.fsm.allStates()));
-});
-let scenarios = [];
-try {
-  scenarios = JSON.parse(fs.readFileSync(algorithms_path).toString());
-} catch {
-  console.log("algorithms.json is empty");
-  scenarios = JSON.parse(fs.readFileSync(default_algorithms_path).toString());
-}
 
-app.get("/scenarios", (request, response) => {
-  response.send(JSON.stringify(scenarios));
-});
 app.post("/compile_scenario", (req, res) => {
   console.log(req.body);
   let script = req.body.script;

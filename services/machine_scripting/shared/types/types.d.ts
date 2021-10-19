@@ -54,6 +54,12 @@ export type ScenarioDefenition = {
 
 export type RequestMatching =
   | {
+      type: "test";
+      response: string[];
+      request: unknown;
+      method: "GET";
+    }
+  | {
       type: "commands";
       response: string[];
       request: unknown;
@@ -107,3 +113,18 @@ export type RequestMatching =
       request: ScenarioDefenition;
       method: "POST";
     };
+
+type ReqTypes_get<T = RequestMatching> = T extends { type: any; method: "GET" }
+  ? T["type"]
+  : never;
+type ReqTypes_post<T = RequestMatching> = T extends {
+  type: any;
+  method: "POST";
+}
+  ? T["type"]
+  : never;
+type IResponse<type> = ExtractByType<RequestMatching, type>["response"];
+type IRequest<type extends ReqTypes_post> = ExtractByType<
+  RequestMatching,
+  type
+>["request"];
