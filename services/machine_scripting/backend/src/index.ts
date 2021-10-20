@@ -4,12 +4,14 @@ import * as StateMachineHistory from "javascript-state-machine/lib/history.js";
 
 import * as graphviz from "graphviz";
 import * as fs from "fs";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
 import * as express from "express";
 import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
 
-import { plc_fsm, transitions } from "./mm/plc_fsm";
+import { createPlcFsm, transitions } from "./mm/plc_fsm";
 
 import { FSMController } from "./fsm_controller";
 import { getCompiledScenarioError, compileScenario } from "./scenario";
@@ -36,6 +38,15 @@ const default_algorithms_path = "config/default_algorithms.json";
 // контроль выполнения циклов, отображение состояния внутри цикла +- (непонятный сценарий работы при ошибках в контроллере)
 // доступ по web +
 // передача точек пути для сдвига рамы -
+
+const argv = yargs(hideBin(process.argv)).argv;
+
+const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
+const ui_port = argv["ui_port"] ? argv["ui_port"] : 5001;
+console.log(`zmq_port: ${zmq_port}`);
+console.log(`ui_port: ${ui_port}`);
+
+const plc_fsm = createPlcFsm(zmq_port);
 
 const funct = plc_fsm.fsm.onAfterTransition;
 plc_fsm.fsm.onAfterTransition = function (lifecycle) {
@@ -87,7 +98,6 @@ function updateHistory() {
 // const history_upd = setInterval(updateHistory, 150);
 
 const app = express();
-const port = 5001;
 app.use(express.json());
 app.use(cors());
 
@@ -352,4 +362,4 @@ end_points_post.forEach((end_point) => {
   });
 });
 
-app.listen(port, () => console.log(`running on port ${port}`));
+app.listen(ui_port, () => console.log(`running on port ${ui_port}`));

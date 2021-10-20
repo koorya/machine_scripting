@@ -31,21 +31,23 @@ namespace PlcConnector_module
 		}
 
 		static List<ExtCompolet> plc_conn; // список объектов для связи с плк через CIP
-		static public async Task connect(System.ComponentModel.IContainer cont)
+		static public async Task connect(System.ComponentModel.IContainer cont, int port, string ip)
 		{
 			plc_conn = new List<ExtCompolet>();
 
-			string fs = File.ReadAllText("./user.json");
+			// string fs = File.ReadAllText("./user.json");
 
-			List<ExtComp_serial> _deser = JsonConvert.DeserializeObject<List<ExtComp_serial>>(fs); // десериализация промежуточных объектов, 
+			// List<ExtComp_serial> _deser = JsonConvert.DeserializeObject<List<ExtComp_serial>>(fs); // десериализация промежуточных объектов, 
 
 			// по каждому из прочитанных промежуточных объектов создаем нормальный объект для связи с плк
-			foreach (ExtComp_serial deser in _deser)
-			{
-				ExtCompolet plc = new ExtCompolet(cont, deser);
-				// добавляем этот объект в список объектов для связи с плк
-				plc_conn.Add(plc);
-			}
+			// foreach (ExtComp_serial deser in _deser)
+			// {
+			// 	ExtCompolet plc = new ExtCompolet(cont, deser);
+			// 	// добавляем этот объект в список объектов для связи с плк
+			// 	plc_conn.Add(plc);
+			// }
+
+			plc_conn.Add(new ExtCompolet(cont, port, ip));
 
 			foreach (var plc_con__ in plc_conn)
 			{

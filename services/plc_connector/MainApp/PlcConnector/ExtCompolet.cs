@@ -26,6 +26,18 @@ namespace PlcConnector_module
 		{
 			plc_var_list = new Dictionary<string, plcvariable>();
 		}
+		public ExtCompolet(System.ComponentModel.IContainer cont, int port, string ip) : base(cont)
+		{
+			plc_var_list = new Dictionary<string, plcvariable>();
+			this.Active = false;
+			this.ConnectionType = OMRON.Compolet.CIPCompolet64.ConnectionType.UCMM;
+			this.LocalPort = port;
+			this.PeerAddress = ip;//"192.168.250.1";
+			this.ReceiveTimeLimit = ((long)(750));
+			this.RoutePath = "2%172.16.201.14\\1%0";//"2%192.168.250.1\\1%0"; // в нашем контексте не используется
+			this.UseRoutePath = false;
+			this.plc_name = "defaul name";
+		}
 		// Конструкотр, который принимает объект с упакованными в него полями (ip адрес, имя, список переменных и т.д.)
 		public ExtCompolet(System.ComponentModel.IContainer cont, ExtComp_serial deser) : base(cont)
 		{

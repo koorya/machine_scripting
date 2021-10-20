@@ -6,8 +6,10 @@
   "scripts": {
     "build": "tsc",
     "start": "npx concurrently \"npm:server\" \"npm:client\"",
-    "start_dev": "npx concurrently \"npm:fake_plc\" \"npm:server_nodemon\" \"npm:client\"",
-    "fake_plc": "npx nodemon --exec \"ts-node ./src/fake_plc.ts\"",
+    "start_dev": "npx concurrently \"npm:fake_plc_nodemon\" \"npm:server_nodemon\" \"npm:client\"",
+    "fake_plc_nodemon": "npx nodemon --exec \"ts-node ./src/fake_plc.ts\"",
+    "fake_plc": "npx ts-node ./src/fake_plc.ts",
+    "startup": "npx ts-node ./src/startup.ts",
     "server_nodemon": "npx nodemon --exec \"ts-node ./src/index.ts\"",
     "server": "npx ts-node ./src/index.ts",
     "client": "npm --prefix ../clients/react start"
@@ -15,8 +17,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/concurrently": "^6.3.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/yargs": "^17.0.4",
     "@types/zeromq": "^5.2.0",
     "concurrently": "^6.2.1",
     "cors": "^2.8.5",
@@ -27,6 +31,7 @@
     "nodemon": "^2.0.12",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5",
+    "yargs": "^17.2.1",
     "zeromq": "^6.0.0-beta.6"
   },
   "devDependencies": {

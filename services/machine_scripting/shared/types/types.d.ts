@@ -58,6 +58,12 @@ export type RequestMatching =
       method: "GET";
     }
   | {
+      type: "list_machines_ports";
+      response: number[];
+      request: unknown;
+      method: "GET";
+    }
+  | {
       type: "test";
       response: string[];
       request: unknown;

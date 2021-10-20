@@ -627,19 +627,21 @@ function App() {
     { name: string; type: Machines; api: API }[]
   >([]);
   useEffect(() => {
-    const machines_ports: number[] = [5001, 5001];
-    const machines = Promise.all(
-      machines_ports.map(async (p, id) => {
-        const api = new API("http://localhost", p);
-        const machine_type = await api.getByAPI_get("machine_type");
-        return {
-          name: machine_type + id,
-          type: machine_type,
-          api: api,
-        };
-      })
-    );
-    machines.then((value) => setMachineType(value));
+    const startup_api = new API("http://localhost", 5000);
+    startup_api.getByAPI_get("list_machines_ports").then((machines_ports) => {
+      const machines = Promise.all(
+        machines_ports.map(async (p, id) => {
+          const api = new API("http://localhost", p);
+          const machine_type = await api.getByAPI_get("machine_type");
+          return {
+            name: machine_type + id,
+            type: machine_type,
+            api: api,
+          };
+        })
+      );
+      machines.then((value) => setMachineType(value));
+    });
   }, []);
   return (
     <Container fluid>

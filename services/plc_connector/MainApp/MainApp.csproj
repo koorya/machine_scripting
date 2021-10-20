@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NDesk.Options" Version="0.2.1" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="OpenCvSharp3-AnyCPU" Version="4.0.0.20181129" />
     

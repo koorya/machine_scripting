@@ -1,6 +1,10 @@
 import * as zmq from "zeromq";
-
-const port = 5552;
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+const argv = yargs(hideBin(process.argv)).argv;
+console.log(argv);
+const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
+console.log(`zmq_port: ${zmq_port}`);
 
 const md_vault: { name: string; value: unknown }[] = [
   { name: "status_message", value: "no mess" },
@@ -170,7 +174,7 @@ class SocketServer {
   }
 }
 
-const srv_inst = new SocketServer(port, (mess) => {
+const srv_inst = new SocketServer(zmq_port, (mess) => {
   const rec_obj = JSON.parse(mess);
   if (!rec_obj.PlcVarsArray.update) {
     rec_obj.PlcVarsArray.arr.forEach((element) => {

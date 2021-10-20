@@ -2,6 +2,7 @@ import * as StateMachine from "javascript-state-machine";
 import { resolveModuleName } from "typescript";
 import * as MyTypes from "~shared/types/types";
 import { ExtractByType, Machines, MM_address } from "~shared/types/types";
+import { IPlcConnector } from "./zmq_network";
 
 export interface iTransition {
   name: string;
@@ -12,13 +13,14 @@ export interface iTransition {
 export interface iFsmConfig {
   init: string;
   transitions: iTransition[];
-  data: {is_test?: boolean};
+  data: {is_test: boolean};
   methods: unknown;
 }
 
 export interface iCycleExecutorProps {
   cycle_name: string;
   lifecycle: any;
+  plc_connector: IPlcConnector;
   resolve: () => void;
   reject: () => void;
 }
@@ -40,6 +42,7 @@ export type iData = {
   init: string;
   cycle_state: number;
   status_message: string;
+  plc: IPlcConnector;
 } & (
   | {
       type: "MD";
@@ -55,7 +58,7 @@ export type ExcludeTypeProp<T, U> = {
   
 }
 type BaseMethods = {
-  [key: string]: ((...args: any) => Promise<boolean|void> | void | boolean) | string;
+  // [key: string]: ((...args: any) => Promise<boolean|void> | void | boolean) | string;
   onAfterTransition: (...args: any)=>Promise<boolean|void> | void | boolean;
   cycleExecutor: (props: {
     cycle_name: string;
@@ -75,6 +78,7 @@ export type iMethods = BaseMethods &
           lifecycle: unknown,
           address: MM_address
         ) => Promise<boolean|void> | void | boolean;
+        isAddressValid: (adress: MM_address)=> boolean;
       }
   );
 
