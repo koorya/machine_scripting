@@ -190,7 +190,6 @@ const end_points_get = [
         type: fsm.type,
         state: fsm.fsm.state,
         cycle_step: fsm.fsm.cycle_state,
-        address: fsm.fsm.current_address,
         status_message: fsm.fsm.status_message,
       };
       controller_status = {
@@ -215,6 +214,15 @@ const end_points_get = [
   ),
   createEndPointGet("scenarios", async () => {
     return scenarios;
+  }),
+  createEndPointGet("machine_type", async () => {
+    return plc_controller.fsm.type;
+  }),
+  createEndPointGet("scenario_status", async () => {
+    return {
+      step_index: plc_controller.scenario?.index,
+      name: plc_controller.scenario?.name,
+    };
   }),
 ];
 

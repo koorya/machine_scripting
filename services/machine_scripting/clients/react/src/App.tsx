@@ -15,8 +15,7 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
 import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
 import { API } from "./api";
-
-const mm_api = new API("http://localhost", 5001);
+import { Machines } from "./types";
 
 function Jumbotron(props: any) {
   return (
@@ -32,51 +31,51 @@ function Jumbotron(props: any) {
     </div>
   );
 }
-function useCmds() {
+function useCmds(api: API) {
   const [cmds, setCmds] = useState<string[]>([]);
   useEffect(() => {
     const cmds_upd = setInterval(() => {
-      mm_api.getByAPI_get("commands").then((value) => setCmds(value));
+      api.getByAPI_get("commands").then((value) => setCmds(value));
     }, 100);
     return () => {
       console.log("useCmds is unmounted");
       clearInterval(cmds_upd);
     };
-  }, []);
+  }, [api]);
   return cmds;
 }
-function useCycState() {
-  const [val, setVal] = useState<MyTypes.ControllerStatus | null>(null);
+function useScenarioStatus(api: API) {
+  const [val, setVal] = useState<MyTypes.ScenarioStatus | undefined>(undefined);
   useEffect(() => {
     const upd = setInterval(() => {
-      mm_api.getByAPI_get("controller_status").then((value) => setVal(value));
+      api.getByAPI_get("scenario_status").then((value) => setVal(value));
     }, 100);
     return () => {
       console.log("useCmds is unmounted");
       clearInterval(upd);
     };
-  }, []);
+  }, [api]);
   return val;
 }
 
-function GraphImage() {
+function GraphImage({ api }: { api: API }) {
   const [image, setImage] = useState<string | null>(null);
   useEffect(() => {
     const image_upd = setInterval(() => {
-      mm_api.getByAPI_get("image").then((value) => setImage(value));
+      api.getByAPI_get("image").then((value) => setImage(value));
     }, 100);
     return () => {
       console.log("useimage is unmounted");
       clearInterval(image_upd);
     };
-  }, []);
+  }, [api]);
   return (
     <Image src={`data:image/svg+xml;base64,${image}`} alt="states" fluid />
   );
 }
 
-function DirectControls() {
-  const cmds = useCmds();
+function DirectControls({ api }: { api: API }) {
+  const cmds = useCmds(api);
   return (
     <>
       {cmds.map((cmd) =>
@@ -88,7 +87,7 @@ function DirectControls() {
             disabled={cmd === "step"}
             key={cmd}
             onClick={() =>
-              mm_api
+              api
                 .getByAPI_post("exec_graph_command", { command: cmd })
                 .then((res) => console.log(res))
             }
@@ -114,10 +113,6 @@ function CurrentState({
           step: {machine_status.cycle_step}
           <br />
           {machine_status.type === "MD" ? `level: ${machine_status.level}` : ""}
-          {machine_status.type === "MM"
-            ? `cassete: ${machine_status.address.cassete} <br/>
-          pos: ${machine_status.address.pos}`
-            : ""}
           <br />
           message: {machine_status.status_message}
         </>
@@ -128,23 +123,23 @@ function CurrentState({
   );
 }
 
-function useAllStates() {
+function useAllStates(api: API) {
   const [allStates, setAllStates] = useState<string[]>([]);
   useEffect(() => {
-    mm_api.getByAPI_get("get_all_states").then((value) => setAllStates(value));
+    api.getByAPI_get("get_all_states").then((value) => setAllStates(value));
     return () => {};
-  }, []);
+  }, [api]);
   return allStates;
 }
 
-function useCompile(script: string) {
+function useCompile(api: API, script: string) {
   const [compiled, setCompiled] = useState<string[]>([]);
   useEffect(() => {
     const controller = new AbortController();
 
     async function fetchData(abortSignal: AbortSignal) {
       try {
-        const res_data = await mm_api.getByAPI_post(
+        const res_data = await api.getByAPI_post(
           "compile_scenario",
           { script: script },
           abortSignal
@@ -159,11 +154,12 @@ function useCompile(script: string) {
     return () => {
       controller.abort();
     };
-  }, [script]);
+  }, [api, script]);
   return compiled;
 }
 
 function useValidation(
+  api: API,
   condition: MyTypes.ScenarioStartCondition,
   scenario: string[]
 ) {
@@ -178,7 +174,7 @@ function useValidation(
           starting_condition: condition,
         };
 
-        const res_data = await mm_api.getByAPI_post(
+        const res_data = await api.getByAPI_post(
           "is_scenario_valid",
           scenario_req,
           abortSignal
@@ -197,39 +193,39 @@ function useValidation(
     return () => {
       controller.abort();
     };
-  }, [scenario, condition]);
+  }, [api, scenario, condition]);
   return error;
 }
 
 type ScenarioProps = {
-  value: any;
+  api: API;
+  value: MyTypes.ScenarioDefenition;
   mode?: string;
   saveCallback: (saveprop: MyTypes.ScenarioDefenition) => void;
   current_index?: number | null;
 };
 
 function Scenario({
+  api,
   value,
   mode = "edit",
   saveCallback,
   current_index,
 }: ScenarioProps) {
   const [script, setScript] = useState<string>(value.script);
-  const [condition, setCondition] = useState(value.starting_condition);
-  const [name, setName] = useState(value.name);
+  const [condition, setCondition] = useState<MyTypes.ScenarioStartCondition>(
+    value.starting_condition
+  );
+  const [name, setName] = useState<string>(value.name);
 
-  const sc = useCompile(script);
-  const error = useValidation(condition, sc);
-  const all_states = useAllStates();
+  const sc = useCompile(api, script);
+  const error = useValidation(api, condition, sc);
+  const all_states = useAllStates(api);
 
   const handleChangeScript = (el: any) => {
     setScript(el.target.value);
   };
-  const handleChangeLevel = (el: any) => {
-    const new_condition = Object.assign({}, condition);
-    new_condition.level = el.target.value;
-    setCondition(new_condition);
-  };
+
   const handleChangeState = (el: any) => {
     const new_condition = Object.assign({}, condition);
     new_condition.state = el.target.value;
@@ -290,12 +286,9 @@ function Scenario({
           </Row>
           <Row>
             <Col xs={4}>
-              <FloatingLabel label="Starting Level">
-                <Form.Control
-                  value={condition.level}
-                  onChange={handleChangeLevel}
-                />
-              </FloatingLabel>
+              {condition.type === "MD"
+                ? AdditionalStartConditionsMD(condition, setCondition)
+                : ""}
             </Col>
             <Col>
               <FloatingLabel label="Starting state">
@@ -335,7 +328,7 @@ function Scenario({
             <div className="d-grid gap-1">
               <Button
                 onClick={() => {
-                  mm_api.getByAPI_post("exec_scenario", {
+                  api.getByAPI_post("exec_scenario", {
                     name: name,
                     commands: sc,
                   });
@@ -345,7 +338,7 @@ function Scenario({
               </Button>
               <Button
                 onClick={() => {
-                  mm_api.getByAPI_post("exec_controller_command", {
+                  api.getByAPI_post("exec_controller_command", {
                     command: "pause",
                   });
                 }}
@@ -354,7 +347,7 @@ function Scenario({
               </Button>
               <Button
                 onClick={() => {
-                  mm_api.getByAPI_post("exec_controller_command", {
+                  api.getByAPI_post("exec_controller_command", {
                     command: "resume",
                   });
                 }}
@@ -363,7 +356,7 @@ function Scenario({
               </Button>
               <Button
                 onClick={() => {
-                  mm_api.getByAPI_post("exec_controller_command", {
+                  api.getByAPI_post("exec_controller_command", {
                     command: "stop",
                   });
                 }}
@@ -403,60 +396,66 @@ function Scenario({
     </Alert>
   );
 }
-function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
-  const [scenarios, setScenarios] = useState<MyTypes.ScenarioDefenition[]>([
-    {
-      name: "scenario 1",
-      starting_condition: {
-        type: "MD",
-        level: 2,
-        state: "on_pins_support",
-      },
-      script:
-        'function (){n = 1; return [  "pushinCrab",\n  "liftDownBottomFrame",\n  ...repeat("liftUpFrame", n),\n  ...repeat("liftDownFrame",n-1),\n  "holdFrame",\n  "horizontalMoveTopFrame",\n  "prepareToTopFrameMoveing",\n  "liftUpFrame",\n  "liftUpFrame",\n  "liftUpFrame",\n]}()',
-    },
-    {
-      name: "scenario 2",
-      starting_condition: {
-        type: "MD",
-        level: 1,
-        state: "on_pins_support",
-      },
-      script:
-        'function (){n = 2; return [  "pushinCrab",\n  "liftDownBottomFrame",\n  ...repeat("liftUpFrame", n),\n  ...repeat("liftDownFrame",n-1),\n  "holdFrame",\n  "horizontalMoveTopFrame",\n  "prepareToTopFrameMoveing",\n  "liftUpFrame",\n  "liftUpFrame",\n  "liftUpFrame",\n]}()',
-    },
-    {
-      name: "scenario 3",
-      starting_condition: {
-        type: "MD",
-        level: 0,
-        state: "on_pins_support",
-      },
-      script:
-        'function (){n = 3; return [  "pushinCrab",\n  "liftDownBottomFrame",\n  ...repeat("liftUpFrame", n),\n  ...repeat("liftDownFrame",n-1),\n  "holdFrame",\n  "horizontalMoveTopFrame",\n  "prepareToTopFrameMoveing",\n  "liftUpFrame",\n  "liftUpFrame",\n  "liftUpFrame",\n]}()',
-    },
-    {
-      name: "scenario 4",
-      starting_condition: {
-        type: "MD",
-        level: 3,
-        state: "on_pins_support",
-      },
-      script:
-        'function (){n = 4; return [  "pushinCrab",\n  "liftDownBottomFrame",\n  ...repeat("liftUpFrame", n),\n  ...repeat("liftDownFrame",n-1),\n  "holdFrame",\n  "horizontalMoveTopFrame",\n  "prepareToTopFrameMoveing",\n  "liftUpFrame",\n  "liftUpFrame",\n  "liftUpFrame",\n]}()',
-    },
-  ]);
-  const def_scenario = {
+function AdditionalStartConditionsMD(
+  condition: Extract<MyTypes.ScenarioStartCondition, { type: "MD" }>,
+  updateData: (
+    data: Extract<MyTypes.ScenarioStartCondition, { type: "MD" }>
+  ) => void
+) {
+  return (
+    <FloatingLabel label="Starting Level">
+      <Form.Control
+        value={condition.level}
+        onChange={(el: any) => {
+          const new_condition = Object.assign({}, condition);
+          new_condition.level = el.target.value;
+          updateData(new_condition);
+        }}
+      />
+    </FloatingLabel>
+  );
+}
+
+function Scenarios({
+  api,
+  type,
+  id,
+}: {
+  api: API;
+  type: Machines;
+  id: string;
+}) {
+  const [scenarios, setScenarios] = useState<MyTypes.ScenarioDefenition[]>([]);
+  function defStartCondition(type: Machines): MyTypes.ScenarioStartCondition {
+    switch (type) {
+      case "MD":
+        return {
+          type: "MD",
+          state: "on_pins_support",
+          level: 0,
+        };
+      case "MM":
+        return {
+          type: "MM",
+          state: "standby",
+        };
+      default:
+        return {
+          type: "MM",
+          state: "standby",
+        };
+    }
+  }
+  const def_scenario: MyTypes.ScenarioDefenition = {
     name: "",
-    starting_condition: {
-      level: 0,
-      state: "on_pins_support",
-    },
+    starting_condition: defStartCondition(type),
     script: "[]",
   };
+  const scenario_status = useScenarioStatus(api);
+
   useEffect(() => {
-    mm_api.getByAPI_get("scenarios").then((value) => setScenarios(value));
-  }, []);
+    api.getByAPI_get("scenarios").then((value) => setScenarios(value));
+  }, [api]);
 
   const handleSaveScenario = (scenario: MyTypes.ScenarioDefenition) => {
     const scenarios_copy = scenarios.slice();
@@ -469,25 +468,24 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     });
     if (element === undefined) scenarios_copy.push(scenario);
     setScenarios(scenarios_copy);
-    mm_api.getByAPI_post("save_scenario", scenario).then((value) => {
+    api.getByAPI_post("save_scenario", scenario).then((value) => {
       setScenarios(value.scenarios);
       console.log(`scenario validation on saving: ${value.status}`);
     });
   };
   const [editMode, setEditMode] = useState(false);
-  const radios = [
-    { name: "Use", value: 0 },
-    { name: "Edit", value: 1 },
-  ];
   return (
     <Tab.Container
-      id="list-group-tabs-example"
+      // id="list-group-tabs-example"
       defaultActiveKey="create_new_scenario"
     >
       <Row>
         <Col>
           <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle
+              variant="success"
+              // id="dropdown-basic"
+            >
               Select scenario
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -508,22 +506,17 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
           </Dropdown>
         </Col>
         <Col>
-          <ButtonGroup>
-            {radios.map((radio, idx) => (
-              <ToggleButton
-                key={idx}
-                id={`radio-${idx}`}
-                type="radio"
-                variant="outline-success"
-                name="radio"
-                value={radio.value}
-                checked={radio.value ? editMode : !editMode}
-                onChange={(e) => setEditMode(radio.value ? true : false)}
-              >
-                {radio.name}
-              </ToggleButton>
-            ))}
-          </ButtonGroup>
+          <ButtonToggle
+            radios={[
+              { name: "Use", value: 0 },
+              { name: "Edit", value: 1 },
+            ]}
+            callback={(value) => {
+              setEditMode(value === 1);
+            }}
+            reference={editMode}
+            id={id}
+          />{" "}
         </Col>
       </Row>
 
@@ -533,10 +526,13 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
             {scenarios.map((element) => (
               <Tab.Pane key={element.name} eventKey={`${element.name}`}>
                 <Scenario
+                  api={api}
                   key={`scenario_${element.name}`}
                   value={element}
                   current_index={
-                    status?.name === element.name ? status?.step_index : null
+                    scenario_status?.name === element.name
+                      ? scenario_status?.step_index
+                      : null
                   }
                   saveCallback={handleSaveScenario}
                   mode={editMode ? "edit" : "use"}
@@ -545,6 +541,7 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
             ))}
             <Tab.Pane eventKey={"create_new_scenario"}>
               <Scenario
+                api={api}
                 value={def_scenario}
                 saveCallback={handleSaveScenario}
               />
@@ -555,45 +552,116 @@ function Scenarios({ status }: { status?: MyTypes.ScenarioStatus }) {
     </Tab.Container>
   );
 }
+function ButtonToggle({
+  radios,
+  reference,
+  callback,
+  id,
+}: {
+  radios: { name: string; value: number }[];
+  reference: boolean;
+  callback: (value: number) => void;
+  id: string;
+}) {
+  return (
+    <ButtonGroup>
+      {radios.map((radio, idx) => (
+        <ToggleButton
+          key={`key_${radio.name}_${id}`}
+          id={`radio-${radio.name}_${id}`}
+          type="radio"
+          variant="outline-success"
+          name={`radio_${id}`}
+          value={radio.value}
+          checked={radio.value ? reference : !reference}
+          onChange={(e) => callback(radio.value)}
+        >
+          {radio.name}
+        </ToggleButton>
+      ))}
+    </ButtonGroup>
+  );
+}
+
+function MachinePresentation({
+  machine,
+}: {
+  machine: {
+    name: string;
+    type: Machines;
+    api: API;
+  };
+}) {
+  return (
+    <Container fluid>
+      <Row>
+        <Col>
+          <GraphImage api={machine.api} />
+        </Col>
+        <Col xs={4}>
+          <Jumbotron>
+            <Tabs
+              defaultActiveKey="scenario"
+              // id={`graph-controll_${machine.name}`}
+              className="mb-3"
+            >
+              <Tab eventKey="commands" title="Direct control">
+                <DirectControls api={machine.api} />
+              </Tab>
+              <Tab eventKey="scenario" title="By scenario">
+                <Scenarios
+                  api={machine.api}
+                  type={machine.type}
+                  id={machine.name}
+                />
+              </Tab>
+            </Tabs>
+          </Jumbotron>
+        </Col>
+      </Row>
+    </Container>
+  );
+}
 function App() {
-  const st = useCycState();
+  const [machineType, setMachineType] = useState<
+    { name: string; type: Machines; api: API }[]
+  >([]);
+  useEffect(() => {
+    const machines_ports: number[] = [5001, 5001];
+    const machines = Promise.all(
+      machines_ports.map(async (p, id) => {
+        const api = new API("http://localhost", p);
+        const machine_type = await api.getByAPI_get("machine_type");
+        return {
+          name: machine_type + id,
+          type: machine_type,
+          api: api,
+        };
+      })
+    );
+    machines.then((value) => setMachineType(value));
+  }, []);
   return (
     <Container fluid>
       <Row>
         <Col>
           <Tabs id="page">
-            <Tab eventKey="mm" title="MM">
-              <Container fluid>
-                <Row>
-                  <Col>
-                    <GraphImage />
-                  </Col>
-                  <Col xs={4}>
-                    <Jumbotron>
-                      <Tabs
-                        defaultActiveKey="scenario"
-                        id="graph-controll"
-                        className="mb-3"
-                      >
-                        <Tab eventKey="commands" title="Direct control">
-                          <DirectControls />
-                        </Tab>
-                        <Tab eventKey="scenario" title="By scenario">
-                          <Scenarios status={st?.scenario_status} />
-                        </Tab>
-                      </Tabs>
-                    </Jumbotron>
-                  </Col>
-                </Row>
-              </Container>
-            </Tab>
-            <Tab eventKey="md" title="MD">
-              DOmkrat
-            </Tab>
+            {machineType.map((machine) => (
+              <Tab
+                key={machine.name + "tab"}
+                eventKey={machine.name}
+                title={machine.name}
+              >
+                <MachinePresentation
+                  key={machine.name + "presentation"}
+                  machine={machine}
+                />
+              </Tab>
+            ))}
           </Tabs>
         </Col>
       </Row>
-      <Row>
+      {/* <Row>
         <Col>
           <Jumbotron>
             <h4>Debug info</h4>
@@ -601,7 +669,7 @@ function App() {
             <pre>{JSON.stringify(st, null, 2)}</pre>
           </Jumbotron>
         </Col>
-      </Row>
+      </Row> */}
     </Container>
   );
 }
