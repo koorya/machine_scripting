@@ -42,8 +42,6 @@ type OnMethodsName = {
   onLeaveP200;
   onAfterP300Start;
   onLeaveP300;
-  onAfterP400Start;
-  onLeaveP400;
   onAfterP500Start;
   onLeaveP500;
   onAfterP600Start;
@@ -157,23 +155,6 @@ function createFSMConfig(plc: IPlcConnector) {
         return true;
       },
 
-      onAfterP400Start: async function (
-        lifecycle,
-        config: P200_Conf = { skip: [] }
-      ) {
-        const this_t: ThisType = (this as undefined) as ThisType;
-        if (this_t.is_test) return true;
-        await executeProgram("P400", config, this_t.plc);
-        return true;
-      },
-      onLeaveP400: async function (lifecycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
-        if (this_t.is_test) return true;
-        await this_t.plc.waitForPlcVar("P400[0].Done", true);
-        await this_t.plc.writeVar({ "P400[0].Reset": true });
-        return true;
-      },
-
       onAfterP500Start: async function (
         lifecycle,
         config: P200_Conf = { skip: [] }
@@ -208,7 +189,10 @@ function createFSMConfig(plc: IPlcConnector) {
         return true;
       },
 
+      // не срабатывает
       onLeaveCamInspection: async function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (this_t.is_test) return true;
         var exec = require("child_process").exec;
         async function execute(command) {
           return new Promise((resolve, reject) => {
@@ -217,7 +201,7 @@ function createFSMConfig(plc: IPlcConnector) {
             });
           });
         }
-        let ok = (await execute("node ./src/is_cam_ok.js")) as string;
+        let ok = (await execute("npx ts-node ./src/is_cam_ok.ts")) as string;
         console.log("executed process");
         console.log(ok);
         if (!/^Ok/.exec(ok)) {
