@@ -45,12 +45,13 @@ type OnMethodsName = {
   onAfterP500Start;
   onLeaveP500;
   onAfterP600Start;
-  onLeaveP600;
+  onLeaveP600Near;
+  onLeaveP600Far;
   onAfterP700Start;
   onLeaveP700;
   onAfterP800Start;
   onLeaveP800;
-  onLeaveCamInspection;
+  onBeforeP600Finish;
 };
 type OnMethods = {
   [key in keyof OnMethodsName]: (
@@ -181,18 +182,10 @@ function createFSMConfig(plc: IPlcConnector) {
         await executeProgram("P600", config, this_t.plc);
         return true;
       },
-      onLeaveP600: async function (lifecycle) {
+      onLeaveP600Near: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await this_t.plc.waitForPlcVar("P600[0].Done", true);
-        await this_t.plc.writeVar({ "P600[0].Reset": true });
-        return true;
-      },
-
-      // не срабатывает
-      onLeaveCamInspection: async function () {
-        const this_t: ThisType = (this as undefined) as ThisType;
-        if (this_t.is_test) return true;
+        await this_t.plc.waitForPlcVar("P600[7].Run", true);
         var exec = require("child_process").exec;
         async function execute(command) {
           return new Promise((resolve, reject) => {
@@ -208,8 +201,58 @@ function createFSMConfig(plc: IPlcConnector) {
           console.log("Cam check failed");
           return false;
         }
+        await this_t.plc.writeVar({ "CHECK_CAMERA": true });
         return true;
       },
+
+      onLeaveP600Far: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (this_t.is_test) return true;
+        await this_t.plc.waitForPlcVar("P600[8].Run", true);
+        var exec = require("child_process").exec;
+        async function execute(command) {
+          return new Promise((resolve, reject) => {
+            exec(command, function (error, stdout, stderr) {
+              resolve(stdout);
+            });
+          });
+        }
+        let ok = (await execute("npx ts-node ./src/is_cam_ok.ts")) as string;
+        console.log("executed process");
+        console.log(ok);
+        if (!/^Ok/.exec(ok)) {
+          console.log("Cam check failed");
+          return false;
+        }
+        await this_t.plc.writeVar({ "CHECK_CAMERA": true });
+        return true;
+      },
+      onBeforeP600Finish: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (this_t.is_test) return true;
+        await this_t.plc.waitForPlcVar("P600[0].Done", true);
+      },
+      // не срабатывает
+      // onLeaveCamInspection: async function () {
+      //   const this_t: ThisType = (this as undefined) as ThisType;
+      //   if (this_t.is_test) return true;
+      //   var exec = require("child_process").exec;
+      //   async function execute(command) {
+      //     return new Promise((resolve, reject) => {
+      //       exec(command, function (error, stdout, stderr) {
+      //         resolve(stdout);
+      //       });
+      //     });
+      //   }
+      //   let ok = (await execute("npx ts-node ./src/is_cam_ok.ts")) as string;
+      //   console.log("executed process");
+      //   console.log(ok);
+      //   if (!/^Ok/.exec(ok)) {
+      //     console.log("Cam check failed");
+      //     return false;
+      //   }
+      //   return true;
+      // },
 
       onAfterP700Start: async function (
         lifecycle,
