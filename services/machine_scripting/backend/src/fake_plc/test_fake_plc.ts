@@ -1,0 +1,1 @@
+import {doMMLogic} from './fake_plc'

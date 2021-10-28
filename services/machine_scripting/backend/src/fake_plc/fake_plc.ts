@@ -1,12 +1,7 @@
 import * as zmq from "zeromq";
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
-const argv = yargs(hideBin(process.argv)).argv;
-console.log(argv);
-const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
-console.log(`zmq_port: ${zmq_port}`);
 
-const md_vault: { name: string; value: unknown }[] = [
+
+export const md_vault: { name: string; value: unknown }[] = [
   { name: "status_message", value: "no mess" },
 ];
 
@@ -33,7 +28,7 @@ function makePArr(n: number, seq?: number[]): P_type[] {
     seq = [...Array(n)].map((value, index) => index);
   return [...Array(n)].map((value, index) => makeP(seq[index]));
 }
-const mm_vault = {
+export const mm_vault = {
   P200: makePArr(7),
   P300: makePArr(5),
   P400: makePArr(8),
@@ -43,9 +38,9 @@ const mm_vault = {
   P800: makePArr(9),
 };
 
-const mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
+export const mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
 
-function doMMLogic() {
+export function doMMLogic() {
   for (var xxx in mm_vault) {
     const pxxx = mm_vault[xxx] as P_type[];
     if (pxxx[0].Start == true) {
@@ -109,15 +104,9 @@ function doMMLogic() {
   }
   // console.log(mm_vault.P200);
 }
-function mm_run() {
-  doMMLogic();
-  setTimeout(mm_run, 50);
-}
-mm_run();
 
 
-
-function doFakePlcLogic() {
+export function doFakePlcLogic() {
   function doMDLogic() {
     const start_reg = /^start_(\w+)_handle$/;
     const state_reg = /(w+)_state$/;
@@ -152,7 +141,7 @@ function doFakePlcLogic() {
   console.log(md_vault);
 }
 
-class SocketServer {
+export class SocketServer {
   stop: boolean = false;
   constructor(port: number, mess_callback: (mess: string) => string) {
     var my_sock = new zmq.Reply();
@@ -173,97 +162,4 @@ class SocketServer {
   }
 }
 
-const srv_inst = new SocketServer(zmq_port, (mess) => {
-  const rec_obj = JSON.parse(mess);
-  if (!rec_obj.PlcVarsArray.update) {
-    rec_obj.PlcVarsArray.arr.forEach((element) => {
-      element["value"] = undefined;
-      const md_var = md_vault.find((value) => value.name == element.name);
-      if (md_var != undefined) element["value"] = md_var.value;
-      else {
-        const a = mm_var_regexp.exec(element.name);
-        if (a) element.value = mm_vault[a[1]][a[2]][a[3]];
-      }
-    });
-  } else {
-    rec_obj.PlcVarsArray.arr.forEach((element) => {
-      const md_var = md_vault.find((value) => value.name == element.name);
-      const a = mm_var_regexp.exec(element.name);
 
-      if (md_var != undefined) md_var.value = element["value"];
-      else if (a) {
-        mm_vault[a[1]][a[2]][a[3]] = element.value;
-      } else md_vault.push({ name: element.name, value: element["value"] });
-    });
-    console.log(md_vault);
-    doFakePlcLogic();
-  }
-
-  return JSON.stringify(rec_obj);
-});
-
-// setTimeout(() => (srv_inst.stop = true), 10000);
-// setInterval(() => console.log(vault), 500);
-
-async function sendExample(port: number) {
-  var sender = new zmq.Request();
-  sender.connect(`tcp://127.0.0.1:${port}`);
-
-  const vars = { up_frame_cycle_state: 10, start_up_frame_cycle_handle: true };
-  await sender
-    .send(
-      JSON.stringify({
-        PlcVarsArray: {
-          arr: Object.keys(vars).map((n) => {
-            return { name: n, value: vars[n] };
-          }),
-
-          update: true,
-        },
-      })
-    )
-    .then(() => sender.receive().then((answ) => null));
-
-  setTimeout(() => {
-    const vars = {
-      down_frame_cycle_state: 0,
-      start_down_frame_cycle_handle: true,
-    };
-    sender
-      .send(
-        JSON.stringify({
-          PlcVarsArray: {
-            arr: Object.keys(vars).map((n) => {
-              return { name: n, value: vars[n] };
-            }),
-
-            update: true,
-          },
-        })
-      )
-      .then(() => sender.receive().then((answ) => null));
-  }, 2000);
-
-  const names = ["up_frame_cycle_state", "start_up_frame_cycle_handle", "kaka"];
-  await sender
-    .send(
-      JSON.stringify({
-        PlcVarsArray: {
-          arr: names.map((n) => {
-            return { name: n };
-          }),
-
-          update: false,
-        },
-      })
-    )
-    .then(() =>
-      sender.receive().then(
-        (answ) =>
-          // console.log(JSON.stringify(JSON.parse(answ.toString()), null, 2))
-          null
-      )
-    );
-}
-
-// sendExample(port);
