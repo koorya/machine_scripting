@@ -16,28 +16,33 @@ interface P_type {
   Done: boolean;
   Skip: boolean;
   Reset: boolean;
+  Next: number;
 }
-function makeP(): P_type {
+function makeP(next: number): P_type {
   return {
     Start: false,
     Done: false,
     Run: false,
     Skip: false,
     Reset: false,
+    Next: next,
   };
 }
-function makePArr(n: number): P_type[] {
-  return [...Array(n)].map(() => makeP());
+function makePArr(n: number, seq?: number[]): P_type[] {
+  if (seq == undefined)
+    seq = [...Array(n)].map((value, index) => index);
+  return [...Array(n)].map((value, index) => makeP(seq[index]));
 }
 const mm_vault = {
   P200: makePArr(7),
   P300: makePArr(5),
   P400: makePArr(8),
   P500: makePArr(7),
-  P600: makePArr(7),
+  P600: makePArr(20, [1, 2, 3, 7, 4, 5, 8, 6, 9, 0, 0, 0]),
   P700: makePArr(7),
   P800: makePArr(9),
 };
+
 const mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
 
 function doMMLogic() {
@@ -110,13 +115,7 @@ function mm_run() {
 }
 mm_run();
 
-function test(value: any, should_be: any) {
-  return function (target) {
-    const ret = target(value);
-    if (ret != should_be)
-      console.log(`${target.name}(${value}) is not ${should_be}: ${ret}`);
-  };
-}
+
 
 function doFakePlcLogic() {
   function doMDLogic() {
