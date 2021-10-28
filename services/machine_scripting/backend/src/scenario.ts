@@ -36,7 +36,7 @@ async function getCompiledScenarioError(
   let curr_cmd = eCommands.next();
   let index = 0;
   while (!curr_cmd.done) {
-    if (fsm.can("step")) await fsm.step();
+    while (fsm.can("step")) await fsm.step();
     const parced_cmd = parseCommand(curr_cmd.value);
     if (fsm.cannot(parced_cmd.name)) {
       // console.log(fsm.transitions());

@@ -82,7 +82,7 @@ var FSMController: new <type extends Machines>(
           ...arg: any
         ) => Promise<boolean>)(parsed.props);
 
-        if (fsm.fsm.can("step")) await fsm.fsm.step();
+        while (fsm.fsm.can("step")) await fsm.fsm.step();
         if (!is_command_exec) console.log("command exec error");
       }
       // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
