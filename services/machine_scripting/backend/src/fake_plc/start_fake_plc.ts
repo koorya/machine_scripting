@@ -1,4 +1,4 @@
-import {doFakePlcLogic, md_vault, SocketServer} from './fake_plc'
+import { doFakePlcLogic, md_vault, SocketServer } from "./fake_plc";
 import { MMLogic } from "./fake_mm";
 
 import yargs from "yargs";
@@ -37,4 +37,3 @@ const srv_inst = new SocketServer(zmq_port, (mess) => {
   }
   return JSON.stringify(rec_obj);
 });
-
