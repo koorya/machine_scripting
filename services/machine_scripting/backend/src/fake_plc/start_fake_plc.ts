@@ -26,9 +26,9 @@ const srv_inst = new SocketServer(zmq_port, (mess) => {
   } else {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
       const md_var = md_vault.find((value) => value.name == element.name);
-
-      if (md_var != undefined) md_var.value = element["value"];
-      else if (fake_mm.getPLCVarByName(element.name)) {
+      if (md_var != undefined) {
+        md_var.value = element["value"];
+      } else if (fake_mm.getPLCVarByName(element.name) != undefined) {
         fake_mm.setPLCVarByName(element.name, element.value);
       } else md_vault.push({ name: element.name, value: element["value"] });
     });
