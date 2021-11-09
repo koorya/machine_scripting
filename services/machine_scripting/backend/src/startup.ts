@@ -47,7 +47,13 @@ app.use(cors());
 app.get("/list_machines_ports", (request, response) => {
   response.send(JSON.stringify(address_list.map((value) => value.ui_port)));
 });
-app.listen(port, () => console.log(`running on port ${port}`));
+const server = app.listen(port, () => console.log(`running on port ${port}`));
+
+process.on("SIGTERM", () => {
+  server.close(() => {
+    console.log("Process terminated");
+  });
+});
 
 const run_list: string[] = [];
 address_list.map((value) => {
@@ -61,5 +67,9 @@ address_list.map((value) => {
     `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.type}`
   );
 });
-concurrently(run_list, { killOthers: ["failure", "success"] });
+concurrently(run_list, { killOthers: ["failure", "success"] }).then(() =>
+  server.close(() => {
+    console.log("Process terminated");
+  })
+);
 console.log("hello");
