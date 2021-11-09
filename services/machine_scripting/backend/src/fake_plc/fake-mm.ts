@@ -7,10 +7,9 @@ interface P_type {
   Next: number;
 }
 
-export class MMLogic {
-  mm_vault: { [x: string]: P_type[]; };
+export default class MMLogic {
+  mm_vault: { [x: string]: P_type[] };
   constructor() {
-
     this.mm_vault = {
       P200: this.makePArr(7),
       P300: this.makePArr(5),
@@ -22,34 +21,27 @@ export class MMLogic {
     };
   }
   is_running = false;
-  run(){
-    if(this.is_running)
-      return;
-    const mm_run = ()=>{
+  run() {
+    if (this.is_running) return;
+    const mm_run = () => {
       this.doMMLogic();
-      if(this.is_running)
-        setTimeout(mm_run, 50);
-    }
+      if (this.is_running) setTimeout(mm_run, 50);
+    };
     this.is_running = true;
     mm_run();
   }
-  stop(){
+  stop() {
     this.is_running = false;
   }
   static mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
   getPLCVarByName(name: string) {
     const a = MMLogic.mm_var_regexp.exec(name);
-    if (a)
-      return this.mm_vault[a[1]][a[2]][a[3]];
-
-    else
-      return undefined;
+    if (a) return this.mm_vault[a[1]][a[2]][a[3]];
+    else return undefined;
   }
   setPLCVarByName(name: string, value) {
     const a = MMLogic.mm_var_regexp.exec(name);
-    if (a)
-      this.mm_vault[a[1]][a[2]][a[3]] = value;
-
+    if (a) this.mm_vault[a[1]][a[2]][a[3]] = value;
   }
   makeP(next: number): P_type {
     return {
@@ -62,8 +54,7 @@ export class MMLogic {
     };
   }
   makePArr(n: number, seq?: number[]): P_type[] {
-    if (seq == undefined)
-      seq = [...Array(n)].map((value, index) => index);
+    if (seq == undefined) seq = [...Array(n)].map((value, index) => index);
     return [...Array(n)].map((value, index) => this.makeP(seq[index]));
   }
   doMMLogic() {
@@ -81,8 +72,7 @@ export class MMLogic {
       }
 
       const work = (p_step: P_type, index: number) => {
-        if (index == 0)
-          return;
+        if (index == 0) return;
 
         if ((p_step.Done && p_step.Run) || (p_step.Start && p_step.Skip)) {
           if (p_step.Skip) {
@@ -127,8 +117,7 @@ export class MMLogic {
       if (pxxx[0].Reset) {
         console.log(`${xxx} Reset`);
         pxxx.forEach((p) => {
-          for (var prop in p)
-            p[prop] = false;
+          for (var prop in p) p[prop] = false;
         });
       }
     }

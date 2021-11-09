@@ -1,5 +1,5 @@
 import { doFakePlcLogic, md_vault, SocketServer } from "./fake_plc";
-import { MMLogic } from "./fake_mm";
+import MMLogic from "./fake-mm";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
