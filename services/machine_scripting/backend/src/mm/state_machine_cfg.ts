@@ -201,7 +201,7 @@ function createFSMConfig(plc: IPlcConnector) {
           console.log("Cam check failed");
           return false;
         }
-        await this_t.plc.writeVar({ "CHECK_CAMERA": true });
+        await this_t.plc.writeVar({ CHECK_CAMERA: true });
         return true;
       },
 
@@ -224,7 +224,7 @@ function createFSMConfig(plc: IPlcConnector) {
           console.log("Cam check failed");
           return false;
         }
-        await this_t.plc.writeVar({ "CHECK_CAMERA": true });
+        await this_t.plc.writeVar({ CHECK_CAMERA: true });
         return true;
       },
       onBeforeP600Finish: async function (lifecycle) {

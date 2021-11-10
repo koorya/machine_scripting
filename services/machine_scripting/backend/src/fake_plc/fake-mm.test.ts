@@ -3,7 +3,7 @@ import { createTask } from "./fake-mm";
 
 beforeAll(() => {});
 jest.spyOn(FakeMM.prototype, "countTo100").mockImplementation(async () => {});
-let checkVariableSpy = jest.spyOn(FakeMM.prototype, "checkVariable");
+const checkVariableSpy = jest.spyOn(FakeMM.prototype, "checkVariable");
 
 checkVariableSpy.mockImplementation(async () => {});
 
@@ -22,6 +22,12 @@ describe("MMLogick ", () => {
 
     mmlogic.setPLCVarByName("P200[0].Start", false);
     expect(mmlogic.getPLCVarByName("P200[0].Start")).toBe(false);
+
+    mmlogic.setPLCVarByName("CHECK_CAMERA", true);
+    expect(mmlogic.getPLCVarByName("CHECK_CAMERA")).toBe(true);
+
+    mmlogic.setPLCVarByName("CHECK_CAMERA", false);
+    expect(mmlogic.getPLCVarByName("CHECK_CAMERA")).toBe(false);
   });
 
   const task1 = createTask("task1", 3);
@@ -203,5 +209,14 @@ describe("MMLogick ", () => {
         resolve();
       }, 100);
     });
+  });
+
+  test("checkVariable camera", () => {
+    jest.restoreAllMocks();
+    const check_var = new FakeMM();
+    setTimeout(() => {
+      check_var.setPLCVarByName("CHECK_CAMERA", true);
+    }, 500);
+    return check_var.checkVariable();
   });
 });

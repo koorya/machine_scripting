@@ -16,6 +16,10 @@ interface MMTask {
   seq: number[];
   step_imitations: StepImitation[];
 }
+interface VaultVar {
+  name: string;
+  value: boolean;
+}
 
 function createP(): P_type {
   return {
@@ -50,8 +54,11 @@ export function createTask(
 
 export default class FakeMM {
   mm_tasks: MMTask[];
+  mm_vault: VaultVar[] = [];
   timeout_period = 100;
   constructor() {
+    this.mm_vault = [{ name: "CHECK_CAMERA", value: false }];
+
     this.mm_tasks = [
       createTask("P200", 20),
       createTask("P300", 20),
@@ -63,11 +70,11 @@ export default class FakeMM {
         [
           {
             index: 7,
-            action: this.checkVariable,
+            action: () => this.checkVariable(),
           },
           {
             index: 8,
-            action: this.checkVariable,
+            action: () => this.checkVariable(),
           },
         ],
         [1, 2, 3, 7, 4, 8, 5, 6]
@@ -94,14 +101,18 @@ export default class FakeMM {
   static mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
   getPLCVarByName(name: string) {
     const a = FakeMM.mm_var_regexp.exec(name);
+    let vault_var: VaultVar;
     if (a)
       return this.mm_tasks.find((task, index) => task.name == a[1])?.steps[
         parseInt(a[2])
       ][a[3]];
+    else if ((vault_var = this.mm_vault.find((el) => name == el.name)))
+      return vault_var.value;
     else return undefined;
   }
   setPLCVarByName(name: string, value) {
     const a = FakeMM.mm_var_regexp.exec(name);
+    let vault_var: VaultVar;
     if (a) {
       try {
         this.mm_tasks.find((task, index) => task.name == a[1]).steps[
@@ -110,7 +121,8 @@ export default class FakeMM {
       } catch {
         throw new Error(`invalid variable name: ${name}`);
       }
-    }
+    } else if ((vault_var = this.mm_vault.find((el) => name == el.name)))
+      vault_var.value = value;
   }
 
   tryStartPxx(task: MMTask): string {
@@ -142,8 +154,14 @@ export default class FakeMM {
   }
 
   checkVariable() {
+    this.mm_vault.find((el) => el.name == "CHECK_CAMERA").value = false;
     return new Promise<void>((resolve) => {
-      setTimeout(resolve, 10000);
+      const run = () => {
+        if (this.mm_vault.find((el) => el.name == "CHECK_CAMERA").value)
+          resolve();
+        else setTimeout(run, 100);
+      };
+      setTimeout(run, 100);
     });
   }
 
