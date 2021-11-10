@@ -5,11 +5,16 @@ interface P_type {
   Skip: boolean;
   Reset: boolean;
 }
+interface StepImitation {
+  index: number;
+  action: () => Promise<void>;
+}
 interface MMTask {
   name: string;
   length: number;
   steps: P_type[];
   seq: number[];
+  step_imitations: StepImitation[];
 }
 
 function createP(): P_type {
@@ -24,6 +29,7 @@ function createP(): P_type {
 export function createTask(
   name: string,
   length: number,
+  imitations: StepImitation[] = [],
   seq?: number[]
 ): MMTask {
   if (seq == undefined)
@@ -38,6 +44,7 @@ export function createTask(
     length: length,
     steps: seq.map(() => createP()),
     seq: seq,
+    step_imitations: imitations,
   };
 }
 
@@ -50,7 +57,21 @@ export default class FakeMM {
       createTask("P300", 20),
       createTask("P400", 20),
       createTask("P500", 20),
-      createTask("P600", 20, [1, 2, 3, 7, 4, 8, 5, 6]),
+      createTask(
+        "P600",
+        20,
+        [
+          {
+            index: 7,
+            action: this.checkVariable,
+          },
+          {
+            index: 8,
+            action: this.checkVariable,
+          },
+        ],
+        [1, 2, 3, 7, 4, 8, 5, 6]
+      ),
       createTask("P700", 20),
       createTask("P800", 20),
     ];
@@ -120,7 +141,13 @@ export default class FakeMM {
     });
   }
 
-  async executeStep(p_step: MMTask, index: number) {
+  checkVariable() {
+    return new Promise<void>((resolve) => {
+      setTimeout(resolve, 10000);
+    });
+  }
+
+  async executeStep(p_step: MMTask, index: number, imitation?: StepImitation) {
     if (!p_step.steps[index].Start) return;
     p_step.steps[index].Start = false;
 
@@ -129,7 +156,8 @@ export default class FakeMM {
     } else {
       p_step.steps[index].Run = true;
       console.log(`${p_step.name}[${index}]`);
-      await this.countTo100(); //хитрое условие шага
+      if (imitation != undefined) await imitation.action();
+      else await this.countTo100(); //хитрое условие шага
       p_step.steps[index].Run = false;
       p_step.steps[index].Done = true;
     }
@@ -142,7 +170,11 @@ export default class FakeMM {
       const p_step = task.steps[step_index];
 
       if (p_step.Start) {
-        await this.executeStep(task, step_index);
+        await this.executeStep(
+          task,
+          step_index,
+          task.step_imitations.find((im) => im.index == step_index)
+        );
         if (i < task.seq.length - 1 && task.seq[i + 1] != 0)
           task.steps[task.seq[i + 1]].Start = true;
         else {
@@ -157,6 +189,7 @@ export default class FakeMM {
   }
 
   doMMLogic() {
+    this.checkVariable();
     for (var task of this.mm_tasks) {
       const status = this.tryStartPxx(task);
       if (status !== "") console.log(`${task.name} ${status}`);

@@ -1,9 +1,11 @@
 import FakeMM from "./fake-mm";
 import { createTask } from "./fake-mm";
 
-beforeAll(() => {
-  jest.spyOn(FakeMM.prototype, "countTo100").mockImplementation(async () => {});
-});
+beforeAll(() => {});
+jest.spyOn(FakeMM.prototype, "countTo100").mockImplementation(async () => {});
+let checkVariableSpy = jest.spyOn(FakeMM.prototype, "checkVariable");
+
+checkVariableSpy.mockImplementation(async () => {});
 
 afterAll(() => jest.restoreAllMocks());
 
@@ -23,8 +25,8 @@ describe("MMLogick ", () => {
   });
 
   const task1 = createTask("task1", 3);
-  const task2 = createTask("task2", 4, [2, 1, 3, 4]);
-  const task3 = createTask("task3", 20, [1, 2, 3, 7, 4, 8, 5, 6]);
+  const task2 = createTask("task2", 4, [], [2, 1, 3, 4]);
+  const task3 = createTask("task3", 20, [], [1, 2, 3, 7, 4, 8, 5, 6]);
 
   test("createTask without seq", () => {
     expect(task1.name).toBe("task1");
@@ -187,6 +189,7 @@ describe("MMLogick ", () => {
   });
 
   test("doMMLogic", () => {
+    checkVariableSpy.mockClear();
     mmlogic.resetAllTasks();
     mmlogic.setPLCVarByName("P200[0].Start", true);
     expect(mmlogic.getPLCVarByName("P200[0].Start")).toBe(true);
@@ -194,7 +197,7 @@ describe("MMLogick ", () => {
 
     mmlogic.doMMLogic();
     expect(mmlogic.getPLCVarByName("P200[0].Start")).toBe(false);
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
         expect(mmlogic.getPLCVarByName("P200[0].Done")).toBe(true);
         resolve();
