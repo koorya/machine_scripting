@@ -1,8 +1,5 @@
-import * as StateMachine from "javascript-state-machine";
-import * as visualize from "javascript-state-machine/lib/visualize.js";
 import * as StateMachineHistory from "javascript-state-machine/lib/history.js";
 
-import * as graphviz from "graphviz";
 import * as fs from "fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -11,7 +8,15 @@ import * as express from "express";
 import * as cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
 
-import { createPlcFsm, transitions } from "./mm/plc_fsm";
+import {
+  createPlcFsm as createPlcFsmMM,
+  transitions as transitionsMM,
+} from "./mm/plc_fsm";
+
+import {
+  createPlcFsm as createPlcFsmMD,
+  transitions as transitionsMD,
+} from "./md/plc_fsm";
 
 import { FSMController } from "./fsm_controller";
 import { getCompiledScenarioError, compileScenario } from "./scenario";
@@ -26,6 +31,7 @@ import {
   RequestMatching,
   ScenarioDefenition,
 } from "~shared/types/types";
+import { ImageRender } from "./image_render";
 
 const algorithms_path = "config/algorithms.json";
 const default_algorithms_path = "config/default_algorithms.json";
@@ -43,14 +49,29 @@ const argv = yargs(hideBin(process.argv)).argv;
 
 const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
 const ui_port = argv["ui_port"] ? argv["ui_port"] : 5001;
+const machine_type = argv["machine_type"] ? argv["machine_type"] : "MM";
 console.log(`zmq_port: ${zmq_port}`);
 console.log(`ui_port: ${ui_port}`);
+console.log(`machine_type: ${machine_type}`);
 
-const plc_fsm = createPlcFsm(zmq_port);
+const createPlcFsmWithRender = (machine_type: MyTypes.Machines) => {
+  if (machine_type == "MM")
+    return {
+      plc_fsm: createPlcFsmMM(zmq_port),
+      render: new ImageRender(transitionsMM),
+    };
+  if (machine_type == "MD")
+    return {
+      plc_fsm: createPlcFsmMD(zmq_port),
+      render: new ImageRender(transitionsMD),
+    };
+};
+
+const { plc_fsm, render } = createPlcFsmWithRender(machine_type);
 
 const funct = plc_fsm.fsm.onAfterTransition;
-plc_fsm.fsm.onAfterTransition = function (lifecycle) {
-  updateImage();
+plc_fsm.fsm.onAfterTransition = async function (lifecycle) {
+  await render.updateImage(plc_fsm.fsm.state);
   funct(lifecycle);
   // fsm_sc.goto(fsm.state);
   // fsm_sc.current_level = fsm.current_level;
@@ -58,36 +79,6 @@ plc_fsm.fsm.onAfterTransition = function (lifecycle) {
 
 const plc_controller = new FSMController(plc_fsm);
 
-let rendered_image = null;
-async function updateImage() {
-  let tran = [...transitions];
-  tran.map((edge) => {
-    if (edge.name === "step") {
-      if (!edge["dot"]) edge["dot"] = { color: "blue" };
-      else edge.dot["color"] = "blue";
-
-      edge.name = " ";
-    }
-  });
-  var fsm_image = new StateMachine({
-    init: plc_fsm.fsm.init,
-    transitions: tran,
-  });
-
-  await graphviz.parse(
-    visualize(fsm_image, { orientation: "vertical" }),
-    (gg) =>
-      // gg.output("svg", "test01.svg")
-      {
-        gg.getNode(plc_fsm.fsm.state).set("color", "red");
-        // gg.set("ratio", "1.0");
-        gg.output("svg", (buff) => {
-          rendered_image = buff.toString("base64");
-        });
-        console.log("rendered");
-      }
-  );
-}
 function updateHistory() {
   console.log(
     JSON.stringify(plc_fsm.fsm.history) +
@@ -213,11 +204,7 @@ const end_points_get = [
     }
   }),
   createEndPointGet("image", async () => {
-    if (rendered_image === null) {
-      await updateImage();
-      console.log(rendered_image);
-    }
-    return rendered_image;
+    return render.rendered_image;
   }),
   createEndPointGet("get_all_states", async () =>
     plc_controller.fsm.fsm.allStates()
