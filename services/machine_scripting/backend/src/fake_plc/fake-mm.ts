@@ -154,6 +154,7 @@ export default class FakeMM {
   }
 
   checkVariable() {
+    console.log("waiting for CHECK_CAMERA == true");
     this.mm_vault.find((el) => el.name == "CHECK_CAMERA").value = false;
     return new Promise<void>((resolve) => {
       const run = () => {
@@ -207,7 +208,6 @@ export default class FakeMM {
   }
 
   doMMLogic() {
-    this.checkVariable();
     for (var task of this.mm_tasks) {
       const status = this.tryStartPxx(task);
       if (status !== "") console.log(`${task.name} ${status}`);
