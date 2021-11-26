@@ -21,8 +21,12 @@ export function parseCommand(
   return parced;
 }
 
-var FSMController: new <type extends Machines>(
-  fms: iPLCStateMachine<type>
+type iPLCStateMachineOfUnion<U extends string> = {
+  [K in U]: iPLCStateMachine<K>;
+}[U];
+
+var FSMController: new (
+  fms: iPLCStateMachineOfUnion<Machines>
 ) => iController = StateMachine.factory({
   init: "available",
   transitions: [
