@@ -5,38 +5,39 @@ import { iTransition } from "./fsm_types";
 
 export class ImageRender {
   rendered_image: string = null;
-  transitions: iTransition[];
-  fsm_image: any; //JS StateMachine
+  dot_script: string;
+  start_time: Date;
   constructor(transitions: iTransition[]) {
-    this.transitions = [...transitions];
-    this.transitions.map((edge) => {
+    transitions = [...transitions];
+    transitions.map((edge) => {
       if (edge.name === "step") {
         if (!edge["dot"]) edge["dot"] = { color: "blue" };
         else edge.dot["color"] = "blue";
-
         edge.name = " ";
       }
     });
-    this.fsm_image = new StateMachine({
-      init: this.transitions[0].from,
-      transitions: this.transitions,
+    const init_state = transitions[0].from;
+    const fsm_image = new StateMachine({
+      init: init_state,
+      transitions: transitions,
     });
-    this.updateImage(this.transitions[0].from);
+    this.dot_script = visualize(fsm_image, { orientation: "vertical" });
+
+    this.updateImage(init_state);
   }
-  async updateImage(active_node_name: string) {
-    await graphviz.parse(
-      visualize(this.fsm_image, { orientation: "vertical" }),
-      (gg) =>
-        // gg.output("svg", "test01.svg")
-        {
-          // plc_fsm.fsm.state
-          gg.getNode(active_node_name).set("color", "red");
-          // gg.set("ratio", "1.0");
-          gg.output("svg", (buff) => {
-            this.rendered_image = buff.toString("base64");
-          });
-          console.log("rendered");
-        }
-    );
+  updateImage(active_node_name: string) {
+    // нужно отменить предыдущее рисование, если вызвано снова
+    const local_time = new Date();
+    this.start_time = local_time;
+    graphviz.parse(this.dot_script, (gg) => {
+      if (this.start_time.getTime() != local_time.getTime()) return;
+      gg.getNode(active_node_name).set("color", "red");
+      gg.output("svg", (buff) => {
+        const local_image = buff.toString("base64");
+        if (this.start_time.getTime() == local_time.getTime())
+          this.rendered_image = local_image;
+      });
+      console.log("rendered");
+    });
   }
 }
