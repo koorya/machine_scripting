@@ -82,8 +82,8 @@ const plc_controller = new FSMController(plc_fsm);
 function updateHistory() {
   console.log(
     JSON.stringify(plc_fsm.fsm.history) +
-      "; can: " +
-      JSON.stringify(plc_fsm.fsm.transitions())
+    "; can: " +
+    JSON.stringify(plc_fsm.fsm.transitions())
   );
 }
 // const history_upd = setInterval(updateHistory, 150);
@@ -174,7 +174,7 @@ const end_points_get = [
         state: fsm.fsm.state,
         cycle_step: fsm.fsm.cycle_state,
         status_message: fsm.fsm.status_message,
-        level: fsm.fsm.level,
+        level: fsm.fsm.current_level,
       };
       controller_status = {
         ...controller_status,

@@ -13,19 +13,30 @@ export interface iTransition {
 export interface iFsmConfig {
   init: string;
   transitions: iTransition[];
-  data: {is_test: boolean};
+  data: { is_test: boolean };
   methods: unknown;
 }
 
-export interface iCycleExecutorProps {
+export type iCycleExecutorProps = {
   cycle_name: string;
-  lifecycle: any;
   plc_connector: IPlcConnector;
-  resolve: () => void;
-  reject: () => void;
-}
+} & (
+    | {
+      type: "MD";
+
+      lifecycle: { from: string; };
+      data: {
+        cycle_state: number;
+        status_message: string;
+      };
+    }
+    | {
+      type: "MM";
+      config: { skip: number[] }
+    }
+  );
+
 export interface iStateMachine {
-  cycleExecutor: (props: iCycleExecutorProps) => void;
   onAfterTransition: (lifecycle: any) => void;
   state: string;
   init: string;
@@ -44,54 +55,49 @@ export type iData = {
   status_message: string;
   plc: IPlcConnector;
 } & (
-  | {
+    | {
       type: "MD";
-      level: number;
+      current_level: number;
+      top_level: number;
     }
-  | {
+    | {
       type: "MM";
       current_address: MM_address;
     }
-);
+  );
 export type ExcludeTypeProp<T, U> = {
- [Property in keyof T as (Property extends U ? never : Property)]: T[Property];
-  
+  [Property in keyof T as (Property extends U ? never : Property)]: T[Property];
+
 }
 type BaseMethods = {
   // [key: string]: ((...args: any) => Promise<boolean|void> | void | boolean) | string;
-  onAfterTransition: (...args: any)=>Promise<boolean|void> | void | boolean;
-  cycleExecutor: (props: {
-    cycle_name: string;
-    lifecycle: any;
-    resolve: () => void;
-    reject: () => void;
-  }) => void;
+  onAfterTransition: (...args: any) => Promise<boolean | void> | void | boolean;
 };
 export type iMethods = BaseMethods &
   (
     | {
-        type: "MD";
-      }
+      type: "MD";
+    }
     | {
-        type: "MM";
-        onBeforeSetAddres: (
-          lifecycle: unknown,
-          address: MM_address
-        ) => Promise<boolean|void> | void | boolean;
-        isAddressValid: (adress: MM_address)=> boolean;
-      }
+      type: "MM";
+      onBeforeSetAddres: (
+        lifecycle: unknown,
+        address: MM_address
+      ) => Promise<boolean | void> | void | boolean;
+      isAddressValid: (adress: MM_address) => boolean;
+    }
   );
 
 
 export type iPLCStateMachine<machine> = {
   type: machine;
   fsm: iStateMachine &
-    MyTypes.ExtractByType<iData, machine> &
-    MyTypes.ExtractByType<iMethods, machine>;
+  MyTypes.ExtractByType<iData, machine> &
+  MyTypes.ExtractByType<iMethods, machine>;
   virt: {
     fsm: iStateMachine &
-      MyTypes.ExtractByType<iData, machine> &
-      MyTypes.ExtractByType<iMethods, machine>;
+    MyTypes.ExtractByType<iData, machine> &
+    MyTypes.ExtractByType<iMethods, machine>;
     init: (value: MyTypes.ScenarioStartCondition) => void;
   };
 };

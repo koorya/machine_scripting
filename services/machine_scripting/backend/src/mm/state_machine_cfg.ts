@@ -7,6 +7,7 @@ import {
   iData,
   iMethods,
   ExcludeTypeProp,
+  iCycleExecutorProps,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
@@ -18,21 +19,20 @@ type P200_Conf = {
 };
 
 async function executeProgram(
-  name: string,
-  config: { skip: number[] },
-  plc_connector: IPlcConnector
+  { cycle_name, config, plc_connector }: Omit<Extract<iCycleExecutorProps, { type: "MM" }>, "type">
 ) {
-  await plc_connector.writeVarByName(`${name}[0].Reset`, true);
-  await plc_connector.waitForPlcVar(`${name}[0].Reset`, false);
+
+  await plc_connector.writeVarByName(`${cycle_name}[0].Reset`, true);
+  await plc_connector.waitForPlcVar(`${cycle_name}[0].Reset`, false);
 
   const plc_vars = {};
   for (var step_number of config.skip) {
-    plc_vars[`${name}[${step_number}].Skip`] = true;
+    plc_vars[`${cycle_name}[${step_number}].Skip`] = true;
   }
   await plc_connector.writeVar(plc_vars);
 
-  console.log(`!!! ${name} STARTED !!!`);
-  await plc_connector.writeVarByName(`${name}[0].Start`, true);
+  console.log(`!!! ${cycle_name} STARTED !!!`);
+  await plc_connector.writeVarByName(`${cycle_name}[0].Start`, true);
 }
 type ThisType = Extract<iFsmConfig, { data }>["data"] &
   ExtractByType<iData, "MM"> &
@@ -77,9 +77,6 @@ function createFSMConfig(plc: IPlcConnector) {
       is_test: false,
     },
     methods: {
-      cycleExecutor: function (props) {
-        props.resolve();
-      },
       isAddressValid: function (address: MM_address) {
         console.log(`address validation: ${JSON.stringify(address, null, 2)}`);
         if (address != null) {
@@ -128,7 +125,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await executeProgram("P200", config, this_t.plc);
+        await executeProgram({ cycle_name: "P200", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP200: async function (lifecycle) {
@@ -145,7 +142,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await executeProgram("P300", config, this_t.plc);
+        await executeProgram({ cycle_name: "P300", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP300: async function (lifecycle) {
@@ -162,7 +159,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await executeProgram("P500", config, this_t.plc);
+        await executeProgram({ cycle_name: "P500", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP500: async function (lifecycle) {
@@ -179,7 +176,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await executeProgram("P600", config, this_t.plc);
+        await executeProgram({ cycle_name: "P600", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP600Near: async function (lifecycle) {
@@ -260,7 +257,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await executeProgram("P700", config, this_t.plc);
+        await executeProgram({ cycle_name: "P700", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP700: async function (lifecycle) {
@@ -277,7 +274,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
-        await executeProgram("P800", config, this_t.plc);
+        await executeProgram({ cycle_name: "P800", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP800: async function (lifecycle) {

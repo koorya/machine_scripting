@@ -18,26 +18,33 @@ const address_list = [
   //   ip: "192.168.250.1",
   //   type: "MM",
   // },
-  {
-    zmq_port: 5552,
-    ui_port: 5001,
-    is_fake: false,
-    ip: "172.16.201.89",
-    type: "MM",
-  },
-  {
-    zmq_port: 5553,
-    ui_port: 5002,
-    is_fake: false,
-    ip: "172.16.201.79",
-    type: "MM",
-  },
+  // {
+  //   zmq_port: 5552,
+  //   ui_port: 5001,
+  //   is_fake: false,
+  //   ip: "172.16.201.89",
+  //   type: "MM",
+  // },
+  // {
+  //   zmq_port: 5553,
+  //   ui_port: 5002,
+  //   is_fake: false,
+  //   ip: "172.16.201.79",
+  //   type: "MM",
+  // },
   {
     zmq_port: 5554,
     ui_port: 5003,
     is_fake: true,
     ip: "",
     type: "MM",
+  },
+  {
+    zmq_port: 5555,
+    ui_port: 5004,
+    is_fake: true,
+    ip: "",
+    type: "MD",
   },
 ];
 

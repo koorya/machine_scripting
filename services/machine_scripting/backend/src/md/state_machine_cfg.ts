@@ -1,211 +1,239 @@
 import * as fs from "fs";
-import { iFsmConfig, iTransition } from "../fsm_types";
-
-interface iMD_FsmData {
-  current_level: number;
-  top_level: number;
-  cycle_state: number;
-  status_message: string;
-}
-
-interface iMD_FsmConfig extends iFsmConfig {
-  data: iMD_FsmData;
-}
+import { ExtractByType } from "~shared/types/types";
+import {
+  iFsmConfig,
+  iTransition,
+  iData,
+  iMethods,
+  ExcludeTypeProp,
+  iCycleExecutorProps,
+} from "../fsm_types";
+import { IPlcConnector } from "../zmq_network";
 
 const transitions: iTransition[] = JSON.parse(
   fs.readFileSync("src/md/transitions.json").toString()
 );
 
-const fsm_config: iMD_FsmConfig = {
-  init: "on_pins_support",
-  transitions: transitions,
-  data: {
-    current_level: 0,
-    top_level: 4,
-    cycle_state: 0,
-    status_message: "no",
-  },
-  methods: {
-    cycleExecutor: function (props: {
-      cycle_name: string;
-      lifecycle: any;
-      resolve: () => void;
-      reject: () => void;
-    }) {
-      props.resolve();
-    },
-    onBeforeLiftUpFrame: function () {
-      if (this.current_level >= this.top_level) return false;
-      return true;
-    },
-    onBeforeLiftDownFrame: function () {
-      if (this.current_level <= 0) return false;
-      return true;
-    },
-    onLeaveLiftingUpFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) =>
-        this.cycleExecutor({
-          cycle_name: "up_frame_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level += 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        })
-      );
-    },
+async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Omit<Extract<iCycleExecutorProps, { type: "MD" }>, "type">) {
 
-    onLeaveLiftingDownFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) =>
-        this.cycleExecutor({
-          cycle_name: "down_frame_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level -= 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        })
-      );
-    },
+  console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
+  const var_obj = {};
+  var_obj[`${cycle_name}_state`] = 0;
+  var_obj[`start_${cycle_name}_handle`] = true;
+  await plc_connector.writeVar(var_obj);
 
-    onLeaveHoldingFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "init_to_hold",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
+  // plc_fsm.fsm.cycle_state
+  // plc_fsm.fsm.status_message
+  // требуется обновлять значения внутри объета, который эту функцию использует
 
-    onLeavePrepareingToLiftingBottomFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "from_hold_to_lift_crab",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
 
-    onLeavePrepareingToTopFrameMoveingVertical: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "from_hold_to_init",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
+  await new Promise<void>((resolve, reject) => {
+    const run = async () => {
+      const plc_variables = await plc_connector.readVarToObj([
+        `${cycle_name}_state`,
+        "status_message",
+      ]);
+      data.cycle_state = plc_variables[`${cycle_name}_state`];
+      data.status_message = plc_variables["status_message"];
 
-    onLeaveLandingBottomFrameToPins: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "from_upcrcyc_to_init",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-    onLeavePushingInCrabCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "pushin_crab",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-    onLeavePushingOutCrabCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "pushout_crab",
-          lifecycle: lifecycle,
-          resolve: () => {
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
+      if (data.cycle_state == 98) {
+        console.log("ошибка при исполнении цикла " + lifecycle.from);
+        reject();
+        return;
+      }
+      if (data.cycle_state != 99) {
+        setTimeout(run, 100);
+        return;
+      }
+      console.log("подождали пока манипулятор исполнит цикл " + lifecycle.from);
+      resolve();
+    }
+    run();
+  })
 
-    onBeforeLiftUpBottomFrame: function () {
-      if (this.current_level <= 0) return false;
-      return true;
-    },
-    onBeforeLiftDownBottomFrame: function () {
-      if (this.current_level >= this.top_level) return false;
-      return true;
-    },
-
-    onLeaveLiftingUpBottomFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "up_crab_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level -= 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-    onLeaveLiftingDownBottomFrameCycle: function (lifecycle) {
-      return new Promise((resolve, reject) => {
-        this.cycleExecutor({
-          cycle_name: "down_crab_cycle",
-          lifecycle: lifecycle,
-          resolve: () => {
-            this.current_level += 1;
-            resolve(null);
-          },
-          reject: () => {
-            reject();
-          },
-        });
-      });
-    },
-
-    onAfterTransition: function (lifecycle) {
-      return true;
-    },
-  },
 };
 
-export { fsm_config as md_fsm_config, transitions, iMD_FsmData, iMD_FsmConfig };
+type OnMethodsName = {
+  onBeforeLiftUpFrame;
+  onBeforeLiftDownFrame;
+  onLeaveLiftingUpFrameCycle;
+  onLeaveLiftingDownFrameCycle;
+  onLeaveHoldingFrameCycle;
+  onLeavePrepareingToLiftingBottomFrameCycle;
+  onLeavePrepareingToTopFrameMoveingVertical;
+  onLeaveLandingBottomFrameToPins;
+  onLeavePushingInCrabCycle;
+  onLeavePushingOutCrabCycle;
+  onBeforeLiftUpBottomFrame;
+  onBeforeLiftDownBottomFrame;
+  onLeaveLiftingUpBottomFrameCycle;
+  onLeaveLiftingDownBottomFrameCycle;
+};
+type ThisType = Extract<iFsmConfig, { data }>["data"] &
+  ExtractByType<iData, "MD"> &
+  ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type">;
+
+type OnMethods = {
+  [key in keyof OnMethodsName]: (
+    ...args: any
+  ) => Promise<boolean | void> | void | boolean;
+};
+const init: string = "on_pins_support";
+
+function createFSMConfig(plc: IPlcConnector) {
+  const fsm_config: iFsmConfig & {
+    data: ExtractByType<iData, "MD">;
+    methods: ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type"> & OnMethods;
+  } = {
+    init: init,
+    transitions: transitions,
+    data: {
+      type: "MD",
+      init: init,
+      current_level: 0,
+      top_level: 4,
+      cycle_state: 0,
+      status_message: "no",
+      plc: plc,
+      is_test: false,
+    },
+    methods: {
+      onBeforeLiftUpFrame: function () {
+        if (this.current_level >= this.top_level) return false;
+        return true;
+      },
+      onBeforeLiftDownFrame: function () {
+        if (this.current_level <= 0) return false;
+        return true;
+      },
+      onLeaveLiftingUpFrameCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "up_frame_cycle",
+            lifecycle: lifecycle,
+            data: this_t,
+          })
+
+        this.current_level += 1;
+
+      },
+
+      onLeaveLiftingDownFrameCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "down_frame_cycle",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+
+        this.current_level -= 1;
+      },
+
+      onLeaveHoldingFrameCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "init_to_hold",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+      },
+
+      onLeavePrepareingToLiftingBottomFrameCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "from_hold_to_lift_crab",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+      },
+
+      onLeavePrepareingToTopFrameMoveingVertical: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "from_hold_to_init",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+      },
+
+      onLeaveLandingBottomFrameToPins: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "from_upcrcyc_to_init",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+      },
+      onLeavePushingInCrabCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "pushin_crab",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+      },
+      onLeavePushingOutCrabCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "pushout_crab",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+      },
+
+      onBeforeLiftUpBottomFrame: function () {
+        if (this.current_level <= 0) return false;
+        return true;
+      },
+      onBeforeLiftDownBottomFrame: function () {
+        if (this.current_level >= this.top_level) return false;
+        return true;
+      },
+
+      onLeaveLiftingUpBottomFrameCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "up_crab_cycle",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+        this.current_level -= 1;
+      },
+      onLeaveLiftingDownBottomFrameCycle: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (!this_t.is_test)
+          await executeProgram({
+            plc_connector: this_t.plc,
+            cycle_name: "down_crab_cycle",
+            lifecycle: lifecycle,
+            data: this_t,
+          });
+        this.current_level += 1;
+      },
+      onAfterTransition: function (lifecycle) {
+        return true;
+      },
+    },
+  };
+
+  return fsm_config;
+}
+export { createFSMConfig, transitions };
