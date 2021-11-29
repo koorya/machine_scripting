@@ -15,7 +15,7 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
 import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
 import { API } from "./api";
-import { Machines } from "./types";
+import { AddParams, Machines } from "./types";
 
 function Jumbotron(props: any) {
   return (
@@ -622,25 +622,25 @@ function MachinePresentation({
     </Container>
   );
 }
+
+type MachineConfig = { name: string; api: API } & AddParams;
+
 function App() {
-  const [machineType, setMachineType] = useState<
-    { name: string; type: Machines; api: API }[]
-  >([]);
+  const [machineConfig, setMachineConfig] = useState<MachineConfig[]>([]);
   useEffect(() => {
     const startup_api = new API("http://localhost", 5000);
-    startup_api.getByAPI_get("list_machines_ports").then((machines_ports) => {
+    startup_api.getByAPI_get("get_machines_info").then((machines_info) => {
       const machines = Promise.all(
-        machines_ports.map(async (p, id) => {
-          const api = new API("http://localhost", p);
-          const machine_type = await api.getByAPI_get("machine_type");
-          return {
-            name: machine_type + id,
-            type: machine_type,
+        machines_info.map(async (machine, id) => {
+          const api = new API("http://localhost", machine.port);
+          const t = {
             api: api,
+            ...machine,
           };
+          return t;
         })
       );
-      machines.then((value) => setMachineType(value));
+      machines.then((value) => setMachineConfig(value));
     });
   }, []);
   return (
@@ -648,7 +648,7 @@ function App() {
       <Row>
         <Col>
           <Tabs id="page">
-            {machineType.map((machine) => (
+            {machineConfig.map((machine) => (
               <Tab
                 key={machine.name + "tab"}
                 eventKey={machine.name}
@@ -658,6 +658,13 @@ function App() {
                   key={machine.name + "presentation"}
                   machine={machine}
                 />
+                {machine.type === "MD" ? (
+                  <Jumbotron>hydro: {machine.hydro}</Jumbotron>
+                ) : machine.type === "MM" ? (
+                  <Jumbotron>photo: {machine.photo}</Jumbotron>
+                ) : (
+                  <Alert variant={"danger"}>unknown machine type</Alert>
+                )}
               </Tab>
             ))}
           </Tabs>

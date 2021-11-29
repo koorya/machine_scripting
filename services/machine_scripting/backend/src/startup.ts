@@ -4,13 +4,33 @@ import * as cors from "cors";
 
 import yargs, { options } from "yargs";
 import { hideBin } from "yargs/helpers";
+import { AddParams, Machines, RequestMatching } from "./types/types";
 
 const argv = yargs(hideBin(process.argv)).argv;
 console.log(argv);
 
 const port = 5000;
 
-const address_list = [
+type AddressListType = ({
+  name: string;
+  zmq_port: number;
+  ui_port: number;
+  specific_params: AddParams;
+}
+
+  &
+  (
+    | {
+      is_fake: true;
+    }
+    | {
+      is_fake: false;
+      ip: string;
+    }
+  )
+)
+
+const address_list: AddressListType[] = [
   // {
   //   zmq_port: 5552,
   //   ui_port: 5001,
@@ -26,25 +46,33 @@ const address_list = [
   //   type: "MM",
   // },
   // {
+  //   name: "Монтажник",
   //   zmq_port: 5553,
   //   ui_port: 5002,
   //   is_fake: false,
   //   ip: "172.16.201.79",
   //   type: "MM",
+  //   photo: "photo address"
   // },
   {
+    name: "fake_mm",
     zmq_port: 5554,
     ui_port: 5003,
     is_fake: true,
-    ip: "",
-    type: "MM",
+    specific_params: {
+      type: "MM",
+      photo: "photo"
+    },
   },
   {
+    name: "fake_md",
     zmq_port: 5555,
     ui_port: 5004,
     is_fake: true,
-    ip: "",
-    type: "MD",
+    specific_params: {
+      type: "MD",
+      hydro: 10,
+    },
   },
 ];
 
@@ -54,6 +82,18 @@ app.use(cors());
 app.get("/list_machines_ports", (request, response) => {
   response.send(JSON.stringify(address_list.map((value) => value.ui_port)));
 });
+
+app.get("/get_machines_info", (request, response) => {
+  const get_machines_info = (): Extract<RequestMatching, { type: "get_machines_info" }>["response"] => {
+    return address_list.map(
+      (value) => {
+        const t = { port: value.ui_port, name: value.name, ...value.specific_params, };
+        return t;
+      })
+  }
+  response.send(JSON.stringify(get_machines_info()));
+});
+
 const server = app.listen(port, () => console.log(`running on port ${port}`));
 
 process.on("SIGTERM", () => {
@@ -64,14 +104,14 @@ process.on("SIGTERM", () => {
 
 const run_list: string[] = [];
 address_list.map((value) => {
-  if (value.is_fake)
+  if (value.is_fake == true)
     run_list.push(`npm run fake_plc -- --zmq_port=${value.zmq_port}`);
   else
     run_list.push(
       `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`
     );
   run_list.push(
-    `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.type}`
+    `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`
   );
 });
 concurrently(run_list, { killOthers: ["failure", "success"] }).then(() =>
