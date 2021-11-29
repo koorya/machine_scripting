@@ -6,7 +6,7 @@ export type MM_address = { cassete: number; pos: number };
 
 export type ScenarioStartCondition = { state: string } & (
   | { type: "MD"; level: number }
-  | { type: "MM" }
+  | { type: "MM"; address: MM_address; }
 );
 
 export type MachineStatus = {
@@ -101,7 +101,7 @@ export type RequestMatching =
   }
   | {
     type: "controller_status";
-    response: ControllerStatus | null;
+    response: ControllerStatus | undefined;
     request: unknown;
     method: "GET";
   }

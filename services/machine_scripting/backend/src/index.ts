@@ -192,6 +192,7 @@ const end_points_get = [
         state: fsm.fsm.state,
         cycle_step: fsm.fsm.cycle_state,
         status_message: fsm.fsm.status_message,
+        address: fsm.fsm.current_address,
       };
       controller_status = {
         ...controller_status,

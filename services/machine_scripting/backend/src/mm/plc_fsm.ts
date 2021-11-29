@@ -48,6 +48,7 @@ function createPlcFsm(port: number) {
         console.log(`init exec: ${JSON.stringify(value, null, 2)}`);
         if (value != null) {
           await plc_fsm.virt.fsm.goto(value.state);
+          plc_fsm.virt.fsm.current_address = { ...value.address };
         }
       },
     },

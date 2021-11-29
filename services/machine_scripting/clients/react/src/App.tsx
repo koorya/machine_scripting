@@ -58,6 +58,22 @@ function useScenarioStatus(api: API) {
   return val;
 }
 
+function useControllerStatus(api: API) {
+  const [val, setVal] = useState<MyTypes.ControllerStatus | undefined>(
+    undefined
+  );
+  useEffect(() => {
+    const upd = setInterval(() => {
+      api.getByAPI_get("controller_status").then((value) => setVal(value));
+    }, 100);
+    return () => {
+      console.log("useCmds is unmounted");
+      clearInterval(upd);
+    };
+  }, [api]);
+  return val;
+}
+
 function GraphImage({ api }: { api: API }) {
   const [image, setImage] = useState<string | null>(null);
   useEffect(() => {
@@ -436,11 +452,13 @@ function Scenarios({
         };
       case "MM":
         return {
+          address: { cassete: 0, pos: 0 },
           type: "MM",
           state: "standby",
         };
       default:
         return {
+          address: { cassete: 0, pos: 0 },
           type: "MM",
           state: "standby",
         };
@@ -583,15 +601,9 @@ function ButtonToggle({
   );
 }
 
-function MachinePresentation({
-  machine,
-}: {
-  machine: {
-    name: string;
-    type: Machines;
-    api: API;
-  };
-}) {
+type MachineConfig = { name: string; api: API } & AddParams;
+
+function MachinePresentation({ machine }: { machine: MachineConfig }) {
   return (
     <Container fluid>
       <Row>
@@ -615,6 +627,15 @@ function MachinePresentation({
                   id={machine.name}
                 />
               </Tab>
+              <Tab eventKey="status" title="Status">
+                {machine.type === "MD" ? (
+                  <div>{machine.api.getByAPI_get}</div>
+                ) : machine.type === "MM" ? (
+                  <div></div>
+                ) : (
+                  <div></div>
+                )}
+              </Tab>
             </Tabs>
           </Jumbotron>
         </Col>
@@ -622,8 +643,6 @@ function MachinePresentation({
     </Container>
   );
 }
-
-type MachineConfig = { name: string; api: API } & AddParams;
 
 function App() {
   const [machineConfig, setMachineConfig] = useState<MachineConfig[]>([]);
