@@ -604,6 +604,7 @@ function ButtonToggle({
 type MachineConfig = { name: string; api: API } & AddParams;
 
 function MachinePresentation({ machine }: { machine: MachineConfig }) {
+  const controller_status = useControllerStatus(machine.api);
   return (
     <Container fluid>
       <Row>
@@ -628,10 +629,14 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                 />
               </Tab>
               <Tab eventKey="status" title="Status">
-                {machine.type === "MD" ? (
-                  <div>{machine.api.getByAPI_get}</div>
-                ) : machine.type === "MM" ? (
-                  <div></div>
+                {controller_status?.type === "MD" ? (
+                  <div>level: {controller_status?.machine_status.level}</div>
+                ) : controller_status?.type === "MM" ? (
+                  <div>
+                    casette: {controller_status?.machine_status.address.cassete}
+                    <br />
+                    pos: {controller_status?.machine_status.address.pos} <br />
+                  </div>
                 ) : (
                   <div></div>
                 )}
