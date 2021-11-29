@@ -58,6 +58,8 @@ type AddParams =
   | {
     type: "MD";
     hydro: number;
+    reading_port: { zmq: number; ui: number; };
+    seting_port: { zmq: number; ui: number; };
   };
 
 
@@ -177,17 +179,10 @@ export type RequestMatching =
   };
 
 
-type ReqTypes_get<T = RequestMatching> = T extends { type: any; method: "GET" }
-  ? T["type"]
-  : never;
-type ReqTypes_post<T = RequestMatching> = T extends {
-  type: any;
-  method: "POST";
-}
-  ? T["type"]
-  : never;
-type IResponse<type> = ExtractByType<RequestMatching, type>["response"];
-type IRequest<type extends ReqTypes_post> = ExtractByType<
-  RequestMatching,
-  type
->["request"];
+type ReqTypes_get<matching = RequestMatching> = Extract<matching, { method: "GET"; type: string; }>["type"];
+
+type ReqTypes_post<matching = RequestMatching> = Extract<matching, { method: "POST"; type: string; }>["type"];
+
+type IResponse<type, matching = RequestMatching> = Extract<matching, { "type": type; response: unknown; }>["response"];
+
+type IRequest<type extends ReqTypes_post<matching>, matching = RequestMatching> = Extract<matching, { "type": type; request: unknown; }>["request"];

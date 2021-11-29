@@ -15,7 +15,9 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
 import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
 import { API } from "./api";
-import { AddParams, Machines } from "./types";
+import { AddParams, Machines, RequestMatching } from "./types";
+import { RepeaterRequestMatching } from "./repeater";
+import MnemoMD from "./md/MnemoMD";
 
 function Jumbotron(props: any) {
   return (
@@ -31,7 +33,7 @@ function Jumbotron(props: any) {
     </div>
   );
 }
-function useCmds(api: API) {
+function useCmds(api: API<RequestMatching>) {
   const [cmds, setCmds] = useState<string[]>([]);
   useEffect(() => {
     const cmds_upd = setInterval(() => {
@@ -44,7 +46,7 @@ function useCmds(api: API) {
   }, [api]);
   return cmds;
 }
-function useScenarioStatus(api: API) {
+function useScenarioStatus(api: API<RequestMatching>) {
   const [val, setVal] = useState<MyTypes.ScenarioStatus | undefined>(undefined);
   useEffect(() => {
     const upd = setInterval(() => {
@@ -58,7 +60,7 @@ function useScenarioStatus(api: API) {
   return val;
 }
 
-function useControllerStatus(api: API) {
+function useControllerStatus(api: API<RequestMatching>) {
   const [val, setVal] = useState<MyTypes.ControllerStatus | undefined>(
     undefined
   );
@@ -74,7 +76,7 @@ function useControllerStatus(api: API) {
   return val;
 }
 
-function GraphImage({ api }: { api: API }) {
+function GraphImage({ api }: { api: API<RequestMatching> }) {
   const [image, setImage] = useState<string | null>(null);
   useEffect(() => {
     const image_upd = setInterval(() => {
@@ -90,7 +92,7 @@ function GraphImage({ api }: { api: API }) {
   );
 }
 
-function DirectControls({ api }: { api: API }) {
+function DirectControls({ api }: { api: API<RequestMatching> }) {
   const cmds = useCmds(api);
   return (
     <>
@@ -139,7 +141,7 @@ function CurrentState({
   );
 }
 
-function useAllStates(api: API) {
+function useAllStates(api: API<RequestMatching>) {
   const [allStates, setAllStates] = useState<string[]>([]);
   useEffect(() => {
     api.getByAPI_get("get_all_states").then((value) => setAllStates(value));
@@ -148,7 +150,7 @@ function useAllStates(api: API) {
   return allStates;
 }
 
-function useCompile(api: API, script: string) {
+function useCompile(api: API<RequestMatching>, script: string) {
   const [compiled, setCompiled] = useState<string[]>([]);
   useEffect(() => {
     const controller = new AbortController();
@@ -175,7 +177,7 @@ function useCompile(api: API, script: string) {
 }
 
 function useValidation(
-  api: API,
+  api: API<RequestMatching>,
   condition: MyTypes.ScenarioStartCondition,
   scenario: string[]
 ) {
@@ -214,7 +216,7 @@ function useValidation(
 }
 
 type ScenarioProps = {
-  api: API;
+  api: API<RequestMatching>;
   value: MyTypes.ScenarioDefenition;
   mode?: string;
   saveCallback: (saveprop: MyTypes.ScenarioDefenition) => void;
@@ -437,7 +439,7 @@ function Scenarios({
   type,
   id,
 }: {
-  api: API;
+  api: API<RequestMatching>;
   type: Machines;
   id: string;
 }) {
@@ -601,7 +603,7 @@ function ButtonToggle({
   );
 }
 
-type MachineConfig = { name: string; api: API } & AddParams;
+type MachineConfig = { name: string; api: API<RequestMatching> } & AddParams;
 
 function MachinePresentation({ machine }: { machine: MachineConfig }) {
   const controller_status = useControllerStatus(machine.api);
@@ -649,10 +651,18 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
   );
 }
 
+// function AdditionalMD({ port }: { port: number }) {
+//   // const [api, setApi] = useState<API<RepeaterRequestMatching>>(
+//   //   () => new API<RepeaterRequestMatching>("http://localhost", port)
+//   // );
+//   // const plc_vars = useAdditionalMD(api);
+//   return <MnemoMD port={port} />;
+// }
+
 function App() {
   const [machineConfig, setMachineConfig] = useState<MachineConfig[]>([]);
   useEffect(() => {
-    const startup_api = new API("http://localhost", 5000);
+    const startup_api = new API<RequestMatching>("http://localhost", 5000);
     startup_api.getByAPI_get("get_machines_info").then((machines_info) => {
       const machines = Promise.all(
         machines_info.map(async (machine, id) => {
@@ -683,7 +693,13 @@ function App() {
                   machine={machine}
                 />
                 {machine.type === "MD" ? (
-                  <Jumbotron>hydro: {machine.hydro}</Jumbotron>
+                  <Jumbotron>
+                    hydro: {machine.hydro}
+                    <MnemoMD
+                      read_port={machine.reading_port.ui}
+                      write_port={machine.seting_port.ui}
+                    />
+                  </Jumbotron>
                 ) : machine.type === "MM" ? (
                   <Jumbotron>photo: {machine.photo}</Jumbotron>
                 ) : (

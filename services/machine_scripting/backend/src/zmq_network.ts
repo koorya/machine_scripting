@@ -2,11 +2,18 @@ import * as zmq from "zeromq";
 
 export class PlcConnector {
   zmq_sock: zmq.Request;
+  port: number;
   constructor(port: number) {
     this.zmq_sock = new zmq.Request();
+    this.port = port;
     this.zmq_sock.connect(`tcp://127.0.0.1:${port}`);
   }
   async readVar(names: string[]) {
+    if (!this.zmq_sock.writable) {
+
+      console.log(`port: ${this.port}; readable: ${this.zmq_sock.readable}`)
+      throw Error("zmq_sock not writable ");
+    }
     await this.zmq_sock.send(
       JSON.stringify({
         PlcVarsArray: {
@@ -67,4 +74,4 @@ export class PlcConnector {
   }
 }
 
-export interface IPlcConnector extends PlcConnector {}
+export interface IPlcConnector extends PlcConnector { }

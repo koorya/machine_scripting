@@ -1,6 +1,6 @@
 import { IRequest, IResponse, ReqTypes_get, ReqTypes_post } from "./types";
 
-export class API {
+export class API<matching> {
   address: string;
   port: number;
   constructor(address: string, port: number) {
@@ -8,7 +8,7 @@ export class API {
     this.port = port;
     console.log("api created");
   }
-  getByAPI_get<type extends ReqTypes_get, response_type = IResponse<type>>(
+  getByAPI_get<type extends ReqTypes_get<matching>, response_type = IResponse<type, matching>>(
     name: type
   ): Promise<response_type> {
     return new Promise((resolve, reject) => {
@@ -20,9 +20,9 @@ export class API {
     });
   }
   getByAPI_post<
-    type extends ReqTypes_post,
-    response_type = IResponse<type>,
-    request_type = IRequest<type>
+    type extends ReqTypes_post<matching>,
+    response_type = IResponse<type, matching>,
+    request_type = IRequest<type, matching>
   >(
     name: type,
     req: request_type,

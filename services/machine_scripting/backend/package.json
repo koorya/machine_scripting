@@ -13,6 +13,7 @@
     "server_nodemon": "npx nodemon --exec \"ts-node ./src/index.ts\"",
     "server": "npx ts-node ./src/index.ts",
     "client": "npm --prefix ../clients/react start",
+    "repeater": "npx ts-node ./src/repeater/index.ts",
     "test": "npx jest"
   },
   "author": "",
@@ -49,8 +50,6 @@
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },
-    "transformIgnorePatterns": [
-      "node_modules/(?!variables/.*)"
-    ]
+    "transformIgnorePatterns": ["node_modules/(?!variables/.*)"]
   }
 }

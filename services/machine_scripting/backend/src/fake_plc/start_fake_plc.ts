@@ -4,15 +4,15 @@ import MMLogic from "./fake-mm";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-const argv = yargs(hideBin(process.argv)).argv;
+const argv = yargs(hideBin(process.argv)).array("zmq_port").argv;
 console.log(argv);
-const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
+const zmq_port: number[] = argv["zmq_port"] ? argv["zmq_port"] : [5552];
 console.log(`zmq_port: ${zmq_port}`);
 
 const fake_mm = new MMLogic();
 fake_mm.run();
 
-const srv_inst = new SocketServer(zmq_port, (mess) => {
+const srv_inst = zmq_port.map((zmq_port) => new SocketServer(zmq_port, (mess) => {
   const rec_obj = JSON.parse(mess);
   if (!rec_obj.PlcVarsArray.update) {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
@@ -25,6 +25,7 @@ const srv_inst = new SocketServer(zmq_port, (mess) => {
     });
   } else {
     rec_obj.PlcVarsArray.arr.forEach((element) => {
+      console.log(`element ${JSON.stringify(element, null, 2)}`)
       const md_var = md_vault.find((value) => value.name == element.name);
       if (md_var != undefined) {
         md_var.value = element["value"];
@@ -32,8 +33,8 @@ const srv_inst = new SocketServer(zmq_port, (mess) => {
         fake_mm.setPLCVarByName(element.name, element.value);
       } else md_vault.push({ name: element.name, value: element["value"] });
     });
-    console.log(md_vault);
+    // console.log(md_vault);
     doFakePlcLogic();
   }
   return JSON.stringify(rec_obj);
-});
+}));

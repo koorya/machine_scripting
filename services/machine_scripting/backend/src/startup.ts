@@ -54,16 +54,16 @@ const address_list: AddressListType[] = [
   //   type: "MM",
   //   photo: "photo address"
   // },
-  {
-    name: "fake_mm",
-    zmq_port: 5554,
-    ui_port: 5003,
-    is_fake: true,
-    specific_params: {
-      type: "MM",
-      photo: "photo"
-    },
-  },
+  // {
+  //   name: "fake_mm",
+  //   zmq_port: 5554,
+  //   ui_port: 5003,
+  //   is_fake: true,
+  //   specific_params: {
+  //     type: "MM",
+  //     photo: "photo"
+  //   },
+  // },
   {
     name: "fake_md",
     zmq_port: 5555,
@@ -72,6 +72,8 @@ const address_list: AddressListType[] = [
     specific_params: {
       type: "MD",
       hydro: 10,
+      reading_port: { zmq: 5700, ui: 5710 },
+      seting_port: { zmq: 5701, ui: 5711 },
     },
   },
 ];
@@ -102,17 +104,48 @@ process.on("SIGTERM", () => {
   });
 });
 
-const run_list: string[] = [];
+const run_list: concurrently.CommandObj[] = [];
 address_list.map((value) => {
-  if (value.is_fake == true)
-    run_list.push(`npm run fake_plc -- --zmq_port=${value.zmq_port}`);
-  else
-    run_list.push(
-      `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`
-    );
-  run_list.push(
-    `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`
-  );
+  if (value.is_fake == true) {
+    if (value.specific_params.type == "MD") {
+      run_list.push({
+        command: `npm run fake_plc -- --zmq_port=${value.zmq_port} ${value.specific_params.reading_port.zmq} ${value.specific_params.seting_port.zmq}`,
+        name: `fake_md_${value.name}`,
+      });
+    }
+    else if (value.specific_params.type == "MM")
+      run_list.push({
+        command: `npm run fake_plc -- --zmq_port=${value.zmq_port}`,
+        name: `fake_mm_${value.name}`
+      });
+  }
+  else {
+    if (value.specific_params.type == "MD")
+      run_list.push({
+        command:
+          `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} ${value.specific_params.reading_port.zmq} ${value.specific_params.seting_port.zmq} --ip_address=${value.ip} --sgw_port=2`
+      });
+    else if (value.specific_params.type == "MM")
+      run_list.push({
+        command:
+          `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`
+      });
+  }
+  if (value.specific_params.type == "MD") {
+    run_list.push({
+      command: `npm run repeater -- --zmq_port=${value.specific_params.reading_port.zmq} --ui_port=${value.specific_params.reading_port.ui}`,
+      name: `repeater_reading`,
+    });
+    run_list.push({
+      command: `npm run repeater -- --zmq_port=${value.specific_params.seting_port.zmq} --ui_port=${value.specific_params.seting_port.ui}`,
+      name: `repeater_setting`,
+    });
+  }
+  run_list.push({
+    command:
+      `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
+    name: `server`
+  });
 });
 concurrently(run_list, { killOthers: ["failure", "success"] }).then(() =>
   server.close(() => {
