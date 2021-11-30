@@ -209,7 +209,7 @@ def main_dummy_func():
     return jsonify(result) 
 
 
-saved_response_class = None
+saved_response_class = {}
 # .....................................................................................................................
 # Запуск в работу КЛАССИФИЦИРУЮЩЕЙ сети
 @app.route('/class', methods=['GET', 'POST'])
@@ -221,14 +221,15 @@ def classificate_func():
     global classes
     global saved_response_class
 
-    last_req = request.args.get('last_req')
-
-    if(last_req != None and saved_response_class != None):
-        return jsonify(saved_response_class)
 
     request_start = datetime.now()
     IPcam_L = request.args.get('ipcl', default = '172.16.201.137', type = str)
     IPcam_R = request.args.get('ipcr', default = '172.16.201.142', type = str)
+
+    last_req = request.args.get('last_req')
+
+    if(last_req != None and IPcam_L+IPcam_R in saved_response_class):
+        return jsonify(saved_response_class[IPcam_L+IPcam_R])
 
     image_IPcam_L = capture_image_from_ipcamera(IPcam_L, 1, files_datetime(request_start))
     image_IPcam_R = capture_image_from_ipcamera(IPcam_R, -1, files_datetime(request_start))
@@ -253,11 +254,11 @@ def classificate_func():
               'TIMING': {'request': human_datetime(request_start), 'predict': time_predict, 'response': human_datetime(response_generate), 'total': time_total},
               'PATH': {'image_L': f"{IMAGES_PATH}/{image_IPcam_L}", 'image_R': f"{IMAGES_PATH}/{image_IPcam_R}"},
              }
-    saved_response_class = result
+    saved_response_class[IPcam_L+IPcam_R] = result
     return jsonify(result)
 
 
-saved_response_segment = None
+saved_response_segment = {}
 # .....................................................................................................................
 # Запуск в работу СЕГМЕНТИРУЮЩЕЙ сети
 @app.route('/segment', methods=['GET', 'POST'])
@@ -267,14 +268,14 @@ def segmentation_func():
 
     global saved_response_segment
 
-    last_req = request.args.get('last_req')
-
-    if(last_req != None and saved_response_segment != None):
-        return jsonify(saved_response_segment)
 
     request_start = datetime.now()
     IPcam_L = request.args.get('ipcl', default = '172.16.201.137', type = str)
     IPcam_R = request.args.get('ipcr', default = '172.16.201.142', type = str)
+
+    last_req = request.args.get('last_req')
+    if(last_req != None and IPcam_L+IPcam_R in saved_response_segment):
+        return jsonify(saved_response_segment[IPcam_L+IPcam_R])
 
     image_IPcam_L = capture_image_from_ipcamera(IPcam_L, 1, files_datetime(request_start)) 
     # image_IPcam_L = './test1.jpg'
@@ -313,7 +314,7 @@ def segmentation_func():
               'PATH': {'image_L': f"{IMAGES_PATH}/{image_IPcam_L}", 'image_R': f"{IMAGES_PATH}/{image_IPcam_R}"}
              }
 
-    saved_response_segment = result
+    saved_response_segment[IPcam_L+IPcam_R] = result
     return jsonify(result)
 
 # .....................................................................................................................
