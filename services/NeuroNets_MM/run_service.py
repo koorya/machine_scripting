@@ -9,14 +9,12 @@
 
 import os
 import sys
-import json
 import getopt
-import flask
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request
 import cv2 as cv
 import numpy as np
-from pandas import DataFrame
 from datetime import datetime
+from dotenv import load_dotenv
 
 
 import tensorflow as tf
@@ -44,6 +42,16 @@ segm_nn_model = './models/nnet_s.h5'
 segm_nn_model_weigths = './models/nnet_s_W.h5'
 
 classes = ['NG', 'OK']
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
+DEFAULT_CAM_ADDRESS = os.environ.get('DEFAULT_CAM_ADDRESS')
+IMAGES_PATH = os.environ.get('IMAGES_PATH')
+
+if not os.path.exists(IMAGES_PATH):
+    os.makedirs(IMAGES_PATH)
 
 # create the Flask app
 app = Flask(__name__)
@@ -75,7 +83,7 @@ def generate_batch_for_predict_images(images_files, image_shape=(512, 512, 3)):
     '''
     batch_out = []
     for imgfile in images_files:
-        raw = cv.cvtColor(cv.imread(imgfile), cv.COLOR_BGR2RGB) / 255.0
+        raw = cv.cvtColor(cv.imread(f"{IMAGES_PATH}/{imgfile}"), cv.COLOR_BGR2RGB) / 255.0
         
         if ((raw.shape[0]>image_shape[0]) and (raw.shape[1]>image_shape[1])):
             sx = raw.shape[0]
@@ -109,15 +117,17 @@ def capture_image_from_ipcamera(ip, crop, label):
     port = 554
     account = os.environ['NNservice'].split(':')
     try:
-        cap = cv.VideoCapture(f"rtsp://{account[0]}:{account[1]}@{ip}:554/Streaming/Channels/101")
-
+        if(DEFAULT_CAM_ADDRESS == None):
+            cap = cv.VideoCapture(f"rtsp://{account[0]}:{account[1]}@{ip}:554/Streaming/Channels/101")
+        else:
+            cap = cv.VideoCapture(DEFAULT_CAM_ADDRESS)
     except Exception as err:
         print(f'Failed Capture: {ip}\n{err}')      
         # sys.exit(2)
     end_time_1 = datetime.now()
 
     _, img = cap.read()
-    cv.imwrite(f'./{label}_{ip}.jpg', img)
+    cv.imwrite(f'{IMAGES_PATH}/{label}_{ip}.jpg', img)
     cap.release()
     h, w, ch = img.shape
 
@@ -138,8 +148,8 @@ def capture_image_from_ipcamera(ip, crop, label):
         right = w
 
     img = img[top:bottom, left:right, :]
-    out_name = f'./{label}_{sublabel}-CROP_{ip}.jpg'
-    cv.imwrite(out_name, img)
+    out_name = f'{label}_{sublabel}-CROP_{ip}.jpg'
+    cv.imwrite(f"{IMAGES_PATH}/{out_name}", img)
 
     return out_name
 
@@ -167,7 +177,7 @@ def predict_RED_on_segmentation_image(input_image, min_range = ([0, 100, 20], [1
     lower_mask = cv.inRange(hsv, lower1, upper1)
     upper_mask = cv.inRange(hsv, lower2, upper2)
     
-    full_mask = lower_mask + upper_mask;
+    full_mask = lower_mask + upper_mask
     red_result = cv.bitwise_and(result, result, mask=full_mask)
  
     area_red_in_px = int(np.sum(img_clip(full_mask)))
@@ -233,7 +243,7 @@ def classificate_func():
     result = {
               'RESULT': {'predict': predict_in_str, 'labels': [classes[1] if a > 0.75  else classes[0] for a in class_predict]},
               'TIMING': {'request': human_datetime(request_start), 'predict': time_predict, 'response': human_datetime(response_generate), 'total': time_total},
-              'PATH': {'image_L': image_IPcam_L, 'image_R': image_IPcam_R},
+              'PATH': {'image_L': f"{IMAGES_PATH}/{image_IPcam_L}", 'image_R': f"{IMAGES_PATH}/{image_IPcam_R}"},
              }
 
     return jsonify(result)
@@ -270,20 +280,20 @@ def segmentation_func():
     _L_stack_images, _L_red_area, _L_text = predict_RED_on_segmentation_image(L_result_image)
     _R_stack_images, _R_red_area, _R_text = predict_RED_on_segmentation_image(R_result_image)
 
-    cv.imwrite(f'./Predict_{image_IPcam_L[2:]}', _L_stack_images)
-    cv.imwrite(f'./Predict_{image_IPcam_R[2:]}', _R_stack_images)
+    cv.imwrite(f'{IMAGES_PATH}/Predict_{image_IPcam_L}', _L_stack_images)
+    cv.imwrite(f'{IMAGES_PATH}/Predict_{image_IPcam_R}', _R_stack_images)
 
     response_generate = datetime.now()
     
     time_delta = response_generate - request_start
     time_total = f'{time_delta.seconds//60}m {time_delta.seconds}s {time_delta.microseconds//1000}ms'
 
-    result = { 'RESULT': {'predict_image_L': f'./Predict__{image_IPcam_L[2:]}', 'predict_image_R': f'./Predict__{image_IPcam_R[2:]}',
+    result = { 'RESULT': {'predict_image_L': f'{IMAGES_PATH}/Predict__{image_IPcam_L}', 'predict_image_R': f'{IMAGES_PATH}/Predict__{image_IPcam_R}',
                           'predict_L': "NG" if _L_red_area>=4.5 else "OK", 'predict_R': "NG" if _R_red_area>=4.5 else "OK",
                           'text_L': _L_text, 'text_R': _R_text
                          },
               'TIMING': {'request': human_datetime(request_start), 'predict': time_predict, 'response': human_datetime(response_generate), 'total': time_total},
-              'PATH': {'image_L': image_IPcam_L, 'image_R': image_IPcam_R}
+              'PATH': {'image_L': f"{IMAGES_PATH}/{image_IPcam_L}", 'image_R': f"{IMAGES_PATH}/{image_IPcam_R}"}
              }
 
     return jsonify(result)
