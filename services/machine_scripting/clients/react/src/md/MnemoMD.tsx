@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import { API } from "../api";
 import { RepeaterRequestMatching } from "../repeater";
+import FCPanel from "./FC_panel";
 
 import HydraulicCircuit from "./HydraulicCircuit";
 
@@ -100,6 +101,7 @@ function MnemoMD({
             BB11={plc_vars["BB11"]}
             BB12={plc_vars["BB12"]}
           />
+          <FCPanel api={writeApi} plc_vars={plc_vars} />
         </Col>
       </Row>
     </div>
