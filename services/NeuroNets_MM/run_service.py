@@ -208,6 +208,8 @@ def main_dummy_func():
 
     return jsonify(result) 
 
+
+saved_response_class = None
 # .....................................................................................................................
 # Запуск в работу КЛАССИФИЦИРУЮЩЕЙ сети
 @app.route('/class', methods=['GET', 'POST'])
@@ -217,6 +219,12 @@ def classificate_func():
     Анализ фотоизображений заклёпочных соединений с указанных адресов для IP-камер
     '''
     global classes
+    global saved_response_class
+
+    last_req = request.args.get('last_req')
+
+    if(last_req != None and saved_response_class != None):
+        return jsonify(saved_response_class)
 
     request_start = datetime.now()
     IPcam_L = request.args.get('ipcl', default = '172.16.201.137', type = str)
@@ -245,16 +253,25 @@ def classificate_func():
               'TIMING': {'request': human_datetime(request_start), 'predict': time_predict, 'response': human_datetime(response_generate), 'total': time_total},
               'PATH': {'image_L': f"{IMAGES_PATH}/{image_IPcam_L}", 'image_R': f"{IMAGES_PATH}/{image_IPcam_R}"},
              }
-
+    saved_response_class = result
     return jsonify(result)
 
+
+saved_response_segment = None
 # .....................................................................................................................
 # Запуск в работу СЕГМЕНТИРУЮЩЕЙ сети
 @app.route('/segment', methods=['GET', 'POST'])
 def segmentation_func():
 
     # Запустить СЕГМЕНТИРУЮЩУЮ сеть можно перейдя по этой ссылки: http://localhost:8090/segment?ipcl=172.16.201.137&ipcr=172.16.201.142
-    
+
+    global saved_response_segment
+
+    last_req = request.args.get('last_req')
+
+    if(last_req != None and saved_response_segment != None):
+        return jsonify(saved_response_segment)
+
     request_start = datetime.now()
     IPcam_L = request.args.get('ipcl', default = '172.16.201.137', type = str)
     IPcam_R = request.args.get('ipcr', default = '172.16.201.142', type = str)
@@ -296,6 +313,7 @@ def segmentation_func():
               'PATH': {'image_L': f"{IMAGES_PATH}/{image_IPcam_L}", 'image_R': f"{IMAGES_PATH}/{image_IPcam_R}"}
              }
 
+    saved_response_segment = result
     return jsonify(result)
 
 # .....................................................................................................................
