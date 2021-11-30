@@ -13,7 +13,11 @@ function FC({
   plc_vars: { [key: string]: any };
 }) {
   return (
-    <Alert variant={"primary"}>
+    <Alert
+      variant={
+        plc_vars[fc_name + "_command"] === 0x0001 ? "success" : "secondary"
+      }
+    >
       <input
         type="button"
         style={{

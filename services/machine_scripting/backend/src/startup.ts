@@ -54,16 +54,16 @@ const address_list: AddressListType[] = [
   //   type: "MM",
   //   photo: "photo address"
   // },
-  // {
-  //   name: "fake_mm",
-  //   zmq_port: 5554,
-  //   ui_port: 5003,
-  //   is_fake: true,
-  //   specific_params: {
-  //     type: "MM",
-  //     photo: "photo"
-  //   },
-  // },
+  {
+    name: "fake_mm",
+    zmq_port: 5554,
+    ui_port: 5003,
+    is_fake: true,
+    specific_params: {
+      type: "MM",
+      photo: "photo"
+    },
+  },
   {
     name: "fake_md",
     zmq_port: 5555,
