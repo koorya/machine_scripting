@@ -10,7 +10,8 @@
 import os
 import sys
 import getopt
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS, cross_origin
 import cv2 as cv
 import numpy as np
 from datetime import datetime
@@ -54,7 +55,14 @@ if not os.path.exists(IMAGES_PATH):
     os.makedirs(IMAGES_PATH)
 
 # create the Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+@app.route('/jpg/<path:path>')
+def send_jpg(path):
+    print(f"image: {path}")
+    return send_from_directory('.', f"./{path}")
 
 try:
     print('1. Load core for classifiacation neural network model.')
@@ -120,13 +128,15 @@ def capture_image_from_ipcamera(ip, crop, label):
         if(DEFAULT_CAM_ADDRESS == None):
             cap = cv.VideoCapture(f"rtsp://{account[0]}:{account[1]}@{ip}:554/Streaming/Channels/101")
         else:
-            cap = cv.VideoCapture(DEFAULT_CAM_ADDRESS)
+            filenames = next(os.walk(DEFAULT_CAM_ADDRESS), (None, None, []))[2]  # [] if no file
+            cap = cv.VideoCapture(f"{DEFAULT_CAM_ADDRESS}/{filenames[0]}")
     except Exception as err:
         print(f'Failed Capture: {ip}\n{err}')      
         # sys.exit(2)
     end_time_1 = datetime.now()
 
     _, img = cap.read()
+    print(_)
     cv.imwrite(f'{IMAGES_PATH}/{label}_{ip}.jpg', img)
     cap.release()
     h, w, ch = img.shape
@@ -191,6 +201,7 @@ def predict_RED_on_segmentation_image(input_image, min_range = ([0, 100, 20], [1
 #
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
+@cross_origin()
 def main_dummy_func():
     '''
     Обработка стандартного обращения к основному адресу сервиса
@@ -213,6 +224,7 @@ saved_response_class = {}
 # .....................................................................................................................
 # Запуск в работу КЛАССИФИЦИРУЮЩЕЙ сети
 @app.route('/class', methods=['GET', 'POST'])
+@cross_origin()
 def classificate_func():    
     '''
     Обработка запроса к классифицирующей нейронной сети:
@@ -262,6 +274,7 @@ saved_response_segment = {}
 # .....................................................................................................................
 # Запуск в работу СЕГМЕНТИРУЮЩЕЙ сети
 @app.route('/segment', methods=['GET', 'POST'])
+@cross_origin()
 def segmentation_func():
 
     # Запустить СЕГМЕНТИРУЮЩУЮ сеть можно перейдя по этой ссылки: http://localhost:8090/segment?ipcl=172.16.201.137&ipcr=172.16.201.142
