@@ -106,7 +106,7 @@ function DirectControls({
         cmd === "step" ? (
           <Button
             className="mx-1"
-            // disabled={cmd === "step"}
+            disabled={available !== true}
             key={cmd}
             onClick={() =>
               api
@@ -133,7 +133,7 @@ function DirectControls({
           </Button>
         )
       )}
-      {available != true ? <Spinner size="sm" animation="border" /> : ""}
+      {available !== true ? <Spinner size="sm" animation="border" /> : ""}
     </>
   );
 }
@@ -240,6 +240,7 @@ type ScenarioProps = {
   mode?: string;
   saveCallback: (saveprop: MyTypes.ScenarioDefenition) => void;
   current_index?: number | null;
+  status?: string;
 };
 
 function Scenario({
@@ -248,6 +249,7 @@ function Scenario({
   mode = "edit",
   saveCallback,
   current_index,
+  status,
 }: ScenarioProps) {
   const [script, setScript] = useState<string>(value.script);
   const [condition, setCondition] = useState<MyTypes.ScenarioStartCondition>(
@@ -404,6 +406,17 @@ function Scenario({
           </Col>
         )}
         <Col>
+          <Alert
+            variant={
+              status === "available"
+                ? "secondary"
+                : status === "paused"
+                ? "warning"
+                : "primary"
+            }
+          >
+            {status}
+          </Alert>
           <Accordion defaultActiveKey="0" className="py-1">
             <Accordion.Item eventKey="0">
               <Accordion.Header>Resault Command list</Accordion.Header>
@@ -457,10 +470,12 @@ function Scenarios({
   api,
   type,
   id,
+  status,
 }: {
   api: API<RequestMatching>;
   type: Machines;
   id: string;
+  status?: string;
 }) {
   const [scenarios, setScenarios] = useState<MyTypes.ScenarioDefenition[]>([]);
   function defStartCondition(type: Machines): MyTypes.ScenarioStartCondition {
@@ -565,6 +580,7 @@ function Scenarios({
             {scenarios.map((element) => (
               <Tab.Pane key={element.name} eventKey={`${element.name}`}>
                 <Scenario
+                  status={status}
                   api={api}
                   key={`scenario_${element.name}`}
                   value={element}
@@ -648,6 +664,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
               </Tab>
               <Tab eventKey="scenario" title="By scenario">
                 <Scenarios
+                  status={controller_status?.state}
                   api={machine.api}
                   type={machine.type}
                   id={machine.name}

@@ -109,8 +109,12 @@ var FSMController: new (
       if (fsm.fsm.cannot(command)) return false;
 
       console.log(this.execCommandAsync);
-      this.execCommandAsync(command).then(() => {
+      this.execCommandAsync(command).then(async () => {
         console.log(`execCommandAsync executed ${command} success`);
+        while (fsm.fsm.can("step")) {
+          console.log("execScenarioAsync: wait step()")
+          await fsm.fsm.step();
+        }
         this.finishExecCommand();
       }).catch(() => {
         console.log(`execCommandAsync executed ${command} failed`);
@@ -124,28 +128,43 @@ var FSMController: new (
       commands: string[];
     }) {
       this.scenario = { ...scenario, index: 0 };
+      const fsm = this.fsm as iPLCStateMachine<Machines>;
       const commands = scenario.commands;
       const eCommands = commands[Symbol.iterator]();
       const execNextCmd = async () => {
         let stop_flag = false;
+        let curr_cmd = eCommands.next();
         while (!stop_flag) {
           if (this.state === "paused") {
             await (() => new Promise((resolve) => setTimeout(resolve, 200)))(); // sleep 200 ms
             console.log("paused");
             continue;
           }
-          const curr_cmd = eCommands.next();
           if (!curr_cmd.done && !this.should_stop) {
             try {
+              while (fsm.fsm.can("step")) {
+                console.log("execScenarioAsync: wait step()")
+                await fsm.fsm.step();
+              }
               await this.execCommandAsync(curr_cmd.value);
             } catch {
-              console.log("error during executing command");
-              if (this.can("stop")) this.stop();
+              console.log(`error during executing command. scenario.index: ${this.scenario.index}`);
+              if (this.can("pause")) {
+
+                this.pause();
+                continue;
+              }
             }
           } else {
+            if (curr_cmd.done)
+              while (fsm.fsm.can("step")) {
+                console.log("execScenarioAsync: wait step()")
+                await fsm.fsm.step();
+              }
             stop_flag = true;
             if (this.can("stop")) this.stop();
           }
+          curr_cmd = eCommands.next();
           this.scenario.index += 1;
         }
       };

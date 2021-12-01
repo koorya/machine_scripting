@@ -196,21 +196,7 @@ function createFSMConfig(plc: IPlcConnector) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P600[7].Run", true);
-        var exec = require("child_process").exec;
-        async function execute(command) {
-          return new Promise((resolve, reject) => {
-            exec(command, function (error, stdout, stderr) {
-              resolve(stdout);
-            });
-          });
-        }
-        let ok = (await execute("npx ts-node ./src/is_cam_ok.ts")) as string;
-        console.log("executed process");
-        console.log(ok);
-        if (!/^Ok/.exec(ok)) {
-          console.log("Cam check failed");
-          throw new Error("I want to cancel leaving p600near");
-        }
+
         const check_cam = await checkCam();
         if (!check_cam) throw new Error("I want to cancel leaving p600near");
 
@@ -223,21 +209,6 @@ function createFSMConfig(plc: IPlcConnector) {
         if (this_t.is_test) return true;
         console.log("waitForPlcVar(P600[8].Run)")
         await this_t.plc.waitForPlcVar("P600[8].Run", true);
-        var exec = require("child_process").exec;
-        async function execute(command) {
-          return new Promise((resolve, reject) => {
-            exec(command, function (error, stdout, stderr) {
-              resolve(stdout);
-            });
-          });
-        }
-        let ok = (await execute("npx ts-node ./src/is_cam_ok.ts")) as string;
-        console.log("executed process");
-        console.log(ok);
-        if (!/^Ok/.exec(ok)) {
-          console.log("Cam check failed");
-          throw new Error("I want to cancel leaving p600far");
-        }
 
         const check_cam = await checkCam();
         if (!check_cam) throw new Error("I want to cancel leaving p600far");

@@ -62,7 +62,12 @@ const address_list: AddressListType[] = [
     is_fake: true,
     specific_params: {
       type: "MM",
-      photo: "photo"
+      neuro: {
+
+        ipcl: "172.16.201.137",
+        ipcr: "172.16.201.142",
+        port: 8090
+      }
     },
   },
   {
