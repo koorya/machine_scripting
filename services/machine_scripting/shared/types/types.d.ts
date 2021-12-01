@@ -62,55 +62,54 @@ type AddParams =
     seting_port: { zmq: number; ui: number; };
   };
 
-
 export type RequestMatching =
   | {
     type: "machine_type";
     response: Machines;
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
     type: "list_machines_ports";
     response: number[];
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
     type: "get_machines_info";
     response: ({ name: string; port: number; } & AddParams)[];
-    request: unknown;
+    request: {};
     method: "GET";
   }
   |
   {
     type: "test";
     response: string[];
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
     type: "commands";
     response: string[];
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
     type: "scenario_status";
     response: ScenarioStatus;
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
     type: "controller_status";
     response: ControllerStatus | undefined;
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
     type: "image";
     response: string | null;
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
@@ -141,7 +140,7 @@ export type RequestMatching =
   | {
     type: "get_all_states";
     response: string[];
-    request: unknown;
+    request: {};
     method: "GET";
   }
   | {
@@ -165,7 +164,7 @@ export type RequestMatching =
   | {
     type: "scenarios";
     response: ScenarioDefenition[];
-    request: unknown;
+    request: { d: "10", f: "0" };
     method: "GET";
   }
   | {
@@ -178,6 +177,17 @@ export type RequestMatching =
     method: "POST";
   };
 
+type GET_PARAMS =
+  {
+    type: string;
+    method: "GET";
+    response: unknown;
+    request: Record<string, string>;
+  };
+
+type Valid<T> = Extract<T, { method: "GET" }> extends GET_PARAMS ? T : never;
+
+const d: Valid<RequestMatching>;
 
 type ReqTypes_get<matching = RequestMatching> = Extract<matching, { method: "GET"; type: string; }>["type"];
 
@@ -185,4 +195,6 @@ type ReqTypes_post<matching = RequestMatching> = Extract<matching, { method: "PO
 
 type IResponse<type, matching = RequestMatching> = Extract<matching, { "type": type; response: unknown; }>["response"];
 
-type IRequest<type extends ReqTypes_post<matching>, matching = RequestMatching> = Extract<matching, { "type": type; request: unknown; }>["request"];
+type IRequestNotValidated<type, matching = RequestMatching> = Extract<matching, { "type": type; request: any; }>["request"];
+
+type IRequest<type, matching> = IRequestNotValidated<type, Valid<matching>>

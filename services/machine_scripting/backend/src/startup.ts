@@ -5,6 +5,7 @@ import * as cors from "cors";
 import yargs, { options } from "yargs";
 import { hideBin } from "yargs/helpers";
 import { AddParams, Machines, RequestMatching } from "./types/types";
+import { exit } from "@jest/types/node_modules/@types/yargs";
 
 const argv = yargs(hideBin(process.argv)).argv;
 console.log(argv);
@@ -98,11 +99,7 @@ app.get("/get_machines_info", (request, response) => {
 
 const server = app.listen(port, () => console.log(`running on port ${port}`));
 
-process.on("SIGTERM", () => {
-  server.close(() => {
-    console.log("Process terminated");
-  });
-});
+
 
 const run_list: concurrently.CommandObj[] = [];
 address_list.map((value) => {
@@ -147,9 +144,32 @@ address_list.map((value) => {
     name: `server`
   });
 });
-concurrently(run_list, { killOthers: ["failure", "success"] }).then(() =>
+
+// var exec = require("child_process").exec;
+// exec("\"penv/Scripts/python.exe\" scripts/test.py", { cwd: '../../NeuroNets_MM/', timeout: 2000 }, (error, stdout, stderr) => {
+//   if (error) {
+//     console.error(`exec error: ${error}`);
+//     return;
+//   }
+//   console.log(`stdout: ${stdout}`);
+//   console.error(`stderr: ${stderr}`);
+// });
+
+run_list.push({
+  command:
+    "\"penv/Scripts/python.exe\" run_service.py",
+  name: `neuro_mm`,
+  cwd: '../../NeuroNets_MM/'
+});
+
+process.on("SIGTERM", () => {
   server.close(() => {
-    console.log("Process terminated");
-  })
-);
-console.log("hello");
+    console.log("Process terminated SIGTERM");
+  });
+});
+
+concurrently(run_list, { killOthers: ["failure", "success"] }).then(() => {
+  return server.close(() => {
+    console.log("Process terminated concurrently");
+  });
+});

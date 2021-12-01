@@ -8,14 +8,24 @@ export class API<matching> {
     this.port = port;
     console.log("api created");
   }
-  getByAPI_get<type extends ReqTypes_get<matching>, response_type = IResponse<type, matching>>(
-    name: type
+  getByAPI_get<
+    type extends ReqTypes_get<matching>,
+    request_type extends IRequest<type, matching> = IRequest<type, matching>,
+    response_type = IResponse<type, matching>,
+    >(
+      name: type,
+      req?: request_type,
   ): Promise<response_type> {
     return new Promise((resolve, reject) => {
-      fetch(`${this.address}:${this.port}/${name}`)
-        .then((res) => res.json())
+      const params = new URLSearchParams(req)
+      fetch(`${this.address}:${this.port}/${name}?${params.toString()}`)
         .then((res) => {
-          resolve(res as response_type);
+          if (res.ok)
+            return res.json().then((res) => {
+              resolve(res as response_type);
+            });
+          else
+            reject(res.statusText);
         });
     });
   }

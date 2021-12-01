@@ -16,8 +16,8 @@ import * as MyTypes from "./types";
 import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
 import { API } from "./api";
 import { AddParams, Machines, RequestMatching } from "./types";
-import { RepeaterRequestMatching } from "./repeater";
 import MnemoMD from "./md/MnemoMD";
+import NeuroImage from "./mm/NeuroImage";
 
 function Jumbotron(props: any) {
   return (
@@ -701,7 +701,10 @@ function App() {
                     />
                   </Jumbotron>
                 ) : machine.type === "MM" ? (
-                  <Jumbotron>photo: {machine.photo}</Jumbotron>
+                  <Jumbotron>
+                    photo: {machine.photo}
+                    <NeuroImage />
+                  </Jumbotron>
                 ) : (
                   <Alert variant={"danger"}>unknown machine type</Alert>
                 )}

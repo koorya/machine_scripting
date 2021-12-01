@@ -311,15 +311,19 @@ def segmentation_func():
     _L_stack_images, _L_red_area, _L_text = predict_RED_on_segmentation_image(L_result_image)
     _R_stack_images, _R_red_area, _R_text = predict_RED_on_segmentation_image(R_result_image)
 
-    cv.imwrite(f'{IMAGES_PATH}/Predict_{image_IPcam_L}', _L_stack_images)
-    cv.imwrite(f'{IMAGES_PATH}/Predict_{image_IPcam_R}', _R_stack_images)
+
+    predict_path_l = f'{IMAGES_PATH}/Predict_{image_IPcam_L}'
+    predict_path_r = f'{IMAGES_PATH}/Predict_{image_IPcam_R}'
+
+    cv.imwrite(predict_path_l, _L_stack_images)
+    cv.imwrite(predict_path_r, _R_stack_images)
 
     response_generate = datetime.now()
     
     time_delta = response_generate - request_start
     time_total = f'{time_delta.seconds//60}m {time_delta.seconds}s {time_delta.microseconds//1000}ms'
 
-    result = { 'RESULT': {'predict_image_L': f'{IMAGES_PATH}/Predict__{image_IPcam_L}', 'predict_image_R': f'{IMAGES_PATH}/Predict__{image_IPcam_R}',
+    result = { 'RESULT': {'predict_image_L': predict_path_l, 'predict_image_R': predict_path_r,
                           'predict_L': "NG" if _L_red_area>=4.5 else "OK", 'predict_R': "NG" if _R_red_area>=4.5 else "OK",
                           'text_L': _L_text, 'text_R': _R_text
                          },
