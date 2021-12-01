@@ -10,6 +10,7 @@ import {
   iCycleExecutorProps,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
+import { checkCam } from "./check_cam";
 
 const transitions: iTransition[] = JSON.parse(
   fs.readFileSync("src/mm/transitions.json").toString()
@@ -44,9 +45,12 @@ type OnMethodsName = {
   onLeaveP300;
   onAfterP500Start;
   onLeaveP500;
-  onAfterP600Start;
-  onLeaveP600Near;
-  onLeaveP600Far;
+  onBeforeP600Start;
+  onEnterP600Near?;
+  onEnterP600Far?;
+  onLeaveP600Near?;
+  onLeaveP600Far?;
+
   onAfterP700Start;
   onLeaveP700;
   onAfterP800Start;
@@ -170,7 +174,7 @@ function createFSMConfig(plc: IPlcConnector) {
         return true;
       },
 
-      onAfterP600Start: async function (
+      onBeforeP600Start: async function (
         lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
@@ -179,6 +183,15 @@ function createFSMConfig(plc: IPlcConnector) {
         await executeProgram({ cycle_name: "P600", config: config, plc_connector: this_t.plc });
         return true;
       },
+
+      // can cancel only in
+      // 
+      // onBeforeTransition
+      // onBefore<TRANSITION>
+      // onLeaveState
+      // onLeave<STATE>
+      // onTransition
+
       onLeaveP600Near: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
@@ -196,8 +209,11 @@ function createFSMConfig(plc: IPlcConnector) {
         console.log(ok);
         if (!/^Ok/.exec(ok)) {
           console.log("Cam check failed");
-          return false;
+          throw new Error("I want to cancel leaving p600near");
         }
+        const check_cam = await checkCam();
+        if (!check_cam) throw new Error("I want to cancel leaving p600near");
+
         await this_t.plc.writeVar({ CHECK_CAMERA: true });
         return true;
       },
@@ -205,6 +221,7 @@ function createFSMConfig(plc: IPlcConnector) {
       onLeaveP600Far: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
         if (this_t.is_test) return true;
+        console.log("waitForPlcVar(P600[8].Run)")
         await this_t.plc.waitForPlcVar("P600[8].Run", true);
         var exec = require("child_process").exec;
         async function execute(command) {
@@ -219,8 +236,12 @@ function createFSMConfig(plc: IPlcConnector) {
         console.log(ok);
         if (!/^Ok/.exec(ok)) {
           console.log("Cam check failed");
-          return false;
+          throw new Error("I want to cancel leaving p600far");
         }
+
+        const check_cam = await checkCam();
+        if (!check_cam) throw new Error("I want to cancel leaving p600far");
+
         await this_t.plc.writeVar({ CHECK_CAMERA: true });
         return true;
       },

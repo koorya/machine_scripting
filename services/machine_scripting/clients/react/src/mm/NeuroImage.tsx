@@ -3,7 +3,11 @@ import { Alert, Card, Col, Image, Row } from "react-bootstrap";
 import { API } from "../api";
 import { NeuroServiceMatching } from "../neuroservice";
 
-function useNeuroImagesSegment(api: API<NeuroServiceMatching>) {
+function useNeuroImagesSegment(
+  api: API<NeuroServiceMatching>,
+  ipcl: string,
+  ipcr: string
+) {
   const [images, setImages] = useState<
     Extract<NeuroServiceMatching, { type: "segment" }>["response"]
   >();
@@ -12,8 +16,8 @@ function useNeuroImagesSegment(api: API<NeuroServiceMatching>) {
     const image_upd = setInterval(() => {
       api
         .getByAPI_get("segment", {
-          ipcl: "172.16.201.137",
-          ipcr: "172.16.201.142",
+          ipcl: ipcl,
+          ipcr: ipcr,
           last_req: "",
         })
         .then((value) => setImages(value))
@@ -24,12 +28,16 @@ function useNeuroImagesSegment(api: API<NeuroServiceMatching>) {
     return () => {
       clearInterval(image_upd);
     };
-  }, [api]);
+  }, [api, ipcl, ipcr]);
 
   return images;
 }
 
-function useNeuroImagesClass(api: API<NeuroServiceMatching>) {
+function useNeuroImagesClass(
+  api: API<NeuroServiceMatching>,
+  ipcl: string,
+  ipcr: string
+) {
   const [images, setImages] = useState<
     Extract<NeuroServiceMatching, { type: "class" }>["response"]
   >();
@@ -38,8 +46,8 @@ function useNeuroImagesClass(api: API<NeuroServiceMatching>) {
     const image_upd = setInterval(() => {
       api
         .getByAPI_get("class", {
-          ipcl: "172.16.201.137",
-          ipcr: "172.16.201.142",
+          ipcl: ipcl,
+          ipcr: ipcr,
           last_req: "",
         })
         .then((value) => setImages(value))
@@ -50,7 +58,7 @@ function useNeuroImagesClass(api: API<NeuroServiceMatching>) {
     return () => {
       clearInterval(image_upd);
     };
-  }, [api]);
+  }, [api, ipcl, ipcr]);
 
   return images;
 }
@@ -93,12 +101,20 @@ function PredictCard({
   );
 }
 
-function NeuroImage() {
+function NeuroImage({
+  ipcl,
+  ipcr,
+  port = 8090,
+}: {
+  ipcl: string;
+  ipcr: string;
+  port: number;
+}) {
   const [api, setApi] = useState<API<NeuroServiceMatching>>(
-    () => new API<NeuroServiceMatching>("http://localhost", 8090)
+    () => new API<NeuroServiceMatching>("http://localhost", port)
   );
-  const by_class = useNeuroImagesClass(api);
-  const by_segment = useNeuroImagesSegment(api);
+  const by_class = useNeuroImagesClass(api, ipcl, ipcr);
+  const by_segment = useNeuroImagesSegment(api, ipcl, ipcr);
   return (
     <Alert>
       <Row>

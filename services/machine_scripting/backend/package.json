@@ -23,6 +23,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.2",
+    "@types/node-fetch": ">2.0 <3.0",
     "@types/yargs": "^17.0.4",
     "@types/zeromq": "^5.2.0",
     "concurrently": "^6.2.1",
@@ -32,6 +33,7 @@
     "graphviz": "0.0.9",
     "javascript-state-machine": "^3.1.0",
     "jest": "^27.3.1",
+    "node-fetch": ">2.0 <3.0",
     "nodemon": "^2.0.12",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.1.0",
@@ -50,6 +52,8 @@
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },
-    "transformIgnorePatterns": ["node_modules/(?!variables/.*)"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ]
   }
 }

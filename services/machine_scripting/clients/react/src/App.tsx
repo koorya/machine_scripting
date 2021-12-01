@@ -92,13 +92,31 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
   );
 }
 
-function DirectControls({ api }: { api: API<RequestMatching> }) {
+function DirectControls({
+  api,
+  available,
+}: {
+  api: API<RequestMatching>;
+  available: boolean;
+}) {
   const cmds = useCmds(api);
   return (
     <>
       {cmds.map((cmd) =>
         cmd === "step" ? (
-          <Spinner key={cmd} animation="border" />
+          <Button
+            className="mx-1"
+            // disabled={cmd === "step"}
+            key={cmd}
+            onClick={() =>
+              api
+                .getByAPI_post("exec_graph_command", { command: cmd })
+                .then((res) => console.log(res))
+            }
+            size="sm"
+          >
+            {cmd}
+          </Button>
         ) : (
           <Button
             className="mx-1"
@@ -115,6 +133,7 @@ function DirectControls({ api }: { api: API<RequestMatching> }) {
           </Button>
         )
       )}
+      {available != true ? <Spinner size="sm" animation="border" /> : ""}
     </>
   );
 }
@@ -607,6 +626,7 @@ type MachineConfig = { name: string; api: API<RequestMatching> } & AddParams;
 
 function MachinePresentation({ machine }: { machine: MachineConfig }) {
   const controller_status = useControllerStatus(machine.api);
+
   return (
     <Container fluid>
       <Row>
@@ -621,7 +641,10 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
               className="mb-3"
             >
               <Tab eventKey="commands" title="Direct control">
-                <DirectControls api={machine.api} />
+                <DirectControls
+                  api={machine.api}
+                  available={controller_status?.state === "available"}
+                />
               </Tab>
               <Tab eventKey="scenario" title="By scenario">
                 <Scenarios
@@ -677,6 +700,7 @@ function App() {
       machines.then((value) => setMachineConfig(value));
     });
   }, []);
+
   return (
     <Container fluid>
       <Row>
@@ -702,8 +726,11 @@ function App() {
                   </Jumbotron>
                 ) : machine.type === "MM" ? (
                   <Jumbotron>
-                    photo: {machine.photo}
-                    <NeuroImage />
+                    <NeuroImage
+                      ipcl={machine.neuro.ipcl}
+                      ipcr={machine.neuro.ipcr}
+                      port={machine.neuro.port}
+                    />
                   </Jumbotron>
                 ) : (
                   <Alert variant={"danger"}>unknown machine type</Alert>

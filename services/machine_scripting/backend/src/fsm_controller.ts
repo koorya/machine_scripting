@@ -82,12 +82,23 @@ var FSMController: new (
       console.log(`fsm state: ${fsm.fsm.state}`);
       if (fsm.fsm.cannot(parsed.name)) console.log("invalid cmd");
       else {
+        console.log(`execCommandAsync: wait for exec ${parsed.name}`);
         const is_command_exec = await (fsm.fsm[parsed.name] as (
           ...arg: any
         ) => Promise<boolean>)(parsed.props);
 
-        while (fsm.fsm.can("step")) await fsm.fsm.step();
-        if (!is_command_exec) console.log("command exec error");
+        console.log(`execCommandAsync: exec ${parsed.name} finish`);
+
+        if (!is_command_exec) {
+
+          console.log("execCommandAsync: command exec error");
+        }
+        else {
+          // while (fsm.fsm.can("step")) {
+          //   console.log("execCommandAsync: wait step()")
+          //   await fsm.fsm.step();
+          // }
+        }
       }
       // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
       console.log(`command: "${parsed.name}" execution finish`);
@@ -99,6 +110,11 @@ var FSMController: new (
 
       console.log(this.execCommandAsync);
       this.execCommandAsync(command).then(() => {
+        console.log(`execCommandAsync executed ${command} success`);
+        this.finishExecCommand();
+      }).catch(() => {
+        console.log(`execCommandAsync executed ${command} failed`);
+
         this.finishExecCommand();
       });
       return true;
@@ -142,8 +158,8 @@ var FSMController: new (
     onStop: function () {
       this.should_stop = true;
     },
-    onPause: function () {},
-    onResume: function () {},
+    onPause: function () { },
+    onResume: function () { },
     onTransition: function (lifecycle) {
       console.log(`controller state: ${lifecycle.to}`);
     },

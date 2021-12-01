@@ -53,7 +53,12 @@ export type ScenarioDefenition = {
 type AddParams =
   | {
     type: "MM";
-    photo: string;
+    neuro: {
+
+      ipcl: string;
+      ipcr: string;
+      port: number;
+    };
   }
   | {
     type: "MD";
@@ -187,7 +192,6 @@ type GET_PARAMS =
 
 type Valid<T> = Extract<T, { method: "GET" }> extends GET_PARAMS ? T : never;
 
-const d: Valid<RequestMatching>;
 
 type ReqTypes_get<matching = RequestMatching> = Extract<matching, { method: "GET"; type: string; }>["type"];
 
