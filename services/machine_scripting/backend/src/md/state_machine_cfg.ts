@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { ExtractByType } from "~shared/types/types";
+import { ExtractByType, MachineStatus } from "~shared/types/types";
 import {
   iFsmConfig,
   iTransition,
@@ -7,6 +7,7 @@ import {
   iMethods,
   ExcludeTypeProp,
   iCycleExecutorProps,
+  iStateMachine,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
@@ -71,7 +72,8 @@ type OnMethodsName = {
 };
 type ThisType = Extract<iFsmConfig, { data }>["data"] &
   ExtractByType<iData, "MD"> &
-  ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type">;
+  ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type">
+  & iStateMachine;
 
 type OnMethods = {
   [key in keyof OnMethodsName]: (
@@ -98,6 +100,18 @@ function createFSMConfig(plc: IPlcConnector) {
       is_test: false,
     },
     methods: {
+      getMachineStatus: function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        const machine_status: Extract<MachineStatus, { type: "MD" }> = {
+          type: this_t.type,
+          state: this_t.state,
+          cycle_step: this_t.cycle_state,
+          status_message: this_t.status_message,
+          level: this_t.current_level,
+        };
+        return machine_status;
+      },
+
       onBeforeLiftUpFrame: function () {
         if (this.current_level >= this.top_level) return false;
         return true;

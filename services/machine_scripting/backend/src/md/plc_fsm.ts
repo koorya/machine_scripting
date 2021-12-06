@@ -19,7 +19,7 @@ function createPlcFsm(port: number) {
 
   var plc_fsm: iPLCStateMachine<"MD"> = {
     type: "MD",
-    fsm: new_StateMachine<
+    js_fsm: new_StateMachine<
       typeof fsm_config,
       iStateMachine & typeof fsm_config.data & typeof fsm_config.methods
     >({
@@ -27,7 +27,7 @@ function createPlcFsm(port: number) {
       methods: { ...fsm_config.methods },
     }),
     virt: {
-      fsm: new_StateMachine<
+      js_fsm: new_StateMachine<
         typeof fsm_config,
         iStateMachine & typeof fsm_config.data & typeof fsm_config.methods
       >({
@@ -48,8 +48,8 @@ function createPlcFsm(port: number) {
       init: async (value: ExtractByType<ScenarioStartCondition, "MD">) => {
         console.log(`init exec: ${JSON.stringify(value, null, 2)}`);
         if (value != null) {
-          await plc_fsm.virt.fsm.goto(value.state);
-          plc_fsm.virt.fsm.current_level = value.level;
+          await plc_fsm.virt.js_fsm.goto(value.state);
+          plc_fsm.virt.js_fsm.current_level = value.level;
         }
       },
     },

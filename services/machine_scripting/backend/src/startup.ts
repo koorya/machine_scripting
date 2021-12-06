@@ -2,10 +2,9 @@ import * as concurrently from "concurrently";
 import * as express from "express";
 import * as cors from "cors";
 
-import yargs, { options } from "yargs";
+import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { AddParams, Machines, RequestMatching } from "./types/types";
-import { exit } from "@jest/types/node_modules/@types/yargs";
 
 const argv = yargs(hideBin(process.argv)).argv;
 console.log(argv);
@@ -82,6 +81,18 @@ const address_list: AddressListType[] = [
       seting_port: { zmq: 5701, ui: 5711 },
     },
   },
+  {
+    name: "fake Подъемник",
+    zmq_port: 5556,
+    ui_port: 5006,
+    is_fake: true,
+    specific_params: {
+      type: "MP",
+      length: 11,
+      reading_port: { zmq: 5800, ui: 5810 },
+      seting_port: { zmq: 5801, ui: 5811 },
+    },
+  },
 ];
 
 const app = express();
@@ -146,7 +157,7 @@ address_list.map((value) => {
   run_list.push({
     command:
       `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
-    name: `server`
+    name: `server_${value.specific_params.type}`
   });
 });
 
@@ -160,12 +171,12 @@ address_list.map((value) => {
 //   console.error(`stderr: ${stderr}`);
 // });
 
-run_list.push({
-  command:
-    "\"penv/Scripts/python.exe\" run_service.py",
-  name: `neuro_mm`,
-  cwd: '../../NeuroNets_MM/'
-});
+// run_list.push({
+//   command:
+//     "\"penv/Scripts/python.exe\" run_service.py",
+//   name: `neuro_mm`,
+//   cwd: '../../NeuroNets_MM/'
+// });
 
 process.on("SIGTERM", () => {
   server.close(() => {

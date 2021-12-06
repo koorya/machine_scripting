@@ -1,6 +1,6 @@
 import * as StateMachine from "javascript-state-machine";
-import { iController, iPLCStateMachine, iStateMachine } from "./fsm_types";
-import { Machines } from "./types/types";
+import { iController, iFsmConfig, iData, iPLCStateMachine, iStateMachine, iMethods } from "./fsm_types";
+import { CompiledScenario, ControllerStatus, Machines, MachineStatus, ScenarioDefenition } from "./types/types";
 
 async function slowPrint(msg) {
   return new Promise((resolve, reject) => {
@@ -24,6 +24,18 @@ export function parseCommand(
 type iPLCStateMachineOfUnion<U extends string> = {
   [K in U]: iPLCStateMachine<K>;
 }[U];
+
+type ThisT = Extract<iFsmConfig, { data }>["data"] &
+  Extract<iData, { type: "CONTROLLER" }> &
+  Omit<Extract<iMethods, { type: "CONTROLLER" }>, "type"> &
+  iStateMachine
+  & {
+    finishExecCommand;
+    execCommandAsync;
+    pause;
+    stop;
+    execScenarioAsync;
+  };
 
 var FSMController: new (
   fms: iPLCStateMachineOfUnion<Machines>
@@ -61,29 +73,46 @@ var FSMController: new (
       to: "executing_scenario",
     },
   ],
-  data: function <type extends Machines>(fsm: iPLCStateMachine<type>) {
+  data: function (slave_fsm: iPLCStateMachine<Machines>): Extract<iData, { type: "CONTROLLER" }> {
     return {
-      fsm: fsm,
+      type: "CONTROLLER",
+      slave_fsm: slave_fsm,
       should_stop: false,
       scenario: null,
     };
   },
   methods: {
+    getControllerStatus: function (): ReturnType<iController["getControllerStatus"]> {
+
+      const this_t: ThisT = this;
+
+      let controller_status: ControllerStatus<Machines> = {
+        state: this_t.state,
+        scenario_status: {
+          name: this_t.scenario?.name,
+          step_index: this_t.scenario?.index,
+        },
+        type: this_t.slave_fsm.type,
+        machine_status: this_t.slave_fsm.js_fsm.getMachineStatus(),
+      };
+      return controller_status;
+    },
     execCommandAsync: async function (
       command: string | { name: string; props: unknown }
     ) {
-      const fsm = this.fsm as iPLCStateMachine<Machines>;
+      const this_t: ThisT = this;
+      const fsm = this_t.slave_fsm as iPLCStateMachine<Machines>;
       console.log(`command: "${command}" execution start`);
 
       let parsed: { name: string; props: unknown };
       if (typeof command === "string") parsed = parseCommand(command);
       else parsed = command;
 
-      console.log(`fsm state: ${fsm.fsm.state}`);
-      if (fsm.fsm.cannot(parsed.name)) console.log("invalid cmd");
+      console.log(`fsm state: ${fsm.js_fsm.state}`);
+      if (fsm.js_fsm.cannot(parsed.name)) console.log("invalid cmd");
       else {
         console.log(`execCommandAsync: wait for exec ${parsed.name}`);
-        const is_command_exec = await (fsm.fsm[parsed.name] as (
+        const is_command_exec = await (fsm.js_fsm[parsed.name] as (
           ...arg: any
         ) => Promise<boolean>)(parsed.props);
 
@@ -105,77 +134,78 @@ var FSMController: new (
       return;
     },
     onExecCommand: function (lifecycle, command: string) {
-      const fsm = this.fsm as iPLCStateMachine<Machines>;
-      if (fsm.fsm.cannot(command)) return false;
+      const this_t: ThisT = this;
+      const fsm = this_t.slave_fsm as iPLCStateMachine<Machines>;
+      if (fsm.js_fsm.cannot(command)) return false;
 
-      console.log(this.execCommandAsync);
-      this.execCommandAsync(command).then(async () => {
+      console.log(this_t.execCommandAsync);
+      this_t.execCommandAsync(command).then(async () => {
         console.log(`execCommandAsync executed ${command} success`);
-        while (fsm.fsm.can("step")) {
+        while (fsm.js_fsm.can("step")) {
           console.log("execScenarioAsync: wait step()")
-          await fsm.fsm.step();
+          await fsm.js_fsm.step();
         }
-        this.finishExecCommand();
+        this_t.finishExecCommand();
       }).catch(() => {
         console.log(`execCommandAsync executed ${command} failed`);
 
-        this.finishExecCommand();
+        this_t.finishExecCommand();
       });
       return true;
     },
-    execScenarioAsync: async function (scenario: {
-      name: string;
-      commands: string[];
-    }) {
-      this.scenario = { ...scenario, index: 0 };
-      const fsm = this.fsm as iPLCStateMachine<Machines>;
+    execScenarioAsync: async function (scenario: CompiledScenario) {
+      const this_t: ThisT = this;
+      this_t.scenario = { ...scenario, index: 0 };
+      const fsm = this_t.slave_fsm;
       const commands = scenario.commands;
       const eCommands = commands[Symbol.iterator]();
       const execNextCmd = async () => {
         let stop_flag = false;
         let curr_cmd = eCommands.next();
         while (!stop_flag) {
-          if (this.state === "paused") {
+          if (this_t.state === "paused") {
             await (() => new Promise((resolve) => setTimeout(resolve, 200)))(); // sleep 200 ms
             console.log("paused");
             continue;
           }
-          if (!curr_cmd.done && !this.should_stop) {
+          if (!curr_cmd.done && !this_t.should_stop) {
             try {
-              while (fsm.fsm.can("step")) {
+              while (fsm.js_fsm.can("step")) {
                 console.log("execScenarioAsync: wait step()")
-                await fsm.fsm.step();
+                await fsm.js_fsm.step();
               }
-              await this.execCommandAsync(curr_cmd.value);
+              await this_t.execCommandAsync(curr_cmd.value);
             } catch {
-              console.log(`error during executing command. scenario.index: ${this.scenario.index}`);
-              if (this.can("pause")) {
+              console.log(`error during executing command. scenario.index: ${this_t.scenario.index}`);
+              if (this_t.can("pause")) {
 
-                this.pause();
+                this_t.pause();
                 continue;
               }
             }
           } else {
             if (curr_cmd.done)
-              while (fsm.fsm.can("step")) {
+              while (fsm.js_fsm.can("step")) {
                 console.log("execScenarioAsync: wait step()")
-                await fsm.fsm.step();
+                await fsm.js_fsm.step();
               }
             stop_flag = true;
-            if (this.can("stop")) this.stop();
+            if (this_t.can("stop")) this_t.stop();
           }
           curr_cmd = eCommands.next();
-          this.scenario.index += 1;
+          this_t.scenario.index += 1;
         }
       };
       execNextCmd();
     },
     onExecScenario: function (lifecycle, scenario) {
-      this.should_stop = false;
-      this.execScenarioAsync(scenario);
+      const this_t: ThisT = this;
+      this_t.should_stop = false;
+      this_t.execScenarioAsync(scenario);
     },
     onStop: function () {
-      this.should_stop = true;
+      const this_t: ThisT = this;
+      this_t.should_stop = true;
     },
     onPause: function () { },
     onResume: function () { },

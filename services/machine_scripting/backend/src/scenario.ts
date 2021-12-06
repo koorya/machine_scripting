@@ -29,7 +29,7 @@ async function getCompiledScenarioError(
   fsm_plc: iPLCStateMachine<Machines>,
   init: MyTypes.ScenarioStartCondition = null
 ): Promise<MyTypes.ScenarioError> {
-  const fsm = fsm_plc.virt.fsm;
+  const fsm = fsm_plc.virt.js_fsm;
   await fsm_plc.virt.init(init);
 
   const eCommands = cmdlist[Symbol.iterator]();

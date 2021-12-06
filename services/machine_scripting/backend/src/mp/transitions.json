@@ -1,0 +1,4 @@
+[
+  { "name": "moveUp", "from": "down", "to": "up" },
+  { "name": "moveDown", "from": "up", "to": "down" }
+]
