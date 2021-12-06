@@ -92,7 +92,6 @@ var FSMController: new (
           name: this_t.scenario?.name,
           step_index: this_t.scenario?.index,
         },
-        type: this_t.slave_fsm.type,
         machine_status: this_t.slave_fsm.js_fsm.getMachineStatus(),
       };
       return controller_status;

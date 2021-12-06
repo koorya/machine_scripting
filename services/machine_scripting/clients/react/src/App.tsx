@@ -61,9 +61,9 @@ function useScenarioStatus(api: API<RequestMatching>) {
 }
 
 function useControllerStatus(api: API<RequestMatching>) {
-  const [val, setVal] = useState<MyTypes.ControllerStatus | undefined>(
-    undefined
-  );
+  const [val, setVal] = useState<
+    MyTypes.ControllerStatus<Machines> | undefined
+  >(undefined);
   useEffect(() => {
     const upd = setInterval(() => {
       api.getByAPI_get("controller_status").then((value) => setVal(value));
@@ -671,14 +671,16 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                 />
               </Tab>
               <Tab eventKey="status" title="Status">
-                {controller_status?.type === "MD" ? (
+                {controller_status?.machine_status.type === "MD" ? (
                   <div>level: {controller_status?.machine_status.level}</div>
-                ) : controller_status?.type === "MM" ? (
+                ) : controller_status?.machine_status.type === "MM" ? (
                   <div>
                     casette: {controller_status?.machine_status.address.cassete}
                     <br />
                     pos: {controller_status?.machine_status.address.pos} <br />
                   </div>
+                ) : controller_status?.machine_status.type === "MP" ? (
+                  <div>length: {controller_status?.machine_status.lenght}</div>
                 ) : (
                   <div></div>
                 )}
@@ -748,6 +750,10 @@ function App() {
                       ipcr={machine.neuro.ipcr}
                       port={machine.neuro.port}
                     />
+                  </Jumbotron>
+                ) : machine.type === "MP" ? (
+                  <Jumbotron>
+                    <pre>Высота: {machine.length}</pre>
                   </Jumbotron>
                 ) : (
                   <Alert variant={"danger"}>unknown machine type</Alert>

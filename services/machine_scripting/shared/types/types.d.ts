@@ -8,7 +8,7 @@ export type MM_address = { cassete: number; pos: number };
 export type ScenarioStartCondition = { state: string } & (
   | { type: "MD"; level: number }
   | { type: "MM"; address: MM_address; }
-  | { type: "MP"; }
+  | { type: "MP"; lenght: number; }
   | { type: "CONTROLLER"; }
 
 );
@@ -25,7 +25,6 @@ export type ScenarioStatus = {
 export type ControllerStatus<machine extends Machines> = {
   state: string;
   scenario_status?: ScenarioStatus;
-  type: machine;
   machine_status: Extract<MachineStatus, { type: machine }>;
 };
 

@@ -25,6 +25,8 @@ type ThisType = Extract<iFsmConfig, { data }>["data"] &
   & iStateMachine;
 
 type OnMethodsName = {
+  onMoveUp,
+  onMoveDown,
 };
 type OnMethods = {
   [key in keyof OnMethodsName]: (
@@ -47,6 +49,7 @@ function createFSMConfig(plc: IPlcConnector) {
       status_message: "no",
       plc: plc,
       is_test: false,
+      length: 0,
     },
     methods: {
       // can cancel only in
@@ -63,10 +66,38 @@ function createFSMConfig(plc: IPlcConnector) {
           state: this_t.state,
           cycle_step: this_t.cycle_state,
           status_message: this_t.status_message,
+          lenght: this_t.length,
         };
         return machine_status;
       },
+      onMoveUp: async function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        return new Promise((resolve) => {
 
+          const run = () => {
+            if (this_t.length < 20) {
+              setTimeout(run, 500);
+              this_t.length += 1;
+            } else
+              resolve();
+          }
+          run();
+        })
+      },
+      onMoveDown: async function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        return new Promise((resolve) => {
+
+          const run = () => {
+            if (this_t.length > 1) {
+              setTimeout(run, 500);
+              this_t.length -= 1;
+            } else
+              resolve();
+          }
+          run();
+        })
+      },
       onAfterTransition: function (lifecycle) {
         return true;
       },

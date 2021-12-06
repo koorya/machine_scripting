@@ -171,12 +171,12 @@ address_list.map((value) => {
 //   console.error(`stderr: ${stderr}`);
 // });
 
-// run_list.push({
-//   command:
-//     "\"penv/Scripts/python.exe\" run_service.py",
-//   name: `neuro_mm`,
-//   cwd: '../../NeuroNets_MM/'
-// });
+run_list.push({
+  command:
+    "\"penv/Scripts/python.exe\" run_service.py",
+  name: `neuro_mm`,
+  cwd: '../../NeuroNets_MM/'
+});
 
 process.on("SIGTERM", () => {
   server.close(() => {
