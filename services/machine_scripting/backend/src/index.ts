@@ -18,9 +18,9 @@ import { configFsmServer } from "./config_fsm_server";
 
 const argv = yargs(hideBin(process.argv)).argv;
 
-export const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
+const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
 const ui_port = argv["ui_port"] ? argv["ui_port"] : 5001;
-export const machine_type = argv["machine_type"] ? argv["machine_type"] : "MM";
+const machine_type = argv["machine_type"] ? argv["machine_type"] : "MM";
 console.log(`zmq_port: ${zmq_port}`);
 console.log(`ui_port: ${ui_port}`);
 console.log(`machine_type: ${machine_type}`);
