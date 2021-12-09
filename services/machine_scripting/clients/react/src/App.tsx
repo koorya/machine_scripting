@@ -492,7 +492,13 @@ function Scenarios({
           type: "MM",
           state: "standby",
         };
-      default:
+      case "MP":
+        return {
+          type: "MP",
+          state: "standby",
+          lenght: 1,
+        };
+        default:
         return {
           address: { cassete: 0, pos: 0 },
           type: "MM",

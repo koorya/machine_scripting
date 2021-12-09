@@ -2,6 +2,7 @@ import * as StateMachine from "javascript-state-machine";
 import { resolveModuleName } from "typescript";
 import * as MyTypes from "~shared/types/types";
 import { CompiledScenario, ControllerStatus, ExtractByType, Machines, MachineStatus, MM_address } from "~shared/types/types";
+import { CommandConveyor } from "./command_iterator";
 import { IPlcConnector } from "./zmq_network";
 
 export interface iTransition {
@@ -49,10 +50,12 @@ export interface iStateMachine {
   transitions: () => string[];
   history: string[];
   allStates: () => string[];
+  allTransitions: () => string[];
   can: (value: string) => boolean;
   cannot: (value: string) => boolean;
   goto: (state: string) => Promise<boolean>;
   step: () => Promise<boolean>;
+  error?: () => Promise<boolean>;
 }
 
 
@@ -80,8 +83,9 @@ export type iData = ({
   | {
     type: "CONTROLLER";
     slave_fsm: iPLCStateMachine<Machines>;
-    should_stop: boolean,
-    scenario: CompiledScenario,
+    should_stop: boolean;
+    scenario: CompiledScenario;
+    conveyor: CommandConveyor;
   };
 export type ExcludeTypeProp<T, U> = {
   [Property in keyof T as (Property extends U ? never : Property)]: T[Property];

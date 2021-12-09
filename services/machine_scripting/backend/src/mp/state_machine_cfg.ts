@@ -12,7 +12,7 @@ import {
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
-const transitions: iTransition[] = JSON.parse(
+const { transitions, init_state }: { transitions: iTransition[]; init_state: string } = JSON.parse(
   fs.readFileSync("src/mp/transitions.json").toString()
 );
 type P200_Conf = {
@@ -25,15 +25,15 @@ type ThisType = Extract<iFsmConfig, { data }>["data"] &
   & iStateMachine;
 
 type OnMethodsName = {
-  onMoveUp,
-  onMoveDown,
+  onLeaveLiftingDown;
+  onLeaveLiftingUp;
 };
 type OnMethods = {
   [key in keyof OnMethodsName]: (
     ...args: any
   ) => Promise<boolean | void> | void | boolean;
 };
-const init: string = "down";
+const init: string = init_state;
 
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {
@@ -70,33 +70,23 @@ function createFSMConfig(plc: IPlcConnector) {
         };
         return machine_status;
       },
-      onMoveUp: async function () {
+      onLeaveLiftingDown: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
-        return new Promise((resolve) => {
-
-          const run = () => {
-            if (this_t.length < 20) {
-              setTimeout(run, 500);
-              this_t.length += 1;
-            } else
-              resolve();
+        if (lifecycle.transition == 'step')
+          if (this_t.length < 30) {
+            this_t.length += 1;
+            throw new Error(`onLeaveLiftingDown | this_t.length: ${this_t.length} <30`);
           }
-          run();
-        })
+        // this_t.length = 0;
       },
-      onMoveDown: async function () {
+      onLeaveLiftingUp: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
-        return new Promise((resolve) => {
-
-          const run = () => {
-            if (this_t.length > 1) {
-              setTimeout(run, 500);
-              this_t.length -= 1;
-            } else
-              resolve();
+        if (lifecycle.transition == 'step')
+          if (this_t.length > 0) {
+            this_t.length -= 1;
+            throw new Error(`onLeaveLiftingUp | this_t.length: ${this_t.length} >0`);
           }
-          run();
-        })
+        // this_t.length = 0;
       },
       onAfterTransition: function (lifecycle) {
         return true;

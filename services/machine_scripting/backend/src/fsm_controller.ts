@@ -1,4 +1,5 @@
 import * as StateMachine from "javascript-state-machine";
+import { CommandConveyor } from "./command_iterator";
 import { iController, iFsmConfig, iData, iPLCStateMachine, iStateMachine, iMethods } from "./fsm_types";
 import { CompiledScenario, ControllerStatus, Machines, MachineStatus, ScenarioDefenition } from "./types/types";
 
@@ -74,11 +75,37 @@ var FSMController: new (
     },
   ],
   data: function (slave_fsm: iPLCStateMachine<Machines>): Extract<iData, { type: "CONTROLLER" }> {
+
+    const this_t: ThisT = this;
+    const conv = new CommandConveyor();
+    const run = async () => {
+      let curr_cmd = conv.getNextCmd();
+      const parced_cmd = parseCommand(curr_cmd);
+      if (this_t?.slave_fsm?.js_fsm?.can(parced_cmd.name)) {
+        try {
+          await ((this_t.slave_fsm.js_fsm[parced_cmd.name] as (
+            ...arg: any
+          ) => Promise<boolean>)(parced_cmd.props))
+        } catch (reason) {
+          console.log(`error when exec cmd: ${parced_cmd.name} | reason: ${reason}`);
+
+          conv.clearCmdSequenceFull();
+          if (this_t.can('stop'))
+            this_t.stop();
+          else if (this_t.can('finishExecCommand'))
+            this_t.finishExecCommand();
+        }
+      }
+      setTimeout(run, 50);
+    };
+    run();
+
     return {
       type: "CONTROLLER",
       slave_fsm: slave_fsm,
       should_stop: false,
       scenario: null,
+      conveyor: conv,
     };
   },
   methods: {
@@ -96,62 +123,16 @@ var FSMController: new (
       };
       return controller_status;
     },
-    execCommandAsync: async function (
-      command: string | { name: string; props: unknown }
-    ) {
-      const this_t: ThisT = this;
-      const fsm = this_t.slave_fsm as iPLCStateMachine<Machines>;
-      console.log(`command: "${command}" execution start`);
 
-      let parsed: { name: string; props: unknown };
-      if (typeof command === "string") parsed = parseCommand(command);
-      else parsed = command;
-
-      console.log(`fsm state: ${fsm.js_fsm.state}`);
-      if (fsm.js_fsm.cannot(parsed.name)) console.log("invalid cmd");
-      else {
-        console.log(`execCommandAsync: wait for exec ${parsed.name}`);
-        const is_command_exec = await (fsm.js_fsm[parsed.name] as (
-          ...arg: any
-        ) => Promise<boolean>)(parsed.props);
-
-        console.log(`execCommandAsync: exec ${parsed.name} finish`);
-
-        if (!is_command_exec) {
-
-          console.log("execCommandAsync: command exec error");
-        }
-        else {
-          // while (fsm.fsm.can("step")) {
-          //   console.log("execCommandAsync: wait step()")
-          //   await fsm.fsm.step();
-          // }
-        }
-      }
-      // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
-      console.log(`command: "${parsed.name}" execution finish`);
-      return;
-    },
     onExecCommand: function (lifecycle, command: string) {
       const this_t: ThisT = this;
       const fsm = this_t.slave_fsm as iPLCStateMachine<Machines>;
-      if (fsm.js_fsm.cannot(command)) return false;
+      if (fsm.js_fsm.cannot(parseCommand(command).name)) return false;
+      this_t.conveyor.addCommandSeqVithCallback([command], () => this_t.finishExecCommand());
 
-      console.log(this_t.execCommandAsync);
-      this_t.execCommandAsync(command).then(async () => {
-        console.log(`execCommandAsync executed ${command} success`);
-        while (fsm.js_fsm.can("step")) {
-          console.log("execScenarioAsync: wait step()")
-          await fsm.js_fsm.step();
-        }
-        this_t.finishExecCommand();
-      }).catch(() => {
-        console.log(`execCommandAsync executed ${command} failed`);
-
-        this_t.finishExecCommand();
-      });
       return true;
     },
+
     execScenarioAsync: async function (scenario: CompiledScenario) {
       const this_t: ThisT = this;
       this_t.scenario = { ...scenario, index: 0 };
@@ -184,6 +165,8 @@ var FSMController: new (
             }
           } else {
             if (curr_cmd.done)
+              // допустим мы должны ожидать пока не вылезем в какое-нибудь 
+              // полностью стабильное состояние
               while (fsm.js_fsm.can("step")) {
                 console.log("execScenarioAsync: wait step()")
                 await fsm.js_fsm.step();
@@ -197,17 +180,27 @@ var FSMController: new (
       };
       execNextCmd();
     },
-    onExecScenario: function (lifecycle, scenario) {
+    onExecScenario: function (lifecycle, scenario: CompiledScenario) {
       const this_t: ThisT = this;
       this_t.should_stop = false;
-      this_t.execScenarioAsync(scenario);
+      this_t.scenario = { ...scenario, index: 0 };
+
+      // this_t.execScenarioAsync(scenario);
+      this_t.conveyor.addCommandSeqVithCallback(scenario.commands, () => this_t.stop(), async () => { this_t.scenario.index += 1; });
+
     },
     onStop: function () {
       const this_t: ThisT = this;
-      this_t.should_stop = true;
+      this_t.conveyor.clearCmdSequenceFull();
     },
-    onPause: function () { },
-    onResume: function () { },
+    onPause: function () {
+      const this_t: ThisT = this;
+      this_t.conveyor.clearCmdSequenceAndSave();
+    },
+    onResume: function () {
+      const this_t: ThisT = this;
+      this_t.conveyor.resumeSavedCmdSeq(() => this_t.stop(), async () => { this_t.scenario.index += 1; })
+    },
     onTransition: function (lifecycle) {
       console.log(`controller state: ${lifecycle.to}`);
     },

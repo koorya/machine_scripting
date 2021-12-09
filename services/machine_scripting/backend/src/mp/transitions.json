@@ -1,4 +1,12 @@
-[
-  { "name": "moveUp", "from": "down", "to": "up" },
-  { "name": "moveDown", "from": "up", "to": "down" }
-]
+{
+  "transitions": [
+    { "name": "step", "from": "lifting_init", "to": "standby" },
+    { "name": "liftUp", "from": "standby", "to": "lifting_up" },
+    { "name": "liftDown", "from": "standby", "to": "lifting_down" },
+    { "name": "step", "from": "lifting_up", "to": "standby" },
+    { "name": "step", "from": "lifting_down", "to": "standby" },
+    { "name": "liftDown", "from": "lifting_up", "to": "lifting_down" },
+    { "name": "liftUp", "from": "lifting_down", "to": "lifting_up" }
+  ],
+  "init_state": "lifting_init"
+}

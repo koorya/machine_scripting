@@ -156,7 +156,7 @@ address_list.map((value) => {
   }
   run_list.push({
     command:
-      `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
+      `npm run server_nodemon -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
     name: `server_${value.specific_params.type}`
   });
 });
@@ -171,12 +171,12 @@ address_list.map((value) => {
 //   console.error(`stderr: ${stderr}`);
 // });
 
-run_list.push({
-  command:
-    "\"penv/Scripts/python.exe\" run_service.py",
-  name: `neuro_mm`,
-  cwd: '../../NeuroNets_MM/'
-});
+// run_list.push({
+//   command:
+//     "\"penv/Scripts/python.exe\" run_service.py",
+//   name: `neuro_mm`,
+//   cwd: '../../NeuroNets_MM/'
+// });
 
 process.on("SIGTERM", () => {
   server.close(() => {
