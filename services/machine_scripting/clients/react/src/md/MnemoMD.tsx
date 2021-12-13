@@ -29,9 +29,11 @@ function MnemoMD({
   read_port: number;
   write_port: number;
 }) {
+  // eslint-disable-next-line
   const [readApi, setReadApi] = useState<API<RepeaterRequestMatching>>(
     () => new API<RepeaterRequestMatching>("http://localhost", read_port)
   );
+  // eslint-disable-next-line
   const [writeApi, setWriteApi] = useState<API<RepeaterRequestMatching>>(
     () => new API<RepeaterRequestMatching>("http://localhost", write_port)
   );

@@ -54,19 +54,31 @@ const address_list: AddressListType[] = [
   //   type: "MM",
   //   photo: "photo address"
   // },
+  // {
+  //   name: "fake_mm",
+  //   zmq_port: 5554,
+  //   ui_port: 5003,
+  //   is_fake: true,
+  //   specific_params: {
+  //     type: "MM",
+  //     neuro: {
+
+  //       ipcl: "172.16.201.137",
+  //       ipcr: "172.16.201.142",
+  //       port: 8090
+  //     }
+  //   },
+  // },
   {
-    name: "fake_mm",
-    zmq_port: 5554,
-    ui_port: 5003,
+    name: "fake Подъемник",
+    zmq_port: 5556,
+    ui_port: 5006,
     is_fake: true,
     specific_params: {
-      type: "MM",
-      neuro: {
-
-        ipcl: "172.16.201.137",
-        ipcr: "172.16.201.142",
-        port: 8090
-      }
+      type: "MP",
+      length: 11,
+      reading_port: { zmq: 5800, ui: 5810 },
+      seting_port: { zmq: 5801, ui: 5811 },
     },
   },
   {
@@ -81,18 +93,7 @@ const address_list: AddressListType[] = [
       seting_port: { zmq: 5701, ui: 5711 },
     },
   },
-  {
-    name: "fake Подъемник",
-    zmq_port: 5556,
-    ui_port: 5006,
-    is_fake: true,
-    specific_params: {
-      type: "MP",
-      length: 11,
-      reading_port: { zmq: 5800, ui: 5810 },
-      seting_port: { zmq: 5801, ui: 5811 },
-    },
-  },
+
 ];
 
 const app = express();
@@ -120,7 +121,8 @@ const server = app.listen(port, () => console.log(`running on port ${port}`));
 const run_list: concurrently.CommandObj[] = [];
 address_list.map((value) => {
   if (value.is_fake == true) {
-    if (value.specific_params.type == "MD") {
+    if (value.specific_params.type == "MD"
+      || value.specific_params.type == "MP") {
       run_list.push({
         command: `npm run fake_plc -- --zmq_port=${value.zmq_port} ${value.specific_params.reading_port.zmq} ${value.specific_params.seting_port.zmq}`,
         name: `fake_md_${value.name}`,
@@ -144,7 +146,8 @@ address_list.map((value) => {
           `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`
       });
   }
-  if (value.specific_params.type == "MD") {
+  if (value.specific_params.type == "MD"
+    || value.specific_params.type == "MP") {
     run_list.push({
       command: `npm run repeater -- --zmq_port=${value.specific_params.reading_port.zmq} --ui_port=${value.specific_params.reading_port.ui}`,
       name: `repeater_reading`,
@@ -171,12 +174,12 @@ address_list.map((value) => {
 //   console.error(`stderr: ${stderr}`);
 // });
 
-run_list.push({
-  command:
-    "\"penv/Scripts/python.exe\" run_service.py",
-  name: `neuro_mm`,
-  cwd: '../../NeuroNets_MM/'
-});
+// run_list.push({
+//   command:
+//     "\"penv/Scripts/python.exe\" run_service.py",
+//   name: `neuro_mm`,
+//   cwd: '../../NeuroNets_MM/'
+// });
 
 process.on("SIGTERM", () => {
   server.close(() => {

@@ -33,7 +33,7 @@ type OnMethods = {
     ...args: any
   ) => Promise<boolean | void> | void | boolean;
 };
-const init: string = "down";
+const init: string = "bottom";
 
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {

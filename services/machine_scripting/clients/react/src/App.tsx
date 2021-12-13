@@ -18,6 +18,7 @@ import { API } from "./api";
 import { AddParams, Machines, RequestMatching } from "./types";
 import MnemoMD from "./md/MnemoMD";
 import NeuroImage from "./mm/NeuroImage";
+import { MpPanel } from "./mp/MpPanel";
 
 function Jumbotron(props: any) {
   return (
@@ -135,28 +136,6 @@ function DirectControls({
       )}
       {available !== true ? <Spinner size="sm" animation="border" /> : ""}
     </>
-  );
-}
-function CurrentState({
-  machine_status,
-}: {
-  machine_status: MyTypes.MachineStatus | undefined;
-}) {
-  return (
-    <div>
-      {machine_status !== undefined ? (
-        <>
-          state: {machine_status.state} <br />
-          step: {machine_status.cycle_step}
-          <br />
-          {machine_status.type === "MD" ? `level: ${machine_status.level}` : ""}
-          <br />
-          message: {machine_status.status_message}
-        </>
-      ) : (
-        "not load"
-      )}
-    </div>
   );
 }
 
@@ -753,7 +732,7 @@ function App() {
                   </Jumbotron>
                 ) : machine.type === "MP" ? (
                   <Jumbotron>
-                    <pre>Высота: {machine.length}</pre>
+                    <MpPanel machine={machine} />
                   </Jumbotron>
                 ) : (
                   <Alert variant={"danger"}>unknown machine type</Alert>
