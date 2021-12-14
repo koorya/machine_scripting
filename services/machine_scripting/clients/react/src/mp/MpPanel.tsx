@@ -158,15 +158,6 @@ export function MpPanel({
             <Row className="align-items-center py-1">
               <Col md={2}>
                 <YesNoBadge
-                  value={plc_vars.Global_Emergency_Lock}
-                  className="container-fluid"
-                />
-              </Col>
-              <Col>Global_Emergency_Lock - программный аварийный стоп </Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
                   value={plc_vars.EmAlrm}
                   className="container-fluid"
                 />
@@ -174,16 +165,26 @@ export function MpPanel({
               <Col>EmAlrm - аварийная кнопка (грибок) на шкафу МП </Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
-                  value={plc_vars.Relay_K1_LowPL}
-                  className="container-fluid"
+              <Col md={5}>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="Global_Emergency_Lock"
+                />
+              </Col>
+              <Col> - программный аварийный стоп </Col>
+            </Row>
+            <Row className="align-items-center py-1">
+              <Col md={5}>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="Relay_K1_LowPL"
                 />
               </Col>
               <Col>
-                Relay_K1_LowPL - реле(К1) на контактор (КМ1), включает раздачу
-                питания на ПЧ1 и ПЧ2, электрические тормоза и прочие
-                неприоритетные потребители).
+                - реле(К1) на контактор (КМ1), включает раздачу питания на ПЧ1 и
+                ПЧ2, электрические тормоза и прочие неприоритетные потребители).
               </Col>
             </Row>
             <br />
