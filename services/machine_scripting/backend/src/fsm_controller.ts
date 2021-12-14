@@ -145,8 +145,8 @@ var FSMController: new (
           await fsm.js_fsm.step();
         }
         this_t.finishExecCommand();
-      }).catch(() => {
-        console.log(`execCommandAsync executed ${command} failed`);
+      }).catch((reason) => {
+        console.log(`onExecCommand | execCommandAsync executed ${command} failed | reason: ${reason}`);
 
         this_t.finishExecCommand();
       });
