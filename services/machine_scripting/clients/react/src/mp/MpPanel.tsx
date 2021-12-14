@@ -133,6 +133,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.Led_Red}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>Led_Red - есть какая-то авария.</Col>
@@ -142,6 +143,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.FC1_Error}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>FC1_Error - ошибка на ПЧ1 (грузоподъемный механизм) </Col>
@@ -151,6 +153,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.FC2_Error}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>FC2_Error - ошибка на ПЧ2 (механизм перемещения) </Col>
@@ -160,6 +163,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.EmAlrm}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>EmAlrm - аварийная кнопка (грибок) на шкафу МП </Col>
@@ -170,6 +174,7 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="Global_Emergency_Lock"
+                  active_variant="danger"
                 />
               </Col>
               <Col> - программный аварийный стоп </Col>
@@ -478,13 +483,15 @@ function YesNoBadge({
   value,
   className,
   digit,
+  active_variant = "success",
 }: {
   value: boolean;
   className?: string;
   digit?: boolean;
+  active_variant?: "success" | "danger";
 }) {
   return (
-    <Badge bg={value ? "success" : "secondary"} className={className}>
+    <Badge bg={value ? active_variant : "secondary"} className={className}>
       {digit === undefined ? (value ? "yes" : "no") : value ? "1" : "0"}
     </Badge>
   );
@@ -494,10 +501,12 @@ function YesNoButton({
   var_name,
   plc_vars,
   handle_button_click,
+  active_variant = "success",
 }: {
   var_name: PlcVAriables;
   plc_vars: { [key in PlcVAriables]: any };
   handle_button_click: (v: PlcVAriables) => void;
+  active_variant?: "success" | "danger";
 }) {
   return (
     <Button
@@ -508,7 +517,7 @@ function YesNoButton({
       }}
     >
       {var_name}
-      <YesNoBadge value={plc_vars[var_name]} />
+      <YesNoBadge value={plc_vars[var_name]} active_variant={active_variant} />
     </Button>
   );
 }
