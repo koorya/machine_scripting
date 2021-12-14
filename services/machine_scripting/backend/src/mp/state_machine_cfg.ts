@@ -27,6 +27,7 @@ type ThisType = Extract<iFsmConfig, { data }>["data"] &
 type OnMethodsName = {
   onMoveUp,
   onMoveDown,
+  onLeaveLiftingUp,
 };
 type OnMethods = {
   [key in keyof OnMethodsName]: (
@@ -97,6 +98,14 @@ function createFSMConfig(plc: IPlcConnector) {
           }
           run();
         })
+      },
+      onLeaveLiftingUp: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "step") {
+          const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"]
+          if (FC1_State == 9)
+            throw new Error("onLeaveLiftingUp | FC1_State == 9")
+        }
       },
       onAfterTransition: function (lifecycle) {
         return true;
