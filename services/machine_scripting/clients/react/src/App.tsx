@@ -18,6 +18,7 @@ import { API } from "./api";
 import { AddParams, Machines, RequestMatching } from "./types";
 import MnemoMD from "./md/MnemoMD";
 import NeuroImage from "./mm/NeuroImage";
+import { MpPanel } from "./mp/MpPanel";
 
 function Jumbotron(props: any) {
   return (
@@ -61,9 +62,9 @@ function useScenarioStatus(api: API<RequestMatching>) {
 }
 
 function useControllerStatus(api: API<RequestMatching>) {
-  const [val, setVal] = useState<MyTypes.ControllerStatus | undefined>(
-    undefined
-  );
+  const [val, setVal] = useState<
+    MyTypes.ControllerStatus<Machines> | undefined
+  >(undefined);
   useEffect(() => {
     const upd = setInterval(() => {
       api.getByAPI_get("controller_status").then((value) => setVal(value));
@@ -135,28 +136,6 @@ function DirectControls({
       )}
       {available !== true ? <Spinner size="sm" animation="border" /> : ""}
     </>
-  );
-}
-function CurrentState({
-  machine_status,
-}: {
-  machine_status: MyTypes.MachineStatus | undefined;
-}) {
-  return (
-    <div>
-      {machine_status !== undefined ? (
-        <>
-          state: {machine_status.state} <br />
-          step: {machine_status.cycle_step}
-          <br />
-          {machine_status.type === "MD" ? `level: ${machine_status.level}` : ""}
-          <br />
-          message: {machine_status.status_message}
-        </>
-      ) : (
-        "not load"
-      )}
-    </div>
   );
 }
 
@@ -671,14 +650,16 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                 />
               </Tab>
               <Tab eventKey="status" title="Status">
-                {controller_status?.type === "MD" ? (
+                {controller_status?.machine_status.type === "MD" ? (
                   <div>level: {controller_status?.machine_status.level}</div>
-                ) : controller_status?.type === "MM" ? (
+                ) : controller_status?.machine_status.type === "MM" ? (
                   <div>
                     casette: {controller_status?.machine_status.address.cassete}
                     <br />
                     pos: {controller_status?.machine_status.address.pos} <br />
                   </div>
+                ) : controller_status?.machine_status.type === "MP" ? (
+                  <div>length: {controller_status?.machine_status.lenght}</div>
                 ) : (
                   <div></div>
                 )}
@@ -748,6 +729,10 @@ function App() {
                       ipcr={machine.neuro.ipcr}
                       port={machine.neuro.port}
                     />
+                  </Jumbotron>
+                ) : machine.type === "MP" ? (
+                  <Jumbotron>
+                    <MpPanel machine={machine} />
                   </Jumbotron>
                 ) : (
                   <Alert variant={"danger"}>unknown machine type</Alert>

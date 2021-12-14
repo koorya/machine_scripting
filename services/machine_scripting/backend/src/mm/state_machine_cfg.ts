@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { WatchDirectoryFlags } from "typescript";
-import { ExtractByType, MM_address } from "~shared/types/types";
+import { ExtractByType, MachineStatus, MM_address } from "~shared/types/types";
 import {
   iFsmConfig,
   iTransition,
@@ -8,6 +8,7 @@ import {
   iMethods,
   ExcludeTypeProp,
   iCycleExecutorProps,
+  iStateMachine,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { checkCam } from "./check_cam";
@@ -37,7 +38,8 @@ async function executeProgram(
 }
 type ThisType = Extract<iFsmConfig, { data }>["data"] &
   ExtractByType<iData, "MM"> &
-  ExcludeTypeProp<ExtractByType<iMethods, "MM">, "type">;
+  ExcludeTypeProp<ExtractByType<iMethods, "MM">, "type">
+  & iStateMachine;
 type OnMethodsName = {
   onAfterP200Start;
   onLeaveP200;
@@ -81,6 +83,18 @@ function createFSMConfig(plc: IPlcConnector) {
       is_test: false,
     },
     methods: {
+      getMachineStatus: function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        const machine_status: Extract<MachineStatus, { type: "MM" }> = {
+          type: this_t.type,
+          state: this_t.state,
+          cycle_step: this_t.cycle_state,
+          status_message: this_t.status_message,
+          address: this_t.current_address,
+        };
+        return machine_status;
+      },
+
       isAddressValid: function (address: MM_address) {
         console.log(`address validation: ${JSON.stringify(address, null, 2)}`);
         if (address != null) {

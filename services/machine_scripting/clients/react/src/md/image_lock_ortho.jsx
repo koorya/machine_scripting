@@ -1315,11 +1315,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_11_12
-                  ? props.sq_11_12 == 1
+                  ? props.sq_11_12 === 1
                     ? "#up"
-                    : props.sq_11_12 == 2
+                    : props.sq_11_12 === 2
                     ? "#down"
-                    : props.sq_11_12 == 3
+                    : props.sq_11_12 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1332,11 +1332,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_9_10
-                  ? props.sq_9_10 == 1
+                  ? props.sq_9_10 === 1
                     ? "#up"
-                    : props.sq_9_10 == 2
+                    : props.sq_9_10 === 2
                     ? "#down"
-                    : props.sq_9_10 == 3
+                    : props.sq_9_10 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1349,11 +1349,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_15_16
-                  ? props.sq_15_16 == 1
+                  ? props.sq_15_16 === 1
                     ? "#up"
-                    : props.sq_15_16 == 2
+                    : props.sq_15_16 === 2
                     ? "#down"
-                    : props.sq_15_16 == 3
+                    : props.sq_15_16 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1366,11 +1366,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_13_14
-                  ? props.sq_13_14 == 1
+                  ? props.sq_13_14 === 1
                     ? "#up"
-                    : props.sq_13_14 == 2
+                    : props.sq_13_14 === 2
                     ? "#down"
-                    : props.sq_13_14 == 3
+                    : props.sq_13_14 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1450,11 +1450,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_3_4
-                  ? props.sq_3_4 == 1
+                  ? props.sq_3_4 === 1
                     ? "#up"
-                    : props.sq_3_4 == 2
+                    : props.sq_3_4 === 2
                     ? "#down"
-                    : props.sq_3_4 == 3
+                    : props.sq_3_4 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1467,11 +1467,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_1_2
-                  ? props.sq_1_2 == 1
+                  ? props.sq_1_2 === 1
                     ? "#up"
-                    : props.sq_1_2 == 2
+                    : props.sq_1_2 === 2
                     ? "#down"
-                    : props.sq_1_2 == 3
+                    : props.sq_1_2 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1484,11 +1484,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_7_8
-                  ? props.sq_7_8 == 1
+                  ? props.sq_7_8 === 1
                     ? "#up"
-                    : props.sq_7_8 == 2
+                    : props.sq_7_8 === 2
                     ? "#down"
-                    : props.sq_7_8 == 3
+                    : props.sq_7_8 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1501,11 +1501,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_5_6
-                  ? props.sq_5_6 == 1
+                  ? props.sq_5_6 === 1
                     ? "#up"
-                    : props.sq_5_6 == 2
+                    : props.sq_5_6 === 2
                     ? "#down"
-                    : props.sq_5_6 == 3
+                    : props.sq_5_6 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1641,11 +1641,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_19_20
-                  ? props.sq_19_20 == 1
+                  ? props.sq_19_20 === 1
                     ? "#up"
-                    : props.sq_19_20 == 2
+                    : props.sq_19_20 === 2
                     ? "#down"
-                    : props.sq_19_20 == 3
+                    : props.sq_19_20 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1658,11 +1658,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_17_18
-                  ? props.sq_17_18 == 1
+                  ? props.sq_17_18 === 1
                     ? "#up"
-                    : props.sq_17_18 == 2
+                    : props.sq_17_18 === 2
                     ? "#down"
-                    : props.sq_17_18 == 3
+                    : props.sq_17_18 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1675,11 +1675,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_23_24
-                  ? props.sq_23_24 == 1
+                  ? props.sq_23_24 === 1
                     ? "#up"
-                    : props.sq_23_24 == 2
+                    : props.sq_23_24 === 2
                     ? "#down"
-                    : props.sq_23_24 == 3
+                    : props.sq_23_24 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1692,11 +1692,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_21_22
-                  ? props.sq_21_22 == 1
+                  ? props.sq_21_22 === 1
                     ? "#up"
-                    : props.sq_21_22 == 2
+                    : props.sq_21_22 === 2
                     ? "#down"
-                    : props.sq_21_22 == 3
+                    : props.sq_21_22 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1845,11 +1845,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_27_28
-                  ? props.sq_27_28 == 1
+                  ? props.sq_27_28 === 1
                     ? "#up"
-                    : props.sq_27_28 == 2
+                    : props.sq_27_28 === 2
                     ? "#down"
-                    : props.sq_27_28 == 3
+                    : props.sq_27_28 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1862,11 +1862,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_25_26
-                  ? props.sq_25_26 == 1
+                  ? props.sq_25_26 === 1
                     ? "#up"
-                    : props.sq_25_26 == 2
+                    : props.sq_25_26 === 2
                     ? "#down"
-                    : props.sq_25_26 == 3
+                    : props.sq_25_26 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1879,11 +1879,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_31_32
-                  ? props.sq_31_32 == 1
+                  ? props.sq_31_32 === 1
                     ? "#up"
-                    : props.sq_31_32 == 2
+                    : props.sq_31_32 === 2
                     ? "#down"
-                    : props.sq_31_32 == 3
+                    : props.sq_31_32 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"
@@ -1896,11 +1896,11 @@ function MyComponent(props) {
               height="100%"
               xlinkHref={
                 props?.sq_29_30
-                  ? props.sq_29_30 == 1
+                  ? props.sq_29_30 === 1
                     ? "#up"
-                    : props.sq_29_30 == 2
+                    : props.sq_29_30 === 2
                     ? "#down"
-                    : props.sq_29_30 == 3
+                    : props.sq_29_30 === 3
                     ? "#middle"
                     : "#no_connect"
                   : "#no_connect"

@@ -16,8 +16,8 @@ import { PlcConnector } from "../zmq_network";
 function createPlcFsm(port: number) {
   const fsm_config = createFSMConfig(new PlcConnector(port));
 
-  var plc_fsm: iPLCStateMachine<"MM"> = {
-    type: "MM",
+  var plc_fsm: iPLCStateMachine<"MP"> = {
+    type: "MP",
     js_fsm: new_StateMachine<
       typeof fsm_config,
       iStateMachine & typeof fsm_config.data & typeof fsm_config.methods
@@ -44,11 +44,10 @@ function createPlcFsm(port: number) {
         data: { ...fsm_config.data, is_test: true },
       }),
 
-      init: async (value: ExtractByType<ScenarioStartCondition, "MM">) => {
+      init: async (value: ExtractByType<ScenarioStartCondition, "MP">) => {
         console.log(`init exec: ${JSON.stringify(value, null, 2)}`);
         if (value != null) {
           await plc_fsm.virt.js_fsm.goto(value.state);
-          plc_fsm.virt.js_fsm.current_address = { ...value.address };
         }
       },
     },

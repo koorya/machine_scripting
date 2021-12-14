@@ -1,12 +1,16 @@
+
 type ExtractByType<A, type> = A extends { type: type } ? A : never;
 
-export type Machines = "MM" | "MD";
+export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP";
 
 export type MM_address = { cassete: number; pos: number };
 
 export type ScenarioStartCondition = { state: string } & (
   | { type: "MD"; level: number }
   | { type: "MM"; address: MM_address; }
+  | { type: "MP"; lenght: number; }
+  | { type: "CONTROLLER"; }
+
 );
 
 export type MachineStatus = {
@@ -18,19 +22,11 @@ export type ScenarioStatus = {
   name: string;
   step_index: number;
 };
-export type ControllerStatus = {
+export type ControllerStatus<machine extends Machines> = {
   state: string;
   scenario_status?: ScenarioStatus;
-} & (
-    | {
-      type: "MD";
-      machine_status: ExtractByType<MachineStatus, "MD">;
-    }
-    | {
-      type: "MM";
-      machine_status: ExtractByType<MachineStatus, "MM">;
-    }
-  );
+  machine_status: Extract<MachineStatus, { type: machine }>;
+};
 
 export type ScenarioError = {
   error: string;
@@ -38,6 +34,12 @@ export type ScenarioError = {
   cmd?: string;
   level?: number;
 };
+
+export type CompiledScenario = {
+  name: string;
+  commands: string[];
+  index: number;
+}
 
 export type ScenarioErrorRequest = {
   starting_condition: ScenarioStartCondition;
@@ -54,7 +56,6 @@ type AddParams =
   | {
     type: "MM";
     neuro: {
-
       ipcl: string;
       ipcr: string;
       port: number;
@@ -63,6 +64,12 @@ type AddParams =
   | {
     type: "MD";
     hydro: number;
+    reading_port: { zmq: number; ui: number; };
+    seting_port: { zmq: number; ui: number; };
+  }
+  | {
+    type: "MP";
+    length: number;
     reading_port: { zmq: number; ui: number; };
     seting_port: { zmq: number; ui: number; };
   };
@@ -107,7 +114,7 @@ export type RequestMatching =
   }
   | {
     type: "controller_status";
-    response: ControllerStatus | undefined;
+    response: ControllerStatus<Machines> | undefined;
     request: {};
     method: "GET";
   }
