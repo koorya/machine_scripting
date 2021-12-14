@@ -360,6 +360,7 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="Lock_Brake_M1_State"
+                  active_variant="danger"
                 />
               </Col>
               <Col>
@@ -467,6 +468,7 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="Lock_Brake_M2_State"
+                  active_variant="danger"
                 />
               </Col>
               <Col>
