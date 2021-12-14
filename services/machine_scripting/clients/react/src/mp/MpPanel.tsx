@@ -282,6 +282,12 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="FC1_State"
+                  radios={[
+                    { name: "Сброс", value: 9, variant: "outline-danger" },
+                    { name: "Вверх", value: 2 },
+                    { name: "Стоп", value: 1 },
+                    { name: "Вниз", value: 5 },
+                  ]}
                 />
               </Col>
               <Col>
@@ -386,6 +392,12 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="FC2_State"
+                  radios={[
+                    { name: "Сброс", value: 5, variant: "outline-danger" },
+                    { name: "Лево", value: 2 },
+                    { name: "Стоп", value: 1 },
+                    { name: "Право", value: 3 },
+                  ]}
                 />
               </Col>
               <Col>
@@ -532,40 +544,36 @@ function ButtonToggle({
   var_name,
   handle_button_click,
   plc_vars,
+  radios,
 }: {
   var_name: PlcVAriables;
   handle_button_click: (name: PlcVAriables, value: number) => void;
   plc_vars: { [key in PlcVAriables]: any };
+  radios: {
+    name: string;
+    value: number;
+    variant?: "outline-danger" | "outline-success";
+  }[];
 }) {
-  const radios = [
-    { name: "Сброс", value: 0, variant: "outline-danger" },
-    { name: "Вверх", value: 1, variant: "outline-success" },
-    { name: "Стоп", value: 2, variant: "outline-success" },
-    { name: "Вниз", value: 3, variant: "outline-success" },
-  ];
-
   return (
-    <Container>
-      <ButtonGroup>
-        {radios.map((radio, idx) => (
-          <ToggleButton
-            size="sm"
-            key={`radio-${var_name}-${idx}`}
-            id={`radio-${var_name}-${idx}`}
-            type="radio"
-            variant={radio.variant}
-            name={`radio-${var_name}`}
-            value={radio.value}
-            checked={plc_vars[var_name] === radio.value}
-            onChange={(e) => {
-              handle_button_click(var_name, parseInt(e.target.value));
-            }}
-          >
-            {radio.name}-{radio.value}
-          </ToggleButton>
-        ))}
-      </ButtonGroup>
-      <Alert variant="danger">Надо указать правильные значения</Alert>
-    </Container>
+    <ButtonGroup>
+      {radios.map((radio, idx) => (
+        <ToggleButton
+          size="sm"
+          key={`radio-${var_name}-${idx}`}
+          id={`radio-${var_name}-${idx}`}
+          type="radio"
+          variant={radio.variant || "outline-success"}
+          name={`radio-${var_name}`}
+          value={radio.value}
+          checked={plc_vars[var_name] === radio.value}
+          onChange={(e) => {
+            handle_button_click(var_name, parseInt(e.target.value));
+          }}
+        >
+          {radio.name}-{radio.value}
+        </ToggleButton>
+      ))}
+    </ButtonGroup>
   );
 }
