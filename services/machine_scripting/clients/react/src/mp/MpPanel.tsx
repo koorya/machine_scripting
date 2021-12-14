@@ -6,10 +6,12 @@ import {
   Alert,
   Badge,
   Button,
+  ButtonGroup,
   Col,
   Container,
   Form,
   Row,
+  ToggleButton,
 } from "react-bootstrap";
 
 const init_vars = {
@@ -275,10 +277,12 @@ export function MpPanel({
           <Alert variant="warning">
             <Alert.Heading>Управление подъемом</Alert.Heading>
             <Row className="align-items-center py-1">
-              <Col md={4}>
-                <Badge bg="secondary" className="container-fluid">
-                  {plc_vars.FC1_State}
-                </Badge>
+              <Col md={6}>
+                <ButtonToggle
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="FC1_State"
+                />
               </Col>
               <Col>
                 FC1_State - переменная состояния (автомат для ПЧ1,
@@ -377,10 +381,12 @@ export function MpPanel({
               Управление горизонтальным перемещением
             </Alert.Heading>
             <Row className="align-items-center py-1">
-              <Col md={3}>
-                <Badge bg="secondary" className="container-fluid">
-                  0
-                </Badge>
+              <Col md={6}>
+                <ButtonToggle
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="FC2_State"
+                />
               </Col>
               <Col>
                 FC2_State - переменная состояния (автомат для ПЧ2, механизм
@@ -519,5 +525,47 @@ function YesNoButton({
       {var_name}
       <YesNoBadge value={plc_vars[var_name]} active_variant={active_variant} />
     </Button>
+  );
+}
+
+function ButtonToggle({
+  var_name,
+  handle_button_click,
+  plc_vars,
+}: {
+  var_name: PlcVAriables;
+  handle_button_click: (name: PlcVAriables, value: number) => void;
+  plc_vars: { [key in PlcVAriables]: any };
+}) {
+  const radios = [
+    { name: "Сброс", value: 0, variant: "outline-danger" },
+    { name: "Вверх", value: 1, variant: "outline-success" },
+    { name: "Стоп", value: 2, variant: "outline-success" },
+    { name: "Вниз", value: 3, variant: "outline-success" },
+  ];
+
+  return (
+    <Container>
+      <ButtonGroup>
+        {radios.map((radio, idx) => (
+          <ToggleButton
+            size="sm"
+            key={`radio-${var_name}-${idx}`}
+            id={`radio-${var_name}-${idx}`}
+            type="radio"
+            variant={radio.variant}
+            name={`radio-${var_name}`}
+            value={radio.value}
+            checked={plc_vars[var_name] === radio.value}
+            onChange={(e) => {
+              handle_button_click(var_name, parseInt(e.target.value));
+            }}
+          >
+            {radio.name}-{radio.value}
+          </ToggleButton>
+        ))}
+      </ButtonGroup>
+      <Alert variant="danger">Надо указать правильные значения</Alert>
+    </Container>
   );
 }
