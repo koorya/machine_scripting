@@ -283,6 +283,7 @@ export function MpPanel({
                   plc_vars={plc_vars}
                   var_name="FC1_State"
                   radios={[
+                    { name: "error", value: 8, variant: "outline-danger" },
                     { name: "Сброс", value: 9, variant: "outline-danger" },
                     { name: "Вверх", value: 2 },
                     { name: "Стоп", value: 1 },

@@ -24,10 +24,10 @@ type ThisType = Extract<iFsmConfig, { data }>["data"] &
   ExcludeTypeProp<ExtractByType<iMethods, "MP">, "type">
   & iStateMachine;
 
+
+type my_type = `on${string}`;
 type OnMethodsName = {
-  onMoveUp,
-  onMoveDown,
-  onLeaveLiftingUp,
+  [key in my_type]
 };
 type OnMethods = {
   [key in keyof OnMethodsName]: (
@@ -77,7 +77,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
           const run = () => {
             if (this_t.length < 20) {
-              setTimeout(run, 500);
+              setTimeout(run, 300);
               this_t.length += 1;
             } else
               resolve();
@@ -91,7 +91,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
           const run = () => {
             if (this_t.length > 1) {
-              setTimeout(run, 500);
+              setTimeout(run, 300);
               this_t.length -= 1;
             } else
               resolve();
@@ -99,13 +99,72 @@ function createFSMConfig(plc: IPlcConnector) {
           run();
         })
       },
+
+      onBeforeMoveDown: async function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"]
+        if (FC1_State != 1) {
+          throw new Error("onBeforeMoveDown | FC1_State != 1");
+        }
+        await this_t.plc.writeVar({ FC1_State: 5 });
+        await this_t.plc.waitForPlcVar("FC1_State", 5);
+      },
+      onBeforeMoveUp: async function () {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"]
+        if (FC1_State != 1) {
+          throw new Error("onBeforeMoveDown | FC1_State != 1");
+        }
+        await this_t.plc.writeVar({ FC1_State: 2 });
+        await this_t.plc.waitForPlcVar("FC1_State", 2);
+      },
+      onLeaveLiftingDown: async function (lifecycle) {
+        const this_t: ThisType = (this as undefined) as ThisType;
+        const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"]
+        if (lifecycle.transition === "step") {
+          if (FC1_State != 5 &&
+            FC1_State != 1)
+            throw new Error("onLeaveLiftingDown | FC1_State != 5, 1")
+
+          await this_t.plc.writeVar({ FC1_State: 5 });
+          await this_t.plc.waitForPlcVar("FC1_State", 5);
+          const result = await this_t.plc.waitForPlcVarByArray("FC1_State", [1, 8]);
+          if (result == 8)
+            throw new Error("onLeaveLiftingDown | internal plc error");
+        } else if (lifecycle.transition === "moveUpEXTRA") {
+          if (FC1_State != 2 &&
+            FC1_State != 1)
+            throw new Error("onLeaveLiftingDown | FC1_State != 2, 1")
+
+          await this_t.plc.writeVar({ FC1_State: 2 });
+          await this_t.plc.waitForPlcVar("FC1_State", 2);
+        }
+
+      },
       onLeaveLiftingUp: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"];
+        console.log(`onLeaveLiftingUp | FC1_State: ${FC1_State}`);
         if (lifecycle.transition === "step") {
-          const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"]
-          if (FC1_State == 9)
-            throw new Error("onLeaveLiftingUp | FC1_State == 9")
+          if (FC1_State != 2 &&
+            FC1_State != 1)
+            throw new Error("onLeaveLiftingUp | FC1_State != 2, 1");
+
+          await this_t.plc.writeVar({ FC1_State: 2 });
+          await this_t.plc.waitForPlcVar("FC1_State", 2);
+
+          const result = await this_t.plc.waitForPlcVarByArray("FC1_State", [1, 8]);
+          if (result == 8)
+            throw new Error("onLeaveLiftingUp | internal plc error");
+        } else if (lifecycle.transition === "moveDownEXTRA") {
+          if (FC1_State != 5 &&
+            FC1_State != 1)
+            throw new Error("onLeaveLiftingUp | FC1_State != 5, 1");
+
+          await this_t.plc.writeVar({ FC1_State: 5 });
+          await this_t.plc.waitForPlcVar("FC1_State", 5);
         }
+
       },
       onAfterTransition: function (lifecycle) {
         return true;

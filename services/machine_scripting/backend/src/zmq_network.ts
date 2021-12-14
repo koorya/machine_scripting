@@ -51,6 +51,22 @@ export class PlcConnector {
       run();
     });
   }
+  async waitForPlcVarByArray(
+    name: string,
+    value: any[],
+    t: number = 200
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let mon: NodeJS.Timeout;
+      const run = async () => {
+        const plc_variables = await this.readVarToObj([name]);
+        const variant = value.find((value) => plc_variables[name] == value)
+        if (variant == undefined) mon = setTimeout(run, t);
+        else resolve(variant);
+      };
+      run();
+    });
+  }
 
   async writeVar(vars: { [key: string]: any }) {
     await this.zmq_sock.send(
