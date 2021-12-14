@@ -6,10 +6,12 @@ import {
   Alert,
   Badge,
   Button,
+  ButtonGroup,
   Col,
   Container,
   Form,
   Row,
+  ToggleButton,
 } from "react-bootstrap";
 
 const init_vars = {
@@ -133,6 +135,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.Led_Red}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>Led_Red - есть какая-то авария.</Col>
@@ -142,6 +145,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.FC1_Error}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>FC1_Error - ошибка на ПЧ1 (грузоподъемный механизм) </Col>
@@ -151,6 +155,7 @@ export function MpPanel({
                 <YesNoBadge
                   value={plc_vars.FC2_Error}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>FC2_Error - ошибка на ПЧ2 (механизм перемещения) </Col>
@@ -158,32 +163,35 @@ export function MpPanel({
             <Row className="align-items-center py-1">
               <Col md={2}>
                 <YesNoBadge
-                  value={plc_vars.Global_Emergency_Lock}
-                  className="container-fluid"
-                />
-              </Col>
-              <Col>Global_Emergency_Lock - программный аварийный стоп </Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
                   value={plc_vars.EmAlrm}
                   className="container-fluid"
+                  active_variant="danger"
                 />
               </Col>
               <Col>EmAlrm - аварийная кнопка (грибок) на шкафу МП </Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
-                  value={plc_vars.Relay_K1_LowPL}
-                  className="container-fluid"
+              <Col md={5}>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="Global_Emergency_Lock"
+                  active_variant="danger"
+                />
+              </Col>
+              <Col> - программный аварийный стоп </Col>
+            </Row>
+            <Row className="align-items-center py-1">
+              <Col md={5}>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="Relay_K1_LowPL"
                 />
               </Col>
               <Col>
-                Relay_K1_LowPL - реле(К1) на контактор (КМ1), включает раздачу
-                питания на ПЧ1 и ПЧ2, электрические тормоза и прочие
-                неприоритетные потребители).
+                - реле(К1) на контактор (КМ1), включает раздачу питания на ПЧ1 и
+                ПЧ2, электрические тормоза и прочие неприоритетные потребители).
               </Col>
             </Row>
             <br />
@@ -269,10 +277,18 @@ export function MpPanel({
           <Alert variant="warning">
             <Alert.Heading>Управление подъемом</Alert.Heading>
             <Row className="align-items-center py-1">
-              <Col md={4}>
-                <Badge bg="secondary" className="container-fluid">
-                  {plc_vars.FC1_State}
-                </Badge>
+              <Col md={6}>
+                <ButtonToggle
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="FC1_State"
+                  radios={[
+                    { name: "Сброс", value: 9, variant: "outline-danger" },
+                    { name: "Вверх", value: 2 },
+                    { name: "Стоп", value: 1 },
+                    { name: "Вниз", value: 5 },
+                  ]}
+                />
               </Col>
               <Col>
                 FC1_State - переменная состояния (автомат для ПЧ1,
@@ -281,44 +297,18 @@ export function MpPanel({
             </Row>
             <Row className="align-items-center py-1">
               <Col md={5}>
-                <Button
-                  size="sm"
-                  className="mx-1"
-                  onClick={(e) =>
-                    writeApi.getByAPI_post("set_vars_by_array", {
-                      FC1_Cmd: 0,
-                    })
-                  }
-                >
-                  0-Стоп
-                </Button>
-                <Button
-                  size="sm"
-                  className="mx-1"
-                  onClick={(e) =>
-                    writeApi.getByAPI_post("set_vars_by_array", {
-                      FC1_Cmd: 1,
-                    })
-                  }
-                >
-                  1-Вниз
-                </Button>
-                <Button
-                  size="sm"
-                  className="mx-1"
-                  onClick={(e) =>
-                    writeApi.getByAPI_post("set_vars_by_array", {
-                      FC1_Cmd: 2,
-                    })
-                  }
-                >
-                  2-Вверх
-                </Button>
+                <Badge bg="secondary" className="container-fluid">
+                  {plc_vars.FC1_Cmd}-
+                  {plc_vars.FC1_Cmd === 0
+                    ? "Стоп"
+                    : plc_vars.FC1_Cmd === 1
+                    ? "Вниз"
+                    : plc_vars.FC1_Cmd === 2
+                    ? "Вверх"
+                    : "impossible"}
+                </Badge>
               </Col>
-              <Col>
-                <Badge bg="secondary">{plc_vars.FC1_Cmd}</Badge> FC1_Cmd -
-                команда для ПЧ1
-              </Col>
+              <Col>FC1_Cmd - команда для ПЧ1 (0, 1, 2)</Col>
             </Row>
             <Row>
               <Col md={4}>
@@ -370,6 +360,7 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="Lock_Brake_M1_State"
+                  active_variant="danger"
                 />
               </Col>
               <Col>
@@ -397,10 +388,18 @@ export function MpPanel({
               Управление горизонтальным перемещением
             </Alert.Heading>
             <Row className="align-items-center py-1">
-              <Col md={3}>
-                <Badge bg="secondary" className="container-fluid">
-                  0
-                </Badge>
+              <Col md={6}>
+                <ButtonToggle
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="FC2_State"
+                  radios={[
+                    { name: "Сброс", value: 5, variant: "outline-danger" },
+                    { name: "Лево", value: 2 },
+                    { name: "Стоп", value: 1 },
+                    { name: "Право", value: 3 },
+                  ]}
+                />
               </Col>
               <Col>
                 FC2_State - переменная состояния (автомат для ПЧ2, механизм
@@ -408,29 +407,28 @@ export function MpPanel({
               </Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={3}>
-                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="FC2_Forward"
+              <Col md={2}>
+                <YesNoBadge
+                  value={plc_vars.FC2_Forward}
+                  className="container-fluid"
                 />
               </Col>
               <Col>
-                - команда (дискретный выходной сигнал с ПЛК и через аппаратный
-                концевой переключатель идет на ПЧ2) на движение туда.
+                FC2_Forward - команда (дискретный выходной сигнал с ПЛК и через
+                аппаратный концевой переключатель идет на ПЧ2) на движение туда.
               </Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={3}>
-                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="FC2_Reverse"
+              <Col md={2}>
+                <YesNoBadge
+                  value={plc_vars.FC2_Reverse}
+                  className="container-fluid"
                 />
               </Col>
               <Col>
-                - команда (дискретный выходной сигнал с ПЛК и через аппаратный
-                концевой переключатель идет на ПЧ2) на движение оттуда.
+                FC2_Reverse - команда (дискретный выходной сигнал с ПЛК и через
+                аппаратный концевой переключатель идет на ПЧ2) на движение
+                оттуда.
               </Col>
             </Row>
             <Row>
@@ -470,6 +468,7 @@ export function MpPanel({
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
                   var_name="Lock_Brake_M2_State"
+                  active_variant="danger"
                 />
               </Col>
               <Col>
@@ -504,13 +503,15 @@ function YesNoBadge({
   value,
   className,
   digit,
+  active_variant = "success",
 }: {
   value: boolean;
   className?: string;
   digit?: boolean;
+  active_variant?: "success" | "danger";
 }) {
   return (
-    <Badge bg={value ? "success" : "secondary"} className={className}>
+    <Badge bg={value ? active_variant : "secondary"} className={className}>
       {digit === undefined ? (value ? "yes" : "no") : value ? "1" : "0"}
     </Badge>
   );
@@ -520,10 +521,12 @@ function YesNoButton({
   var_name,
   plc_vars,
   handle_button_click,
+  active_variant = "success",
 }: {
   var_name: PlcVAriables;
   plc_vars: { [key in PlcVAriables]: any };
   handle_button_click: (v: PlcVAriables) => void;
+  active_variant?: "success" | "danger";
 }) {
   return (
     <Button
@@ -534,7 +537,45 @@ function YesNoButton({
       }}
     >
       {var_name}
-      <YesNoBadge value={plc_vars[var_name]} />
+      <YesNoBadge value={plc_vars[var_name]} active_variant={active_variant} />
     </Button>
+  );
+}
+
+function ButtonToggle({
+  var_name,
+  handle_button_click,
+  plc_vars,
+  radios,
+}: {
+  var_name: PlcVAriables;
+  handle_button_click: (name: PlcVAriables, value: number) => void;
+  plc_vars: { [key in PlcVAriables]: any };
+  radios: {
+    name: string;
+    value: number;
+    variant?: "outline-danger" | "outline-success";
+  }[];
+}) {
+  return (
+    <ButtonGroup>
+      {radios.map((radio, idx) => (
+        <ToggleButton
+          size="sm"
+          key={`radio-${var_name}-${idx}`}
+          id={`radio-${var_name}-${idx}`}
+          type="radio"
+          variant={radio.variant || "outline-success"}
+          name={`radio-${var_name}`}
+          value={radio.value}
+          checked={plc_vars[var_name] === radio.value}
+          onChange={(e) => {
+            handle_button_click(var_name, parseInt(e.target.value));
+          }}
+        >
+          {radio.name}-{radio.value}
+        </ToggleButton>
+      ))}
+    </ButtonGroup>
   );
 }
