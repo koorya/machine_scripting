@@ -282,44 +282,18 @@ export function MpPanel({
             </Row>
             <Row className="align-items-center py-1">
               <Col md={5}>
-                <Button
-                  size="sm"
-                  className="mx-1"
-                  onClick={(e) =>
-                    writeApi.getByAPI_post("set_vars_by_array", {
-                      FC1_Cmd: 0,
-                    })
-                  }
-                >
-                  0-Стоп
-                </Button>
-                <Button
-                  size="sm"
-                  className="mx-1"
-                  onClick={(e) =>
-                    writeApi.getByAPI_post("set_vars_by_array", {
-                      FC1_Cmd: 1,
-                    })
-                  }
-                >
-                  1-Вниз
-                </Button>
-                <Button
-                  size="sm"
-                  className="mx-1"
-                  onClick={(e) =>
-                    writeApi.getByAPI_post("set_vars_by_array", {
-                      FC1_Cmd: 2,
-                    })
-                  }
-                >
-                  2-Вверх
-                </Button>
+                <Badge bg="secondary" className="container-fluid">
+                  {plc_vars.FC1_Cmd}-
+                  {plc_vars.FC1_Cmd === 0
+                    ? "Стоп"
+                    : plc_vars.FC1_Cmd === 1
+                    ? "Вниз"
+                    : plc_vars.FC1_Cmd === 2
+                    ? "Вверх"
+                    : "impossible"}
+                </Badge>
               </Col>
-              <Col>
-                <Badge bg="secondary">{plc_vars.FC1_Cmd}</Badge> FC1_Cmd -
-                команда для ПЧ1
-              </Col>
+              <Col>FC1_Cmd - команда для ПЧ1 (0, 1, 2)</Col>
             </Row>
             <Row>
               <Col md={4}>
@@ -409,29 +383,28 @@ export function MpPanel({
               </Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={3}>
-                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="FC2_Forward"
+              <Col md={2}>
+                <YesNoBadge
+                  value={plc_vars.FC2_Forward}
+                  className="container-fluid"
                 />
               </Col>
               <Col>
-                - команда (дискретный выходной сигнал с ПЛК и через аппаратный
-                концевой переключатель идет на ПЧ2) на движение туда.
+                FC2_Forward - команда (дискретный выходной сигнал с ПЛК и через
+                аппаратный концевой переключатель идет на ПЧ2) на движение туда.
               </Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={3}>
-                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="FC2_Reverse"
+              <Col md={2}>
+                <YesNoBadge
+                  value={plc_vars.FC2_Reverse}
+                  className="container-fluid"
                 />
               </Col>
               <Col>
-                - команда (дискретный выходной сигнал с ПЛК и через аппаратный
-                концевой переключатель идет на ПЧ2) на движение оттуда.
+                FC2_Reverse - команда (дискретный выходной сигнал с ПЛК и через
+                аппаратный концевой переключатель идет на ПЧ2) на движение
+                оттуда.
               </Col>
             </Row>
             <Row>
