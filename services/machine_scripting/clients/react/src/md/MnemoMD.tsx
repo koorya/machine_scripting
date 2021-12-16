@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Alert } from "react-bootstrap";
 import { API } from "../api";
 import { RepeaterRequestMatching } from "../repeater";
 import FCPanel from "./FC_panel";
@@ -42,9 +42,11 @@ function MnemoMD({
 
   return (
     <div style={{ backgroundColor: "#fff" }}>
-      {/* <Row>
-        <pre>{JSON.stringify(plc_vars, null, 2)}</pre>
-      </Row> */}
+      <Alert variant="danger">
+        <Alert.Heading>Состояние внутри цикла</Alert.Heading>
+        {plc_vars.state}
+        {plc_vars.satuse_message}
+      </Alert>
       <Row>
         <Col xs={8}>
           <HydraulicCircuit
