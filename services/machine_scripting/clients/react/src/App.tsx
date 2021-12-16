@@ -672,14 +672,6 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
   );
 }
 
-// function AdditionalMD({ port }: { port: number }) {
-//   // const [api, setApi] = useState<API<RepeaterRequestMatching>>(
-//   //   () => new API<RepeaterRequestMatching>("http://localhost", port)
-//   // );
-//   // const plc_vars = useAdditionalMD(api);
-//   return <MnemoMD port={port} />;
-// }
-
 function App() {
   const [machineConfig, setMachineConfig] = useState<MachineConfig[]>([]);
   useEffect(() => {
@@ -742,15 +734,6 @@ function App() {
           </Tabs>
         </Col>
       </Row>
-      {/* <Row>
-        <Col>
-          <Jumbotron>
-            <h4>Debug info</h4>
-            <CurrentState machine_status={st?.machine_status} />
-            <pre>{JSON.stringify(st, null, 2)}</pre>
-          </Jumbotron>
-        </Col>
-      </Row> */}
     </Container>
   );
 }
