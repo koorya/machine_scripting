@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import { API } from "../api";
 import { RepeaterRequestMatching } from "../repeater";
-import { RequestMatching } from "../types";
 
 function usePlcVaribles<T>(
   reading_port: number,
@@ -23,9 +22,9 @@ function usePlcVaribles<T>(
           var_names: Object.keys(def_values),
         })
         .then((value) => {
-          if (!cancel.should_cancel && !stop.should_stop)
+          if (!cancel.should_cancel && !stop.should_stop) {
             setPlcVars(value.vars as T);
-          else cancel.should_cancel = false;
+          } else cancel.should_cancel = false;
         })
         .catch((reason) => console.log(reason));
       if (!stop.should_stop) setTimeout(run, 500);
@@ -74,16 +73,21 @@ export function usePlcContainer<T>(
     writeApi.getByAPI_post("set_vars_by_array", obj);
   };
 
-  return { plc_vars, handle_button_click };
-}
-
-export function MpPanel({
-  machine,
-}: {
-  machine: { name: string; api: API<RequestMatching> } & {
-    type: "MP";
-    length: number;
-    reading_port: { zmq: number; ui: number };
-    seting_port: { zmq: number; ui: number };
+  type DeConcrete<Type> = {
+    [Property in keyof Type]?: Type[Property];
   };
-}) {}
+
+  const handle_button_click_multiple = (plc_var: DeConcrete<T>) => {
+    setPlcVars({
+      ...plc_vars,
+      ...plc_var,
+    });
+
+    cancelUpdate.should_cancel = true;
+    console.log(plc_var);
+    writeApi.getByAPI_post("set_vars_by_array", plc_var);
+    console.log(plc_var);
+  };
+
+  return { plc_vars, handle_button_click, handle_button_click_multiple };
+}

@@ -11,7 +11,7 @@ class HydraulicCircuit extends React.Component {
   click = (obj) => {
     console.log(obj.id);
     const write_var = this.props.handler;
-    if (!Object.keys(this.props.plc_vars).includes("Y1")) return;
+    // if (!Object.keys(this.props.plc_vars).includes("Y1")) return;
     if (obj.id === "Y1_") {
       write_var({ Y1: false });
     } else if (obj.id === "Y2_") {

@@ -1,5 +1,16 @@
 export const init_vars = {
-	status_messag: "no",
+	status_message: "no",
+	init_to_hold_state: 0,
+	from_hold_to_init_state: 0,
+	main_state: 0,
+	up_frame_cycle_state: 0,
+	down_frame_cycle_state: 0,
+	down_crab_cycle_state: 0,
+	from_upcrcyc_to_init_state: 0,
+	pushout_crab_state: 0,
+	up_crab_cycle_state: 0,
+	pushin_crab_state: 0,
+	from_hold_to_lift_crab_state: 0,
 	Y19: false,
 	PP1: false,
 	Y20: false,
@@ -145,6 +156,5 @@ export const init_vars = {
 	BB12: 700,
 	start_handle: false,
 	continue_handle: false,
-	main_state: false,
 	stop_hanlde: false
 };

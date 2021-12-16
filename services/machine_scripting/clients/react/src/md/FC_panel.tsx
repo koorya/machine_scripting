@@ -1,21 +1,25 @@
 import React from "react";
 import { Alert, Button, Col, Form, Row } from "react-bootstrap";
-import { API } from "../api";
-import { RepeaterRequestMatching } from "../repeater";
 
-function FC({
+type prefix = "FC1" | "FC2";
+type suffics = "_command" | "_freq" | "_out_freq" | "_reset_error";
+type combine = `${prefix}${suffics}`;
+
+function FC<fc_name_T extends "FC1" | "FC2">({
   api,
   fc_name,
   plc_vars,
 }: {
-  api: API<RepeaterRequestMatching>;
-  fc_name: string;
-  plc_vars: { [key: string]: any };
+  api: (name: combine, value?: number | boolean | string) => void;
+  fc_name: fc_name_T;
+  plc_vars: { [key in combine]: any };
 }) {
   return (
     <Alert
       variant={
-        plc_vars[fc_name + "_command"] === 0x0001 ? "success" : "secondary"
+        plc_vars[(fc_name + "_command") as combine] === 0x0001
+          ? "success"
+          : "secondary"
       }
     >
       <input
@@ -29,30 +33,31 @@ function FC({
           left: "75px",
           padding: "0px",
           backgroundColor:
-            plc_vars[fc_name + "_command"] === 0x0001 ? "#0f0" : "#ddd",
+            plc_vars[(fc_name + "_command") as combine] === 0x0001
+              ? "#0f0"
+              : "#ddd",
         }}
         disabled
       />
 
       <div style={{ position: "relative", height: "45px", width: "90px" }}>
         <Form.Range
-          defaultValue={0}
+          value={plc_vars[`${fc_name}_freq` as combine]}
           min={0}
           max={5000}
           title="speed"
           onChange={(e) => {
-            const t: { [key: string]: any } = {};
-            t[fc_name + "_freq"] = e.currentTarget.value;
-            api.getByAPI_post("set_vars_by_array", t);
+            api(`${fc_name}_freq`, parseInt(e.target.value));
           }}
         />
-        {`set: ${plc_vars[fc_name + "_freq"] / 100} Hz`}
+
+        {`set: ${plc_vars[(fc_name + "_freq") as combine] / 100} Hz`}
         <br />
       </div>
       <div style={{ color: "#000", textAlign: "left" }}>
-        {`f: ${plc_vars[fc_name + "_out_freq"] / 100} Hz`}
+        {`f: ${plc_vars[(fc_name + "_out_freq") as combine] / 100} Hz`}
         <br />
-        {`I: ${plc_vars[fc_name + "_out_curr"] / 100} A`}
+        {`I: ${plc_vars[(fc_name + "_out_curr") as combine] / 100} A`}
       </div>
       <div>
         <input
@@ -60,22 +65,18 @@ function FC({
           value="start"
           style={{ width: "45px" }}
           onClick={() => {
-            const t: { [key: string]: any } = {};
-            t[fc_name + "_command"] = 0x0001;
-            api.getByAPI_post("set_vars_by_array", t);
+            api(`${fc_name}_command`, 0x0001);
           }}
-          disabled={plc_vars[fc_name + "_reset_error"] === true}
+          disabled={plc_vars[(fc_name + "_reset_error") as combine] === true}
         />
         <input
           type="button"
           value="stop"
           style={{ width: "45px" }}
           onClick={() => {
-            const t: { [key: string]: any } = {};
-            t[fc_name + "_command"] = 0x0000;
-            api.getByAPI_post("set_vars_by_array", t);
+            api(`${fc_name}_command`, 0x0000);
           }}
-          disabled={plc_vars[fc_name + "_reset_error"] === true}
+          disabled={plc_vars[(fc_name + "_reset_error") as combine] === true}
         />
         <br />
         <input
@@ -83,11 +84,9 @@ function FC({
           value="reset fault"
           style={{ width: "90px" }}
           onClick={() => {
-            const t: { [key: string]: any } = {};
-            t[fc_name + "_command"] = 0x0080;
-            api.getByAPI_post("set_vars_by_array", t);
+            api(`${fc_name}_command`, 0x0080);
           }}
-          disabled={plc_vars[fc_name + "_reset_error"] === true}
+          disabled={plc_vars[(fc_name + "_reset_error") as combine] === true}
         />
         <br />
         <input
@@ -95,39 +94,51 @@ function FC({
           value="hard reset"
           style={{ width: "90px" }}
           onClick={() => {
-            const t: { [key: string]: any } = {};
-            t[fc_name + "_reset_error"] = true;
-            api.getByAPI_post("set_vars_by_array", t);
+            api(`${fc_name}_reset_error`, true);
           }}
-          disabled={plc_vars[fc_name + "_reset_error"] === true}
+          disabled={plc_vars[(fc_name + "_reset_error") as combine] === true}
         />
       </div>
     </Alert>
   );
 }
 
+type FCPanelReqVarNames =
+  | "FC1_command"
+  | "FC2_command"
+  | "FC1_freq"
+  | "FC2_freq"
+  | combine;
+
+type UnionToObj<T extends string> = { [key in T]?: any };
+
 function FCPanel({
-  api,
+  handle_button_click,
   plc_vars,
+  multiple_handler,
 }: {
-  api: API<RepeaterRequestMatching>;
-  plc_vars: { [key: string]: number | boolean };
+  handle_button_click: (
+    name: FCPanelReqVarNames,
+    value?: number | boolean | string
+  ) => void;
+  plc_vars: { [key in FCPanelReqVarNames]: any };
+  multiple_handler: (plc_var: UnionToObj<FCPanelReqVarNames>) => void;
 }) {
   return (
     <Alert variant={"secondary"}>
       <Row>
         <Col>
-          <FC api={api} plc_vars={plc_vars} fc_name="FC1" />
+          <FC api={handle_button_click} plc_vars={plc_vars} fc_name="FC1" />
         </Col>
         <Col>
-          <FC api={api} plc_vars={plc_vars} fc_name="FC2" />
+          <FC api={handle_button_click} plc_vars={plc_vars} fc_name="FC2" />
         </Col>
       </Row>
       <Row>
         <Button
           variant={"danger"}
           onClick={() => {
-            api.getByAPI_post("set_vars_by_array", {
+            multiple_handler({
               FC1_command: 0,
               FC2_command: 0,
               FC1_freq: 0,
