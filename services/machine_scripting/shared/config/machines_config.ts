@@ -1,9 +1,7 @@
-import { AddressListType } from "../types/types";
 
 
 
-
-export const address_list: AddressListType[] = [
+export const address_list = [
 	// {
 	//   zmq_port: 5552,
 	//   ui_port: 5001,
@@ -68,4 +66,3 @@ export const address_list: AddressListType[] = [
 	},
 
 ];
-

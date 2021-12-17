@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -19,6 +19,7 @@ import { AddParams, Machines, RequestMatching } from "./types";
 import MnemoMD from "./md/MnemoMD";
 import NeuroImage from "./mm/NeuroImage";
 import { MpPanel } from "./mp/MpPanel";
+import { address_list } from "shared/config/machines_config";
 
 function Jumbotron(props: any) {
   return (
@@ -674,22 +675,31 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
 
 function App() {
   const [machineConfig, setMachineConfig] = useState<MachineConfig[]>([]);
+  const [mode, setMode] = useState("");
   useEffect(() => {
-    const startup_api = new API<RequestMatching>("http://localhost", 5000);
-    startup_api.getByAPI_get("get_machines_info").then((machines_info) => {
-      const machines = Promise.all(
-        machines_info.map(async (machine, id) => {
-          const api = new API("http://localhost", machine.port);
-          const t = {
-            api: api,
-            ...machine,
-          };
-          return t;
-        })
-      );
-      machines.then((value) => setMachineConfig(value));
+    const get_machines_info = () => {
+      return address_list.map((value) => {
+        const t = {
+          port: value.ui_port,
+          name: value.name,
+          ...value.specific_params,
+        };
+        return t;
+      });
+    };
+
+    console.log(`window.location.href: ${window.location.href}`);
+    setMode(window.location.pathname.slice(1));
+    const machines = get_machines_info().map((machine) => {
+      const api = new API("http://localhost", machine.port);
+      const t = {
+        api: api,
+        ...machine,
+      };
+      return t;
     });
-  }, []);
+    setMachineConfig(machines as MachineConfig[]);
+  }, [setMode]);
 
   return (
     <Container fluid>
@@ -716,11 +726,15 @@ function App() {
                   </Jumbotron>
                 ) : machine.type === "MM" ? (
                   <Jumbotron>
-                    <NeuroImage
-                      ipcl={machine.neuro.ipcl}
-                      ipcr={machine.neuro.ipcr}
-                      port={machine.neuro.port}
-                    />
+                    {mode !== "dev" ? (
+                      <NeuroImage
+                        ipcl={machine.neuro.ipcl}
+                        ipcr={machine.neuro.ipcr}
+                        port={machine.neuro.port}
+                      />
+                    ) : (
+                      ""
+                    )}
                   </Jumbotron>
                 ) : machine.type === "MP" ? (
                   <Jumbotron>

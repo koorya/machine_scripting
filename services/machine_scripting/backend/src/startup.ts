@@ -4,39 +4,16 @@ import * as cors from "cors";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { AddParams, Machines, RequestMatching } from "./types/types";
-import { address_list } from "shared/config/machines_config"
+import { AddParams, AddressListType, Machines, RequestMatching } from "./types/types";
+import { address_list as address_list_ } from "shared/config/machines_config"
 
 const argv = yargs(hideBin(process.argv)).argv;
 console.log(argv);
 
 const neuro_service = argv["neuro_service"] ? argv["neuro_service"] : false;
 
-const port = 5000;
 
-
-
-const app = express();
-app.use(express.json());
-app.use(cors());
-app.get("/list_machines_ports", (request, response) => {
-  response.send(JSON.stringify(address_list.map((value) => value.ui_port)));
-});
-
-app.get("/get_machines_info", (request, response) => {
-  const get_machines_info = (): Extract<RequestMatching, { type: "get_machines_info" }>["response"] => {
-    return address_list.map(
-      (value) => {
-        const t = { port: value.ui_port, name: value.name, ...value.specific_params, };
-        return t;
-      })
-  }
-  response.send(JSON.stringify(get_machines_info()));
-});
-
-const server = app.listen(port, () => console.log(`running on port ${port}`));
-
-
+const address_list = address_list_ as AddressListType[];
 
 const run_list: concurrently.CommandObj[] = [];
 address_list.map((value) => {
@@ -92,14 +69,6 @@ if (neuro_service)
     cwd: '../../NeuroNets_MM/'
   });
 
-process.on("SIGTERM", () => {
-  server.close(() => {
-    console.log("Process terminated SIGTERM");
-  });
-});
 
-concurrently(run_list, { killOthers: ["failure", "success"] }).then(() => {
-  return server.close(() => {
-    console.log("Process terminated concurrently");
-  });
-});
+
+concurrently(run_list, { killOthers: ["failure", "success"] });
