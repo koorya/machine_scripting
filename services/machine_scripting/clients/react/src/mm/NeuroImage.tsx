@@ -13,18 +13,18 @@ function useNeuroImagesSegment(
   >();
 
   useEffect(() => {
-    const image_upd = setInterval(() => {
-      api
-        .getByAPI_get("segment", {
+    const image_upd = setInterval(async () => {
+      try {
+        const value = await api.getByAPI_get("segment", {
           ipcl: ipcl,
           ipcr: ipcr,
           last_req: "",
-        })
-        .then((value) => setImages(value))
-        .catch((reason) => {
-          console.log(reason);
         });
-    }, 500);
+        setImages(value);
+      } catch (e) {
+        console.log("service not found");
+      }
+    }, 1000);
     return () => {
       clearInterval(image_upd);
     };
@@ -54,7 +54,7 @@ function useNeuroImagesClass(
         .catch((reason) => {
           console.log(reason);
         });
-    }, 500);
+    }, 1000);
     return () => {
       clearInterval(image_upd);
     };

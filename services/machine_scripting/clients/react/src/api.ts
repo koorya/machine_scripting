@@ -26,6 +26,8 @@ export class API<matching> {
             });
           else
             reject(res.statusText);
+        }).catch((reason) => {
+          reject("unable to fetch")
         });
     });
   }
