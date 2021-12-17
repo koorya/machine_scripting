@@ -5,96 +5,16 @@ import * as cors from "cors";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { AddParams, Machines, RequestMatching } from "./types/types";
+import { address_list } from "shared/config/machines_config"
 
 const argv = yargs(hideBin(process.argv)).argv;
 console.log(argv);
 
+const neuro_service = argv["neuro_service"] ? argv["neuro_service"] : false;
+
 const port = 5000;
 
-type AddressListType = ({
-  name: string;
-  zmq_port: number;
-  ui_port: number;
-  specific_params: AddParams;
-}
 
-  &
-  (
-    | {
-      is_fake: true;
-    }
-    | {
-      is_fake: false;
-      ip: string;
-    }
-  )
-)
-
-const address_list: AddressListType[] = [
-  // {
-  //   zmq_port: 5552,
-  //   ui_port: 5001,
-  //   is_fake: false,
-  //   ip: "192.168.250.1",
-  //   type: "MM",
-  // },
-  // {
-  //   zmq_port: 5552,
-  //   ui_port: 5001,
-  //   is_fake: false,
-  //   ip: "172.16.201.89",
-  //   type: "MM",
-  // },
-  // {
-  //   name: "Монтажник",
-  //   zmq_port: 5553,
-  //   ui_port: 5002,
-  //   is_fake: false,
-  //   ip: "172.16.201.79",
-  //   type: "MM",
-  //   photo: "photo address"
-  // },
-  // {
-  //   name: "fake_mm",
-  //   zmq_port: 5554,
-  //   ui_port: 5003,
-  //   is_fake: true,
-  //   specific_params: {
-  //     type: "MM",
-  //     neuro: {
-
-  //       ipcl: "172.16.201.137",
-  //       ipcr: "172.16.201.142",
-  //       port: 8090
-  //     }
-  //   },
-  // },
-  {
-    name: "fake Подъемник",
-    zmq_port: 5556,
-    ui_port: 5006,
-    is_fake: true,
-    specific_params: {
-      type: "MP",
-      length: 11,
-      reading_port: { zmq: 5800, ui: 5810 },
-      seting_port: { zmq: 5801, ui: 5811 },
-    },
-  },
-  {
-    name: "fake_md",
-    zmq_port: 5555,
-    ui_port: 5004,
-    is_fake: true,
-    specific_params: {
-      type: "MD",
-      hydro: 10,
-      reading_port: { zmq: 5700, ui: 5710 },
-      seting_port: { zmq: 5701, ui: 5711 },
-    },
-  },
-
-];
 
 const app = express();
 app.use(express.json());
@@ -164,22 +84,13 @@ address_list.map((value) => {
   });
 });
 
-// var exec = require("child_process").exec;
-// exec("\"penv/Scripts/python.exe\" scripts/test.py", { cwd: '../../NeuroNets_MM/', timeout: 2000 }, (error, stdout, stderr) => {
-//   if (error) {
-//     console.error(`exec error: ${error}`);
-//     return;
-//   }
-//   console.log(`stdout: ${stdout}`);
-//   console.error(`stderr: ${stderr}`);
-// });
-
-// run_list.push({
-//   command:
-//     "\"penv/Scripts/python.exe\" run_service.py",
-//   name: `neuro_mm`,
-//   cwd: '../../NeuroNets_MM/'
-// });
+if (neuro_service)
+  run_list.push({
+    command:
+      "\"penv/Scripts/python.exe\" run_service.py",
+    name: `neuro_mm`,
+    cwd: '../../NeuroNets_MM/'
+  });
 
 process.on("SIGTERM", () => {
   server.close(() => {

@@ -1,4 +1,11 @@
 
+### Запуск
+
+без сервиса с картинками `npm run startup `
+
+с картинками `npm run startup -- --neuro_service=true`
+
+
 ### After clone
 Add remotes to other repo of project
 

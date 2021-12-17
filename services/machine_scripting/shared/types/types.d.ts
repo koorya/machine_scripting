@@ -74,6 +74,26 @@ type AddParams =
     seting_port: { zmq: number; ui: number; };
   };
 
+type AddressListType = ({
+  name: string;
+  zmq_port: number;
+  ui_port: number;
+  specific_params: AddParams;
+}
+
+  &
+  (
+    | {
+      is_fake: true;
+    }
+    | {
+      is_fake: false;
+      ip: string;
+    }
+  )
+)
+
+
 export type RequestMatching =
   | {
     type: "machine_type";
