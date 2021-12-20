@@ -8,6 +8,7 @@ import {
   ExcludeTypeProp,
   iCycleExecutorProps,
   iStateMachine,
+  LifeCycle,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
@@ -54,32 +55,22 @@ async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Om
 
 };
 
-type OnMethodsName = {
-  onBeforeLiftUpFrame;
-  onBeforeLiftDownFrame;
-  onLeaveLiftingUpFrameCycle;
-  onLeaveLiftingDownFrameCycle;
-  onLeaveHoldingFrameCycle;
-  onLeavePrepareingToLiftingBottomFrameCycle;
-  onLeavePrepareingToTopFrameMoveingVertical;
-  onLeaveLandingBottomFrameToPins;
-  onLeavePushingInCrabCycle;
-  onLeavePushingOutCrabCycle;
-  onBeforeLiftUpBottomFrame;
-  onBeforeLiftDownBottomFrame;
-  onLeaveLiftingUpBottomFrameCycle;
-  onLeaveLiftingDownBottomFrameCycle;
-};
+
 type ThisType = Extract<iFsmConfig, { data }>["data"] &
   ExtractByType<iData, "MD"> &
   ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type">
   & iStateMachine;
 
+type my_type = `on${string}`;
+type OnMethodsName = {
+  [key in my_type]
+};
 type OnMethods = {
   [key in keyof OnMethodsName]: (
     ...args: any
   ) => Promise<boolean | void> | void | boolean;
 };
+
 const init: string = "on_pins_support";
 
 function createFSMConfig(plc: IPlcConnector) {
@@ -112,16 +103,19 @@ function createFSMConfig(plc: IPlcConnector) {
         return machine_status;
       },
 
-      onBeforeLiftUpFrame: function () {
+      onBeforeLiftUpFrame: function (lifecycle: LifeCycle) {
+        if (lifecycle.transition === "goto") return true;
         if (this.current_level >= this.top_level) return false;
         return true;
       },
-      onBeforeLiftDownFrame: function () {
+      onBeforeLiftDownFrame: function (lifecycle: LifeCycle) {
+        if (lifecycle.transition === "goto") return true;
         if (this.current_level <= 0) return false;
         return true;
       },
-      onLeaveLiftingUpFrameCycle: async function (lifecycle) {
+      onLeaveLiftingUpFrameCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -134,8 +128,9 @@ function createFSMConfig(plc: IPlcConnector) {
 
       },
 
-      onLeaveLiftingDownFrameCycle: async function (lifecycle) {
+      onLeaveLiftingDownFrameCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -147,8 +142,9 @@ function createFSMConfig(plc: IPlcConnector) {
         this.current_level -= 1;
       },
 
-      onLeaveHoldingFrameCycle: async function (lifecycle) {
+      onLeaveHoldingFrameCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -158,8 +154,9 @@ function createFSMConfig(plc: IPlcConnector) {
           });
       },
 
-      onLeavePrepareingToLiftingBottomFrameCycle: async function (lifecycle) {
+      onLeavePrepareingToLiftingBottomFrameCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -169,8 +166,9 @@ function createFSMConfig(plc: IPlcConnector) {
           });
       },
 
-      onLeavePrepareingToTopFrameMoveingVertical: async function (lifecycle) {
+      onLeavePrepareingToTopFrameMoveingVertical: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -180,8 +178,9 @@ function createFSMConfig(plc: IPlcConnector) {
           });
       },
 
-      onLeaveLandingBottomFrameToPins: async function (lifecycle) {
+      onLeaveLandingBottomFrameToPins: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -190,8 +189,9 @@ function createFSMConfig(plc: IPlcConnector) {
             data: this_t,
           });
       },
-      onLeavePushingInCrabCycle: async function (lifecycle) {
+      onLeavePushingInCrabCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -200,8 +200,9 @@ function createFSMConfig(plc: IPlcConnector) {
             data: this_t,
           });
       },
-      onLeavePushingOutCrabCycle: async function (lifecycle) {
+      onLeavePushingOutCrabCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -211,17 +212,20 @@ function createFSMConfig(plc: IPlcConnector) {
           });
       },
 
-      onBeforeLiftUpBottomFrame: function () {
+      onBeforeLiftUpBottomFrame: function (lifecycle: LifeCycle) {
+        if (lifecycle.transition === "goto") return true;
         if (this.current_level <= 0) return false;
         return true;
       },
-      onBeforeLiftDownBottomFrame: function () {
+      onBeforeLiftDownBottomFrame: function (lifecycle: LifeCycle) {
+        if (lifecycle.transition === "goto") return true;
         if (this.current_level >= this.top_level) return false;
         return true;
       },
 
-      onLeaveLiftingUpBottomFrameCycle: async function (lifecycle) {
+      onLeaveLiftingUpBottomFrameCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,
@@ -231,8 +235,9 @@ function createFSMConfig(plc: IPlcConnector) {
           });
         this.current_level -= 1;
       },
-      onLeaveLiftingDownBottomFrameCycle: async function (lifecycle) {
+      onLeaveLiftingDownBottomFrameCycle: async function (lifecycle: LifeCycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.is_test)
           await executeProgram({
             plc_connector: this_t.plc,

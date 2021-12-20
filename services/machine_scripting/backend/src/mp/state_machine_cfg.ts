@@ -120,6 +120,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
       onLeaveLiftingDown: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"]
         if (lifecycle.transition === "step") {
           if (FC1_State != 5 &&
@@ -143,6 +144,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
       onLeaveLiftingUp: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         const FC1_State = (await this_t.plc.readVarToObj(["FC1_State"]))["FC1_State"];
         console.log(`onLeaveLiftingUp | FC1_State: ${FC1_State}`);
         if (lifecycle.transition === "step") {
