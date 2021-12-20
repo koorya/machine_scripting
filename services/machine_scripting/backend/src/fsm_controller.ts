@@ -108,8 +108,7 @@ var FSMController: new (
       else parsed = command;
 
       console.log(`fsm state: ${fsm.js_fsm.state}`);
-      if (parsed.name !== "goto" || (parsed.name !== "goto" && fsm.js_fsm.cannot(parsed.name))) console.log("invalid cmd");
-      else {
+      if (parsed.name === "goto" || (parsed.name !== "goto" && fsm.js_fsm.can(parsed.name))) {
         console.log(`execCommandAsync: wait for exec ${parsed.name}`);
         const is_command_exec = await (fsm.js_fsm[parsed.name] as (
           ...arg: any
@@ -127,7 +126,7 @@ var FSMController: new (
           //   await fsm.fsm.step();
           // }
         }
-      }
+      } else { console.log("invalid cmd"); }
       // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
       console.log(`command: "${parsed.name}" execution finish`);
       return;
