@@ -711,6 +711,8 @@ function App() {
                 key={machine.name + "tab"}
                 eventKey={machine.name}
                 title={machine.name}
+                mountOnEnter
+                unmountOnExit
               >
                 <MachinePresentation
                   key={machine.name + "presentation"}
