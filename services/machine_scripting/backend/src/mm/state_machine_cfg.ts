@@ -9,6 +9,7 @@ import {
   ExcludeTypeProp,
   iCycleExecutorProps,
   iStateMachine,
+  LifeCycle,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { checkCam } from "./check_cam";
@@ -40,30 +41,16 @@ type ThisType = Extract<iFsmConfig, { data }>["data"] &
   ExtractByType<iData, "MM"> &
   ExcludeTypeProp<ExtractByType<iMethods, "MM">, "type">
   & iStateMachine;
+type my_type = `on${string}`;
 type OnMethodsName = {
-  onAfterP200Start;
-  onLeaveP200;
-  onAfterP300Start;
-  onLeaveP300;
-  onAfterP500Start;
-  onLeaveP500;
-  onBeforeP600Start;
-  onEnterP600Near?;
-  onEnterP600Far?;
-  onLeaveP600Near?;
-  onLeaveP600Far?;
-
-  onAfterP700Start;
-  onLeaveP700;
-  onAfterP800Start;
-  onLeaveP800;
-  onBeforeP600Finish;
+  [key in my_type]
 };
 type OnMethods = {
   [key in keyof OnMethodsName]: (
     ...args: any
   ) => Promise<boolean | void> | void | boolean;
 };
+
 const init: string = "standby";
 
 function createFSMConfig(plc: IPlcConnector) {
@@ -103,9 +90,9 @@ function createFSMConfig(plc: IPlcConnector) {
         console.log("not valid");
         return false;
       },
-      onBeforeSetAddres: async function (lifecycle, address: MM_address) {
+      onBeforeSetAddres: async function (lifecycle: LifeCycle, address: MM_address) {
         const this_t: ThisType = (this as undefined) as ThisType;
-
+        if (lifecycle.transition === "goto") return true;
         if (!this_t.isAddressValid(address)) return false;
 
         if (this_t.is_test) return true;
@@ -138,16 +125,18 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP200Start: async function (
-        lifecycle,
+        lifecycle: LifeCycle,
         config: P200_Conf = { skip: [] }
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await executeProgram({ cycle_name: "P200", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP200: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P200[0].Done", true);
         await this_t.plc.writeVar({ "P200[0].Reset": true });
@@ -155,16 +144,18 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP300Start: async function (
-        lifecycle,
+        lifecycle: LifeCycle,
         config: P200_Conf = { skip: [] }
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await executeProgram({ cycle_name: "P300", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP300: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P300[0].Done", true);
         await this_t.plc.writeVar({ "P300[0].Reset": true });
@@ -172,16 +163,18 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP500Start: async function (
-        lifecycle,
+        lifecycle: LifeCycle,
         config: P200_Conf = { skip: [] }
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await executeProgram({ cycle_name: "P500", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP500: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P500[0].Done", true);
         await this_t.plc.writeVar({ "P500[0].Reset": true });
@@ -189,10 +182,11 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onBeforeP600Start: async function (
-        lifecycle,
+        lifecycle: LifeCycle,
         config: P200_Conf = { skip: [] }
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await executeProgram({ cycle_name: "P600", config: config, plc_connector: this_t.plc });
         return true;
@@ -208,6 +202,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onLeaveP600Near: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P600[7].Run", true);
 
@@ -220,6 +215,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onLeaveP600Far: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         console.log("waitForPlcVar(P600[8].Run)")
         await this_t.plc.waitForPlcVar("P600[8].Run", true);
@@ -232,42 +228,24 @@ function createFSMConfig(plc: IPlcConnector) {
       },
       onBeforeP600Finish: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P600[0].Done", true);
       },
-      // не срабатывает
-      // onLeaveCamInspection: async function () {
-      //   const this_t: ThisType = (this as undefined) as ThisType;
-      //   if (this_t.is_test) return true;
-      //   var exec = require("child_process").exec;
-      //   async function execute(command) {
-      //     return new Promise((resolve, reject) => {
-      //       exec(command, function (error, stdout, stderr) {
-      //         resolve(stdout);
-      //       });
-      //     });
-      //   }
-      //   let ok = (await execute("npx ts-node ./src/is_cam_ok.ts")) as string;
-      //   console.log("executed process");
-      //   console.log(ok);
-      //   if (!/^Ok/.exec(ok)) {
-      //     console.log("Cam check failed");
-      //     return false;
-      //   }
-      //   return true;
-      // },
 
       onAfterP700Start: async function (
-        lifecycle,
+        lifecycle: LifeCycle,
         config: P200_Conf = { skip: [] }
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await executeProgram({ cycle_name: "P700", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP700: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P700[0].Done", true);
         await this_t.plc.writeVar({ "P700[0].Reset": true });
@@ -275,16 +253,18 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP800Start: async function (
-        lifecycle,
+        lifecycle: LifeCycle,
         config: P200_Conf = { skip: [] }
       ) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await executeProgram({ cycle_name: "P800", config: config, plc_connector: this_t.plc });
         return true;
       },
       onLeaveP800: async function (lifecycle) {
         const this_t: ThisType = (this as undefined) as ThisType;
+        if (lifecycle.transition === "goto") return true;
         if (this_t.is_test) return true;
         await this_t.plc.waitForPlcVar("P800[0].Done", true);
         await this_t.plc.writeVar({ "P800[0].Reset": true });

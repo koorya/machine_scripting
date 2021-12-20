@@ -25,6 +25,16 @@ function createPlcFsm(port: number) {
     >({
       ...fsm_config,
       methods: { ...fsm_config.methods },
+      transitions: [
+        ...fsm_config.transitions,
+        {
+          name: "goto",
+          from: "*",
+          to: function (s) {
+            return s;
+          },
+        },
+      ],
     }),
     virt: {
       js_fsm: new_StateMachine<

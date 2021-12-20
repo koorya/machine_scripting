@@ -17,6 +17,12 @@ export interface iFsmConfig {
   methods: unknown;
 }
 
+export type LifeCycle = {
+  from: string;
+  to: string;
+  transition: string;
+};
+
 export type iCycleExecutorProps = {
   cycle_name: string;
   plc_connector: IPlcConnector;
@@ -27,7 +33,7 @@ export type iCycleExecutorProps = {
     | {
       type: "MD";
 
-      lifecycle: { from: string; };
+      lifecycle: LifeCycle;
       data: {
         cycle_state: number;
         status_message: string;
