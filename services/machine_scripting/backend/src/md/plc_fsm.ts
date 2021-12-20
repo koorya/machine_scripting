@@ -31,7 +31,7 @@ function createPlcFsm(port: number) {
           name: "goto",
           from: "*",
           to: function (s) {
-            return s;
+            return s.state;
           },
         },
       ],
