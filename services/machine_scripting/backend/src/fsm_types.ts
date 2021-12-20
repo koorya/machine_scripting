@@ -56,7 +56,7 @@ export interface iStateMachine {
   history: string[];
   allStates: () => string[];
   can: (value: string) => boolean;
-  cannot: (value: string) => boolean;
+  cannot: (value: string, porps?: any) => boolean;
   goto: (state: string) => Promise<boolean>;
   step: () => Promise<boolean>;
 }

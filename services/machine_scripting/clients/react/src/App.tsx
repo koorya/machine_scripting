@@ -13,7 +13,14 @@ import Alert from "react-bootstrap/Alert";
 import Accordion from "react-bootstrap/Accordion";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import * as MyTypes from "./types";
-import { ButtonGroup, Dropdown, Tabs } from "react-bootstrap";
+import {
+  ButtonGroup,
+  Dropdown,
+  FormControl,
+  InputGroup,
+  SplitButton,
+  Tabs,
+} from "react-bootstrap";
 import { API } from "./api";
 import { AddParams, Machines, RequestMatching } from "./types";
 import MnemoMD from "./md/MnemoMD";
@@ -97,11 +104,14 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
 function DirectControls({
   api,
   available,
+  all_states,
 }: {
   api: API<RequestMatching>;
   available: boolean;
+  all_states: string[];
 }) {
   const cmds = useCmds(api);
+  const [gotoState, setGotoState] = useState(all_states[1]);
   return (
     <>
       {cmds.map((cmd) =>
@@ -119,6 +129,40 @@ function DirectControls({
           >
             {cmd}
           </Button>
+        ) : cmd === "goto" ? (
+          <InputGroup size="sm" className="p-1">
+            <SplitButton
+              variant="primary"
+              title="goto"
+              id="segmented-button-dropdown-1"
+              className="mx-1"
+              key={cmd}
+              onClick={() =>
+                api
+                  .getByAPI_post("exec_graph_command", {
+                    command: `${cmd}({"state": "${gotoState}"})`,
+                  })
+                  .then((res) => console.log(res))
+              }
+            >
+              {all_states.map((state) => {
+                return (
+                  <Dropdown.Item
+                    onSelect={() => setGotoState(state)}
+                    href="#"
+                    key={state}
+                  >
+                    {state}
+                  </Dropdown.Item>
+                );
+              })}
+            </SplitButton>
+            <FormControl
+              disabled
+              value={gotoState}
+              aria-label="Text input with dropdown button"
+            />
+          </InputGroup>
         ) : (
           <Button
             className="mx-1"
@@ -221,6 +265,7 @@ type ScenarioProps = {
   saveCallback: (saveprop: MyTypes.ScenarioDefenition) => void;
   current_index?: number | null;
   status?: string;
+  all_states: string[];
 };
 
 function Scenario({
@@ -230,6 +275,7 @@ function Scenario({
   saveCallback,
   current_index,
   status,
+  all_states,
 }: ScenarioProps) {
   const [script, setScript] = useState<string>(value.script);
   const [condition, setCondition] = useState<MyTypes.ScenarioStartCondition>(
@@ -239,7 +285,6 @@ function Scenario({
 
   const sc = useCompile(api, script);
   const error = useValidation(api, condition, sc);
-  const all_states = useAllStates(api);
 
   const handleChangeScript = (el: any) => {
     setScript(el.target.value);
@@ -451,11 +496,13 @@ function Scenarios({
   type,
   id,
   status,
+  all_states,
 }: {
   api: API<RequestMatching>;
   type: Machines;
   id: string;
   status?: string;
+  all_states: string[];
 }) {
   const [scenarios, setScenarios] = useState<MyTypes.ScenarioDefenition[]>([]);
   function defStartCondition(type: Machines): MyTypes.ScenarioStartCondition {
@@ -571,6 +618,7 @@ function Scenarios({
                   }
                   saveCallback={handleSaveScenario}
                   mode={editMode ? "edit" : "use"}
+                  all_states={all_states}
                 />
               </Tab.Pane>
             ))}
@@ -579,6 +627,7 @@ function Scenarios({
                 api={api}
                 value={def_scenario}
                 saveCallback={handleSaveScenario}
+                all_states={all_states}
               />
             </Tab.Pane>
           </Tab.Content>
@@ -622,6 +671,7 @@ type MachineConfig = { name: string; api: API<RequestMatching> } & AddParams;
 
 function MachinePresentation({ machine }: { machine: MachineConfig }) {
   const controller_status = useControllerStatus(machine.api);
+  const all_states = useAllStates(machine.api);
 
   return (
     <Container fluid>
@@ -640,6 +690,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                 <DirectControls
                   api={machine.api}
                   available={controller_status?.state === "available"}
+                  all_states={all_states}
                 />
               </Tab>
               <Tab eventKey="scenario" title="By scenario">
@@ -648,6 +699,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                   api={machine.api}
                   type={machine.type}
                   id={machine.name}
+                  all_states={all_states}
                 />
               </Tab>
               <Tab eventKey="status" title="Status">

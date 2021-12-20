@@ -108,7 +108,7 @@ var FSMController: new (
       else parsed = command;
 
       console.log(`fsm state: ${fsm.js_fsm.state}`);
-      if (fsm.js_fsm.cannot(parsed.name)) console.log("invalid cmd");
+      if (parsed.name !== "goto" || (parsed.name !== "goto" && fsm.js_fsm.cannot(parsed.name))) console.log("invalid cmd");
       else {
         console.log(`execCommandAsync: wait for exec ${parsed.name}`);
         const is_command_exec = await (fsm.js_fsm[parsed.name] as (
@@ -135,9 +135,14 @@ var FSMController: new (
     onExecCommand: function (lifecycle, command: string) {
       const this_t: ThisT = this;
       const fsm = this_t.slave_fsm as iPLCStateMachine<Machines>;
-      if (fsm.js_fsm.cannot(command)) return false;
-
-      console.log(this_t.execCommandAsync);
+      const parsed_cmd = parseCommand(command);
+      if (parsed_cmd.name !== "goto") {
+        if (fsm.js_fsm.cannot(parsed_cmd.name)) {
+          console.log(`onExecCommand | js_fsm.cannot: ${parsed_cmd.name}`)
+          return false;
+        }
+      }
+      console.log(`onExecCommand | next run command async`);
       this_t.execCommandAsync(command).then(async () => {
         console.log(`execCommandAsync executed ${command} success`);
         while (fsm.js_fsm.can("step")) {
