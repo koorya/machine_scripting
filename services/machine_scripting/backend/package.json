@@ -7,13 +7,13 @@
     "build": "tsc",
     "start": "npx concurrently \"npm:server\" \"npm:client\"",
     "start_dev": "npx concurrently \"npm:fake_plc_nodemon\" \"npm:server_nodemon\" \"npm:client\"",
-    "fake_plc_nodemon": "npx nodemon --exec \"ts-node ./src/fake_plc/start_fake_plc.ts\"",
-    "fake_plc": "npx ts-node ./src/fake_plc/start_fake_plc.ts",
-    "startup": "npx ts-node ./src/startup.ts",
-    "server_nodemon": "npx nodemon --exec \"ts-node ./src/index.ts\"",
-    "server": "npx ts-node ./src/index.ts",
+    "fake_plc_nodemon": "npx nodemon --exec \"ts-node -r tsconfig-paths/register ./src/fake_plc/start_fake_plc.ts\"",
+    "fake_plc": "npx ts-node -r tsconfig-paths/register ./src/fake_plc/start_fake_plc.ts",
+    "startup": "npx ts-node -r tsconfig-paths/register ./src/startup.ts",
+    "server_nodemon": "npx nodemon --exec \"ts-node -r tsconfig-paths/register ./src/index.ts\"",
+    "server": "npx ts-node -r tsconfig-paths/register ./src/index.ts",
     "client": "npm --prefix ../clients/react start",
-    "repeater": "npx ts-node ./src/repeater/index.ts",
+    "repeater": "npx ts-node -r tsconfig-paths/register ./src/repeater/index.ts",
     "test": "npx jest"
   },
   "author": "",
@@ -37,6 +37,7 @@
     "nodemon": "^2.0.12",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.1.0",
+    "tsconfig-paths": "^3.12.0",
     "typescript": "^4.3.5",
     "yargs": "^17.2.1",
     "zeromq": "^6.0.0-beta.6"
@@ -52,6 +53,8 @@
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },
-    "transformIgnorePatterns": ["node_modules/(?!variables/.*)"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ]
   }
 }

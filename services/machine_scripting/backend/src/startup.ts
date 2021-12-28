@@ -4,8 +4,8 @@ import * as cors from "cors";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { AddParams, AddressListType, Machines, RequestMatching } from "./types/types";
-import { address_list as address_list_ } from "shared/config/machines_config"
+import { AddParams, AddressListType, Machines, RequestMatching } from "~shared/types/types";
+import { address_list as address_list_ } from "~shared/config/machines_config"
 
 const argv = yargs(hideBin(process.argv)).argv;
 console.log(argv);

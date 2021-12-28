@@ -3,8 +3,8 @@ import MMLogic from "./fake-mm";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { init_vars as mp_vars } from "shared/mp/plc_vars"
-import { init_vars as md_vars } from "shared/md/plc_vars"
+import { init_vars as mp_vars } from "~shared/mp/plc_vars"
+import { init_vars as md_vars } from "~shared/md/plc_vars"
 
 const argv = yargs(hideBin(process.argv)).array("zmq_port").argv;
 console.log(argv);
