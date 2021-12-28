@@ -1,14 +1,14 @@
 import {
 	createPlcFsm as createPlcFsmMM,
-	transitions as transitionsMM
+	graph as graphMM
 } from "./mm/plc_fsm";
 import {
 	createPlcFsm as createPlcFsmMD,
-	transitions as transitionsMD
+	graph as graphMD
 } from "./md/plc_fsm";
 import {
 	createPlcFsm as createPlcFsmMP,
-	transitions as transitionsMP,
+	graph as graphMP,
 } from "./mp/plc_fsm";
 
 import * as MyTypes from "~shared/types/types";
@@ -18,16 +18,16 @@ export function createPlcFsmWithRender(machine_type: MyTypes.Machines, zmq_port:
 	if (machine_type == "MM")
 		return {
 			plc_fsm: createPlcFsmMM(zmq_port),
-			render: new ImageRender(transitionsMM),
+			render: new ImageRender(graphMM),
 		};
 	if (machine_type == "MD")
 		return {
 			plc_fsm: createPlcFsmMD(zmq_port),
-			render: new ImageRender(transitionsMD),
+			render: new ImageRender(graphMD),
 		};
 	if (machine_type == "MP")
 		return {
 			plc_fsm: createPlcFsmMP(zmq_port),
-			render: new ImageRender(transitionsMP),
+			render: new ImageRender(graphMP),
 		};
 };

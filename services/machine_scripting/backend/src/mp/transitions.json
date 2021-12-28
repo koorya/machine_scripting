@@ -1,9 +1,0 @@
-[
-  { "name": "moveUp", "from": "bottom", "to": "lifting_up" },
-
-  { "name": "moveDown", "from": "top", "to": "lifting_down" },
-  { "name": "step", "from": "lifting_up", "to": "top" },
-  { "name": "step", "from": "lifting_down", "to": "bottom" },
-  { "name": "moveDownEXTRA", "from": "lifting_up", "to": "lifting_down" },
-  { "name": "moveUpEXTRA", "from": "lifting_down", "to": "lifting_up" }
-]

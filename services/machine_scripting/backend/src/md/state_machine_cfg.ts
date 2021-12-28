@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { ExtractByType, MachineStatus } from "~shared/types/types";
 import {
   iFsmConfig,
-  iTransition,
+  GraphOfStates,
   iData,
   iMethods,
   ExcludeTypeProp,
@@ -11,10 +11,9 @@ import {
   LifeCycle,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
+import { graph } from "./transitions";
 
-const transitions: iTransition[] = JSON.parse(
-  fs.readFileSync("src/md/transitions.json").toString()
-);
+
 
 async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Omit<Extract<iCycleExecutorProps, { type: "MD" }>, "type">) {
 
@@ -79,7 +78,7 @@ function createFSMConfig(plc: IPlcConnector) {
     methods: ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type"> & OnMethods;
   } = {
     init: init,
-    transitions: transitions,
+    transitions: graph.transitions,
     data: {
       type: "MD",
       init: init,
@@ -255,4 +254,4 @@ function createFSMConfig(plc: IPlcConnector) {
 
   return fsm_config;
 }
-export { createFSMConfig, transitions };
+export { createFSMConfig, graph };

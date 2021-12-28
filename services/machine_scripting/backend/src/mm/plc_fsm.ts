@@ -1,4 +1,4 @@
-import { createFSMConfig, transitions } from "./state_machine_cfg";
+import { createFSMConfig, graph } from "./state_machine_cfg";
 import {
   iCycleExecutorProps,
   iStateMachine,
@@ -66,4 +66,4 @@ function createPlcFsm(port: number) {
   return plc_fsm;
 }
 
-export { createPlcFsm, transitions };
+export { createPlcFsm, graph };
