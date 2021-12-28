@@ -3,7 +3,7 @@ import { WatchDirectoryFlags } from "typescript";
 import { ExtractByType, MachineStatus, MM_address } from "~shared/types/types";
 import {
   iFsmConfig,
-  iTransition,
+  GraphOfStates,
   iData,
   iMethods,
   ExcludeTypeProp,
@@ -12,9 +12,9 @@ import {
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
-const transitions: iTransition[] = JSON.parse(
-  fs.readFileSync("src/mp/transitions.json").toString()
-);
+import { graph } from "./transitions";
+
+
 type P200_Conf = {
   skip: number[];
 };
@@ -42,7 +42,7 @@ function createFSMConfig(plc: IPlcConnector) {
     methods: ExcludeTypeProp<ExtractByType<iMethods, "MP">, "type"> & OnMethods;
   } = {
     init: init,
-    transitions: transitions,
+    transitions: graph.transitions,
     data: {
       type: "MP",
       init: init,
@@ -176,6 +176,6 @@ function createFSMConfig(plc: IPlcConnector) {
 
   return fsm_config;
 }
-export { createFSMConfig, transitions };
+export { createFSMConfig, graph };
 // Stick_adress
 // Stick_socket

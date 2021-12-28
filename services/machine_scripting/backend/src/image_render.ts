@@ -1,14 +1,14 @@
 import * as graphviz from "graphviz";
 import * as visualize from "javascript-state-machine/lib/visualize.js";
 import * as StateMachine from "javascript-state-machine";
-import { iTransition } from "./fsm_types";
+import { GraphOfStates } from "./fsm_types";
 
 export class ImageRender {
   rendered_image: string = null;
   dot_script: string;
   start_time: Date;
-  constructor(transitions: iTransition[]) {
-    transitions = [...transitions];
+  constructor(graph: GraphOfStates) {
+    const transitions = [...graph.transitions];
     transitions.map((edge) => {
       if (edge.name === "step") {
         if (!edge["dot"]) edge["dot"] = { color: "blue" };

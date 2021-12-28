@@ -4,15 +4,24 @@ import * as MyTypes from "~shared/types/types";
 import { CompiledScenario, ControllerStatus, ExtractByType, Machines, MachineStatus, MM_address } from "~shared/types/types";
 import { IPlcConnector } from "./zmq_network";
 
-export interface iTransition {
+type Transition = {
   name: string;
   from: string;
   to: string | ((s: any) => {});
   dot?: any;
+  comment?: string;
+};
+type States = {
+  name: string;
+  comment: string;
+};
+export interface GraphOfStates {
+  transitions: Transition[];
+  states: States[];
 }
 export interface iFsmConfig {
   init: string;
-  transitions: iTransition[];
+  transitions: Transition[];
   data: { is_test: boolean };
   methods: unknown;
 }
