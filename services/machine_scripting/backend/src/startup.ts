@@ -1,16 +1,22 @@
 import * as concurrently from "concurrently";
-import * as express from "express";
-import * as cors from "cors";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { AddParams, AddressListType, Machines, RequestMatching } from "~shared/types/types";
+import { AddressListType } from "~shared/types/types";
 import { address_list as address_list_ } from "~shared/config/machines_config"
 
-const argv = yargs(hideBin(process.argv)).argv;
+const argv = yargs(hideBin(process.argv)).options({
+  nodemon: {
+    describe: 'run with nodemon',
+    boolean: true
+  }
+}).argv;
+
 console.log(argv);
 
 const neuro_service = argv["neuro_service"] ? argv["neuro_service"] : false;
+
+const node_mon = argv["nodemon"] ? "_nodemon" : "";
 
 
 const address_list = address_list_ as AddressListType[];
@@ -62,9 +68,10 @@ address_list.map((value) => {
       name: `repeater_setting`,
     });
   }
+
   run_list.push({
     command:
-      `npm run server -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
+      `npm run server${node_mon} -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
     name: `server_${value.specific_params.type}`
   });
 });
