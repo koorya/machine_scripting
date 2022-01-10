@@ -32,17 +32,25 @@ address_list.map((value) => {
       });
   }
   else {
-    if (value.specific_params.type == "MD")
+    if (value.specific_params.type == "MD" ||
+      value.specific_params.type == "MP"
+    ) {
       run_list.push({
         command:
           `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} ${value.specific_params.reading_port.zmq} ${value.specific_params.seting_port.zmq} --ip_address=${value.ip} --sgw_port=2`
       });
-    else if (value.specific_params.type == "MM")
+    } else if (value.specific_params.type == "MM") {
       run_list.push({
         command:
           `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`
       });
+    } else if (value.specific_params.type == "MASTER") {
+
+    } else {
+    }
   }
+
+
   if (value.specific_params.type == "MD"
     || value.specific_params.type == "MP") {
     run_list.push({

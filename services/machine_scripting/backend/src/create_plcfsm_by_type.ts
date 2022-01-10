@@ -10,6 +10,10 @@ import {
 	createPlcFsm as createPlcFsmMP,
 	graph as graphMP,
 } from "./mp/plc_fsm";
+import {
+	createPlcFsm as createPlcFsmMASTER,
+	graph as graphMASTER,
+} from "./master_machine/plc_fsm";
 
 import * as MyTypes from "~shared/types/types";
 import { ImageRender } from "./image_render";
@@ -29,5 +33,10 @@ export function createPlcFsmWithRender(machine_type: MyTypes.Machines, zmq_port:
 		return {
 			plc_fsm: createPlcFsmMP(zmq_port),
 			render: new ImageRender(graphMP),
+		};
+	if (machine_type == "MASTER")
+		return {
+			plc_fsm: createPlcFsmMASTER(zmq_port),
+			render: new ImageRender(graphMASTER),
 		};
 };
