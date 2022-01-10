@@ -54,12 +54,12 @@ export class ImageRender {
     if (this.start_time.getTime() != local_time.getTime()) return;
     gg.getNode(active_node_name).set("color", "red");
     gg.output("svg", (buff) => {
-      gg.getNode(active_node_name).set("color", "black");
 
       const local_image = buff.toString("base64");
       if (this.start_time.getTime() == local_time.getTime())
         this.rendered_image = local_image;
     });
+    gg.getNode(active_node_name).set("color", "black");
     console.log("rendered");
 
 
