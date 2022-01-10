@@ -91,7 +91,12 @@ export type iData = ({
       type: "MP";
       length: number;
     }
-  ))
+  )
+)
+  | {
+    init: string;
+    type: "MASTER";
+  }
   | {
     type: "CONTROLLER";
     slave_fsm: iPLCStateMachine<Machines>;
@@ -125,6 +130,9 @@ export type iMethods = BaseMethods &
     }
     | {
       type: "MP";
+    }
+    | {
+      type: "MASTER";
     }
   );
 

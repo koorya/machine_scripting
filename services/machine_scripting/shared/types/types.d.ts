@@ -1,7 +1,8 @@
+import { iData } from "../fsm_types";
 
 type ExtractByType<A, type> = A extends { type: type } ? A : never;
 
-export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP";
+export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP" | "MASTER";
 
 export type MM_address = { cassete: number; pos: number };
 
@@ -10,6 +11,7 @@ export type ScenarioStartCondition = { state: string } & (
   | { type: "MM"; address: MM_address; }
   | { type: "MP"; lenght: number; }
   | { type: "CONTROLLER"; }
+  | { type: "MASTER"; }
 
 );
 
@@ -72,7 +74,11 @@ type AddParams =
     length: number;
     reading_port: { zmq: number; ui: number; };
     seting_port: { zmq: number; ui: number; };
-  };
+  }
+  | {
+    type: "MASTER";
+  }
+  ;
 
 type AddressListType = ({
   name: string;
