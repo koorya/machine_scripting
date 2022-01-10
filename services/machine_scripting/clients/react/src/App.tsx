@@ -32,6 +32,7 @@ function Jumbotron(props: any) {
   return (
     <div
       style={{
+        ...props.style,
         padding: "2rem 1rem",
         marginBottom: "2rem",
         backgroundColor: "#e9ecef",
@@ -87,9 +88,20 @@ function useControllerStatus(api: API<RequestMatching>) {
 
 function GraphImage({ api }: { api: API<RequestMatching> }) {
   const [image, setImage] = useState<string | null>(null);
+  const [notUpdated, setNotUpdated] = useState(true);
   useEffect(() => {
     const image_upd = setInterval(() => {
-      api.getByAPI_get("image").then((value) => setImage(value));
+      api
+        .getByAPI_get("image")
+        .then((value) => {
+          if (value) {
+            setNotUpdated(false);
+            setImage(value);
+          } else {
+            setNotUpdated(true);
+          }
+        })
+        .catch((t) => setNotUpdated(true));
     }, 100);
     return () => {
       console.log("useimage is unmounted");
@@ -97,7 +109,15 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
     };
   }, [api]);
   return (
-    <Image src={`data:image/svg+xml;base64,${image}`} alt="states" fluid />
+    <Image
+      style={{
+        opacity: notUpdated ? "0.5" : "1.0",
+        border: `5px ${notUpdated ? "red" : "white"} solid`,
+      }}
+      src={`data:image/svg+xml;base64,${image}`}
+      alt="states"
+      fluid
+    />
   );
 }
 
@@ -680,7 +700,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
           <GraphImage api={machine.api} />
         </Col>
         <Col xs={4}>
-          <Jumbotron>
+          <Jumbotron style={{ position: "sticky", top: "0px" }}>
             <Tabs
               defaultActiveKey="scenario"
               // id={`graph-controll_${machine.name}`}
