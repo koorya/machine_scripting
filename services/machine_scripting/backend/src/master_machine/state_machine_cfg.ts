@@ -1,45 +1,25 @@
-import * as fs from "fs";
-import { WatchDirectoryFlags } from "typescript";
-import { ExtractByType, MachineStatus, MM_address } from "~shared/types/types";
+import { ExtractByType } from "~shared/types/types";
 import {
   iFsmConfig,
   iData,
   iMethods,
   ExcludeTypeProp,
-  iCycleExecutorProps,
-  iStateMachine,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
-import { graph } from "./transitions";
+import { graph, States, Transitions } from "./transitions";
+import { OnMethods } from "~shared/types/utils"
 
-
-type ThisType = Extract<iFsmConfig, { data }>["data"] &
-  ExtractByType<iData, "MASTER"> &
-  ExcludeTypeProp<ExtractByType<iMethods, "MASTER">, "type">
-  & iStateMachine;
-
-
-type my_type = `on${string}`;
-type OnMethodsName = {
-  [key in my_type]
-};
-type OnMethods = {
-  [key in keyof OnMethodsName]: (
-    ...args: any
-  ) => Promise<boolean | void> | void | boolean;
-};
-const init: string = "init";
 
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {
     data: ExtractByType<iData, "MASTER">;
-    methods: ExcludeTypeProp<ExtractByType<iMethods, "MASTER">, "type"> & OnMethods;
+    methods: ExcludeTypeProp<ExtractByType<iMethods, "MASTER">, "type"> & OnMethods<"MASTER", States, Transitions>;
   } = {
-    init: init,
+    init: graph.init,
     transitions: graph.transitions,
     data: {
       type: "MASTER",
-      init: init,
+      init: graph.init,
       is_test: false,
     },
     methods: {
@@ -51,19 +31,23 @@ function createFSMConfig(plc: IPlcConnector) {
       // onLeave<STATE>
       // onTransition
       getMachineStatus: function () {
-        const this_t: ThisType = (this as undefined) as ThisType;
-        const machine_status: Extract<MachineStatus, { type: "MASTER" }> = {
-          type: this_t.type,
-          state: this_t.state,
+        return {
+          type: this.type,
+          state: this.state,
           cycle_step: undefined,
           status_message: undefined,
         };
-        return machine_status;
       },
 
       onAfterTransition: function (lifecycle) {
         return true;
       },
+      onBeforeParkMD: function () {
+
+      },
+      onLeaveLiftingOneLevel: function (lifecycle) {
+        return true;
+      }
     },
   };
 

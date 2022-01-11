@@ -2,7 +2,7 @@ import { GraphOfStates, } from "../fsm_types"
 
 // надо комментарии вынести на рисунок
 
-export const graph: GraphOfStates = {
+const root_graph = {
 	transitions: [
 		{ name: "liftUpOneLevel", from: "init", to: "lifting_one_level", comment: "Подъем на этаж" },
 		{ name: "step", from: "lifting_one_level", to: "ready_to_column_mounting", comment: "" },
@@ -61,8 +61,13 @@ export const graph: GraphOfStates = {
 		{ name: "mp_parking", comment: "парковка подъемника" },
 		{ name: "some_links_mounted", comment: "Этаж частично или полностью<BR/>заполнен связями" },
 		{ name: "md_parking", comment: "парковка домкрата" },
+	],
+	init: "init"
+} as const;
 
+export const graph: GraphOfStates = (root_graph as unknown) as GraphOfStates;
 
-	]
-}
+export type States = typeof root_graph.transitions[number]["from"];
+export type Transitions = typeof root_graph.transitions[number]["name"];
+
 //

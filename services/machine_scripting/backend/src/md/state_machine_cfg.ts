@@ -1,18 +1,15 @@
-import * as fs from "fs";
+import { graph, States, Transitions } from "./transitions";
 import { ExtractByType, MachineStatus } from "~shared/types/types";
+import { OnMethods } from "~shared/types/utils";
 import {
   iFsmConfig,
-  GraphOfStates,
   iData,
   iMethods,
   ExcludeTypeProp,
   iCycleExecutorProps,
-  iStateMachine,
   LifeCycle,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
-import { graph } from "./transitions";
-
 
 
 async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Omit<Extract<iCycleExecutorProps, { type: "MD" }>, "type">) {
@@ -55,33 +52,16 @@ async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Om
 };
 
 
-type ThisType = Extract<iFsmConfig, { data }>["data"] &
-  ExtractByType<iData, "MD"> &
-  ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type">
-  & iStateMachine;
-
-type my_type = `on${string}`;
-type OnMethodsName = {
-  [key in my_type]
-};
-type OnMethods = {
-  [key in keyof OnMethodsName]: (
-    ...args: any
-  ) => Promise<boolean | void> | void | boolean;
-};
-
-const init: string = "on_pins_support";
-
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {
     data: ExtractByType<iData, "MD">;
-    methods: ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type"> & OnMethods;
+    methods: ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type"> & OnMethods<"MD", States, Transitions>;
   } = {
-    init: init,
+    init: graph.init,
     transitions: graph.transitions,
     data: {
       type: "MD",
-      init: init,
+      init: graph.init,
       current_level: 0,
       top_level: 4,
       cycle_state: 0,
@@ -91,18 +71,17 @@ function createFSMConfig(plc: IPlcConnector) {
     },
     methods: {
       getMachineStatus: function () {
-        const this_t: ThisType = (this as undefined) as ThisType;
         const machine_status: Extract<MachineStatus, { type: "MD" }> = {
-          type: this_t.type,
-          state: this_t.state,
-          cycle_step: this_t.cycle_state,
-          status_message: this_t.status_message,
-          level: this_t.current_level,
+          type: this.type,
+          state: this.state,
+          cycle_step: this.cycle_state,
+          status_message: this.status_message,
+          level: this.current_level,
         };
         return machine_status;
       },
 
-      onBeforeLiftUpFrame: function (lifecycle: LifeCycle) {
+      onBeforeLiftUpFrame: function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.current_level >= this.top_level) return false;
         return true;
@@ -113,14 +92,13 @@ function createFSMConfig(plc: IPlcConnector) {
         return true;
       },
       onLeaveLiftingUpFrameCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "up_frame_cycle",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           })
 
         this.current_level += 1;
@@ -128,86 +106,79 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onLeaveLiftingDownFrameCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "down_frame_cycle",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
 
         this.current_level -= 1;
       },
 
       onLeaveHoldingFrameCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "init_to_hold",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
       },
 
       onLeavePrepareingToLiftingBottomFrameCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "from_hold_to_lift_crab",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
       },
 
       onLeavePrepareingToTopFrameMoveingVertical: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "from_hold_to_init",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
       },
 
       onLeaveLandingBottomFrameToPins: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "from_upcrcyc_to_init",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
       },
       onLeavePushingInCrabCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "pushin_crab",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
       },
       onLeavePushingOutCrabCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "pushout_crab",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
       },
 
@@ -223,26 +194,24 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onLeaveLiftingUpBottomFrameCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "up_crab_cycle",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
         this.current_level -= 1;
       },
       onLeaveLiftingDownBottomFrameCycle: async function (lifecycle: LifeCycle) {
-        const this_t: ThisType = (this as undefined) as ThisType;
         if (lifecycle.transition === "goto") return true;
-        if (!this_t.is_test)
+        if (!this.is_test)
           await executeProgram({
-            plc_connector: this_t.plc,
+            plc_connector: this.plc,
             cycle_name: "down_crab_cycle",
             lifecycle: lifecycle,
-            data: this_t,
+            data: this,
           });
         this.current_level += 1;
       },

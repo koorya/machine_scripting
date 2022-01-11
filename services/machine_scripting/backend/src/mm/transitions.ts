@@ -1,6 +1,6 @@
 import { GraphOfStates, } from "../fsm_types"
 
-export const graph: GraphOfStates = {
+export const root_graph = {
   transitions: [
     { "name": "setAddres", "from": "standby", "to": "ready_to_mount" },
     { "name": "setAddres", "from": "ready_to_mount", "to": "ready_to_mount" },
@@ -15,6 +15,12 @@ export const graph: GraphOfStates = {
     { "name": "step", "from": "p800", "to": "standby" }
   ]
   ,
-  states: []
-}
+  states: [],
+  init: "standby",
+} as const;
+
+export const graph: GraphOfStates = (root_graph as unknown) as GraphOfStates;
+
+export type States = typeof root_graph.transitions[number]["from"];
+export type Transitions = typeof root_graph.transitions[number]["name"];
 

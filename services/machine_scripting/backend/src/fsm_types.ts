@@ -18,6 +18,7 @@ type States = {
 export interface GraphOfStates {
   transitions: Transition[];
   states: States[];
+  init: string;
 }
 export interface iFsmConfig {
   init: string;
@@ -122,10 +123,6 @@ export type iMethods = BaseMethods &
     }
     | {
       type: "MM";
-      onBeforeSetAddres: (
-        lifecycle: unknown,
-        address: MM_address
-      ) => Promise<boolean | void> | void | boolean;
       isAddressValid: (adress: MM_address) => boolean;
     }
     | {
