@@ -1,6 +1,6 @@
 import { GraphOfStates, } from "../fsm_types"
 
-export const graph: GraphOfStates = {
+export const root_graph = {
   transitions: [
     { name: "moveUp", from: "bottom", to: "lifting_up", comment: "Вверх" },
     { name: "moveDown", from: "top", to: "lifting_down", comment: "Вниз" },
@@ -14,6 +14,12 @@ export const graph: GraphOfStates = {
     { name: "lifting_down", comment: "едет вниз" },
     { name: "top", comment: "полностю поднят" },
     { name: "bottom", comment: "полностью спущен" },
-  ]
-};
+  ],
+  init: "bottom",
+} as const;
 
+
+export const graph: GraphOfStates = (root_graph as unknown) as GraphOfStates;
+
+export type States = typeof root_graph.transitions[number]["from"];
+export type Transitions = typeof root_graph.transitions[number]["name"];
