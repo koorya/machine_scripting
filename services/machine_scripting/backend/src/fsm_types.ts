@@ -26,10 +26,10 @@ export interface iFsmConfig {
   methods: unknown;
 }
 
-export type LifeCycle = {
-  from: string;
-  to: string;
-  transition: string;
+export type LifeCycle<states extends string = string, transitions extends string = string> = {
+  from: states;
+  to: states;
+  transition: transitions;
 };
 
 export type iCycleExecutorProps = {
@@ -58,7 +58,7 @@ export type iCycleExecutorProps = {
   );
 
 export interface iStateMachine {
-  onAfterTransition: (lifecycle: any) => void;
+  onAfterTransition: (lifecycle: LifeCycle) => void;
   state: string;
   init: string;
   transitions: () => string[];
@@ -151,7 +151,7 @@ export type iPLCStateMachine<machine extends Machines> = {
   virt: {
     js_fsm: iStateMachine &
     ExtractByType<iData, machine> &
-    ExtractByType<iMethods, machine>;
+    SpecificMethods<machine>;
     init: (value: ScenarioStartCondition) => void;
   };
 };
@@ -174,18 +174,20 @@ export interface iController extends iStateMachine, Extract<iData, { type: "CONT
 
 }
 
+type OnBaseMethodsName =
+  | 'onAfterTransition'
+  | 'onTransition'
+  | 'onLeaveState'
+  | 'onBeforeTransition';
 
-type OnMethodsName<States extends string, Transitions extends string> =
+type OnSpecificMethodsName<States extends string, Transitions extends string> =
   | `onLeave${ToPascal<States>}`
   | `onBefore${ToPascal<Transitions>}`
   | `onBefore${ToPascal<States>}`
   | `on${ToPascal<States>}`
   | `on${ToPascal<Transitions>}`
   | `onAfter${ToPascal<Transitions>}`
-  | 'onAfterTransition'
-  | 'onTransition'
-  | 'onLeaveState'
-  | 'onBeforeTransition';
+  | OnBaseMethodsName;
 
 
 type CustomThisType<MACHINE extends Machines> =
@@ -194,7 +196,7 @@ type CustomThisType<MACHINE extends Machines> =
   & iStateMachine;
 
 export type OnMethods<Machine extends Machines, States extends string, Transitions extends string> = {
-  [key in OnMethodsName<States, Transitions>]?: (this: CustomThisType<Machine>, lifecycle: LifeCycle, ...args: any
+  [key in OnSpecificMethodsName<States, Transitions>]?: (this: CustomThisType<Machine>, lifecycle: LifeCycle<States, Transitions | "goto">, ...args: any
   ) => Promise<boolean | void> | void | boolean;
 };
 
