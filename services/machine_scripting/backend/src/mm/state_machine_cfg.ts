@@ -3,11 +3,9 @@ import { ExtractByType } from "~shared/types/utils";
 import {
   iFsmConfig,
   iData,
-  iMethods,
-  ExcludeTypeProp,
   iCycleExecutorProps,
   LifeCycle,
-  OnMethods,
+  FSMMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { checkCam } from "./check_cam";
@@ -39,7 +37,7 @@ async function executeProgram(
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {
     data: ExtractByType<iData, "MM">;
-    methods: ExcludeTypeProp<ExtractByType<iMethods, "MM">, "type"> & OnMethods<"MM", States, Transitions>;
+    methods: FSMMethods<"MM", States, Transitions>;
   } = {
     init: graph.init,
     transitions: graph.transitions,

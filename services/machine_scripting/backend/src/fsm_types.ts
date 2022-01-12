@@ -23,7 +23,6 @@ export interface GraphOfStates {
 export interface iFsmConfig {
   init: string;
   transitions: Transition[];
-  data: { is_test: boolean };
   methods: unknown;
 }
 
@@ -73,8 +72,7 @@ export interface iStateMachine {
 
 
 
-export type iData = ({
-  init: string;
+export type iData = ((({
   cycle_state: number;
   status_message: string;
   plc: IPlcConnector;
@@ -95,9 +93,12 @@ export type iData = ({
   )
 )
   | {
-    init: string;
     type: "MASTER";
-  }
+  }) & {
+    init: string;
+    is_test: boolean;
+
+  })
   | {
     type: "CONTROLLER";
     slave_fsm: iPLCStateMachine<Machines>;
@@ -110,13 +111,18 @@ export type ExcludeTypeProp<T, U> = {
 }
 type BaseMethods = {
   // [key: string]: ((...args: any) => Promise<boolean|void> | void | boolean) | string;
-  getMachineStatus: () => MachineStatus;
-  onAfterTransition: (...args: any) => Promise<boolean | void> | void | boolean;
+  // getMachineStatus: () => MachineStatus;
 };
 export type iMethods = BaseMethods &
   (
     | {
       type: "CONTROLLER"
+      finishExecCommand?: () => void;
+      pause?: () => void;
+      stop?: () => void;
+      execCommandAsync: (this: CustomThisType<"CONTROLLER">, command: string | { name: string; props: unknown }) => Promise<void>;
+      execScenarioAsync: (this: CustomThisType<"CONTROLLER">, scenario: CompiledScenario) => Promise<void>;
+      getControllerStatus: (this: CustomThisType<"CONTROLLER">) => ReturnType<iController["getControllerStatus"]>;
     }
     | {
       type: "MD";
@@ -132,13 +138,16 @@ export type iMethods = BaseMethods &
       type: "MASTER";
     }
   );
+export type SpecificMethods<machine extends Machines> = {
+  getMachineStatus: (this: CustomThisType<machine>) => Extract<MachineStatus, { type: machine }>
+} & Omit<Extract<iMethods, { type: machine }>, "type">;
 
 
-export type iPLCStateMachine<machine> = {
+export type iPLCStateMachine<machine extends Machines> = {
   type: machine;
   js_fsm: iStateMachine &
   ExtractByType<iData, machine> &
-  ExtractByType<iMethods, machine>;
+  SpecificMethods<machine>;
   virt: {
     js_fsm: iStateMachine &
     ExtractByType<iData, machine> &
@@ -179,7 +188,7 @@ type OnMethodsName<States extends string, Transitions extends string> =
   | 'onBeforeTransition';
 
 
-type CustomThisType<MACHINE extends Machines> = Extract<iFsmConfig, { data: any }>["data"] &
+type CustomThisType<MACHINE extends Machines> =
   ExtractByType<iData, MACHINE> &
   ExcludeTypeProp<ExtractByType<iMethods, MACHINE>, "type">
   & iStateMachine;
@@ -187,4 +196,13 @@ type CustomThisType<MACHINE extends Machines> = Extract<iFsmConfig, { data: any 
 export type OnMethods<Machine extends Machines, States extends string, Transitions extends string> = {
   [key in OnMethodsName<States, Transitions>]?: (this: CustomThisType<Machine>, lifecycle: LifeCycle, ...args: any
   ) => Promise<boolean | void> | void | boolean;
-} & { getMachineStatus: (this: CustomThisType<Machine>) => Extract<MachineStatus, { type: Machine }> };
+};
+
+export type FSMMethods<
+  machine extends Machines,
+  states extends string,
+  transitions extends string> =
+  SpecificMethods<machine>
+  & OnMethods<machine, states, transitions>;
+
+

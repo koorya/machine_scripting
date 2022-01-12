@@ -3,11 +3,9 @@ import { MachineStatus } from "~shared/types/types";
 import {
   iFsmConfig,
   iData,
-  iMethods,
-  ExcludeTypeProp,
   iCycleExecutorProps,
   LifeCycle,
-  OnMethods,
+  FSMMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { ExtractByType } from "~shared/types/utils";
@@ -56,7 +54,7 @@ async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Om
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {
     data: ExtractByType<iData, "MD">;
-    methods: ExcludeTypeProp<ExtractByType<iMethods, "MD">, "type"> & OnMethods<"MD", States, Transitions>;
+    methods: FSMMethods<"MD", States, Transitions>;
   } = {
     init: graph.init,
     transitions: graph.transitions,
