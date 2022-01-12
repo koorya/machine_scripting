@@ -1,5 +1,5 @@
-import { ExtractByType, MachineStatus, MM_address } from "~shared/types/types";
-import { OnMethods } from "~shared/types/utils";
+import { MachineStatus, MM_address } from "~shared/types/types";
+import { ExtractByType } from "~shared/types/utils";
 import {
   iFsmConfig,
   iData,
@@ -7,6 +7,7 @@ import {
   ExcludeTypeProp,
   iCycleExecutorProps,
   LifeCycle,
+  OnMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { checkCam } from "./check_cam";

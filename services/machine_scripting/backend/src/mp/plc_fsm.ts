@@ -5,8 +5,9 @@ import {
   iPLCStateMachine,
   new_StateMachine,
 } from "../fsm_types";
-import { ExtractByType, ScenarioStartCondition } from "~shared/types/types";
+import { ScenarioStartCondition } from "~shared/types/types";
 import { PlcConnector } from "../zmq_network";
+import { ExtractByType } from "~shared/types/utils";
 
 // function switch controls cycle executing
 // in PLC.
