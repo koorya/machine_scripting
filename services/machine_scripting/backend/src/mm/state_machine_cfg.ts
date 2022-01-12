@@ -4,7 +4,6 @@ import {
   iFsmConfig,
   iData,
   iCycleExecutorProps,
-  LifeCycle,
   FSMMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
@@ -104,7 +103,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP200Start: async function (
-        lifecycle: LifeCycle,
+        lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
@@ -121,7 +120,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP300Start: async function (
-        lifecycle: LifeCycle,
+        lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
@@ -138,7 +137,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP500Start: async function (
-        lifecycle: LifeCycle,
+        lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
@@ -155,7 +154,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onBeforeP600Start: async function (
-        lifecycle: LifeCycle,
+        lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
@@ -203,7 +202,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP700Start: async function (
-        lifecycle: LifeCycle,
+        lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
@@ -220,7 +219,7 @@ function createFSMConfig(plc: IPlcConnector) {
       },
 
       onAfterP800Start: async function (
-        lifecycle: LifeCycle,
+        lifecycle,
         config: P200_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
