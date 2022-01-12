@@ -1,6 +1,5 @@
 import { graph, States, Transitions } from "./transitions";
-import { ExtractByType, MachineStatus } from "~shared/types/types";
-import { OnMethods } from "~shared/types/utils";
+import { MachineStatus } from "~shared/types/types";
 import {
   iFsmConfig,
   iData,
@@ -8,8 +7,10 @@ import {
   ExcludeTypeProp,
   iCycleExecutorProps,
   LifeCycle,
+  OnMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
+import { ExtractByType } from "~shared/types/utils";
 
 
 async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Omit<Extract<iCycleExecutorProps, { type: "MD" }>, "type">) {

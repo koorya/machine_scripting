@@ -1,16 +1,16 @@
-
 import { States, Transitions } from "./transitions";
-import { ExtractByType, MachineStatus } from "~shared/types/types";
+import { MachineStatus } from "~shared/types/types";
 import {
   iFsmConfig,
   iData,
   iMethods,
   ExcludeTypeProp,
+  OnMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
 import { graph } from "./transitions";
-import { OnMethods } from "~shared/types/utils";
+import { ExtractByType } from "~shared/types/utils";
 
 
 function createFSMConfig(plc: IPlcConnector) {

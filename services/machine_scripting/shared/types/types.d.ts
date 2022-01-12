@@ -1,6 +1,5 @@
 import { iData } from "../fsm_types";
 
-type ExtractByType<A, type> = A extends { type: type } ? A : never;
 
 export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP" | "MASTER";
 
@@ -235,3 +234,4 @@ type IResponse<type, matching = RequestMatching> = Extract<matching, { "type": t
 type IRequestNotValidated<type, matching = RequestMatching> = Extract<matching, { "type": type; request: any; }>["request"];
 
 type IRequest<type, matching> = IRequestNotValidated<type, Valid<matching>>
+

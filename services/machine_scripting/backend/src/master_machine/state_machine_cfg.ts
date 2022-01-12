@@ -1,14 +1,13 @@
-import { ExtractByType } from "~shared/types/types";
+import { ExtractByType } from "~shared/types/utils"
 import {
   iFsmConfig,
   iData,
   iMethods,
   ExcludeTypeProp,
+  OnMethods,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { graph, States, Transitions } from "./transitions";
-import { OnMethods } from "~shared/types/utils"
-
 
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {

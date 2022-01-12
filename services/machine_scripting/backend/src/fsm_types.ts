@@ -1,7 +1,7 @@
 import * as StateMachine from "javascript-state-machine";
-import { resolveModuleName } from "typescript";
-import * as MyTypes from "~shared/types/types";
-import { CompiledScenario, ControllerStatus, ExtractByType, Machines, MachineStatus, MM_address } from "~shared/types/types";
+import { ScenarioStartCondition } from "~shared/types/types";
+import { CompiledScenario, ControllerStatus, Machines, MachineStatus, MM_address } from "~shared/types/types";
+import { ToPascal, ExtractByType } from "./types/utils";
 import { IPlcConnector } from "./zmq_network";
 
 type Transition = {
@@ -137,13 +137,13 @@ export type iMethods = BaseMethods &
 export type iPLCStateMachine<machine> = {
   type: machine;
   js_fsm: iStateMachine &
-  MyTypes.ExtractByType<iData, machine> &
-  MyTypes.ExtractByType<iMethods, machine>;
+  ExtractByType<iData, machine> &
+  ExtractByType<iMethods, machine>;
   virt: {
     js_fsm: iStateMachine &
-    MyTypes.ExtractByType<iData, machine> &
-    MyTypes.ExtractByType<iMethods, machine>;
-    init: (value: MyTypes.ScenarioStartCondition) => void;
+    ExtractByType<iData, machine> &
+    ExtractByType<iMethods, machine>;
+    init: (value: ScenarioStartCondition) => void;
   };
 };
 export function new_StateMachine<i_config, i_fsm>(config: i_config): i_fsm {
@@ -164,3 +164,27 @@ export interface iController extends iStateMachine, Extract<iData, { type: "CONT
   getControllerStatus: () => ControllerStatus<Machines>;
 
 }
+
+
+type OnMethodsName<States extends string, Transitions extends string> =
+  | `onLeave${ToPascal<States>}`
+  | `onBefore${ToPascal<Transitions>}`
+  | `onBefore${ToPascal<States>}`
+  | `on${ToPascal<States>}`
+  | `on${ToPascal<Transitions>}`
+  | `onAfter${ToPascal<Transitions>}`
+  | 'onAfterTransition'
+  | 'onTransition'
+  | 'onLeaveState'
+  | 'onBeforeTransition';
+
+
+type CustomThisType<MACHINE extends Machines> = Extract<iFsmConfig, { data: any }>["data"] &
+  ExtractByType<iData, MACHINE> &
+  ExcludeTypeProp<ExtractByType<iMethods, MACHINE>, "type">
+  & iStateMachine;
+
+export type OnMethods<Machine extends Machines, States extends string, Transitions extends string> = {
+  [key in OnMethodsName<States, Transitions>]?: (this: CustomThisType<Machine>, lifecycle: LifeCycle, ...args: any
+  ) => Promise<boolean | void> | void | boolean;
+} & { getMachineStatus: (this: CustomThisType<Machine>) => Extract<MachineStatus, { type: Machine }> };

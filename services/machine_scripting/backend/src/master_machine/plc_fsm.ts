@@ -1,11 +1,11 @@
 import { createFSMConfig, graph } from "./state_machine_cfg";
 import {
-  iCycleExecutorProps,
   iStateMachine,
   iPLCStateMachine,
   new_StateMachine,
 } from "../fsm_types";
-import { ExtractByType, ScenarioStartCondition } from "~shared/types/types";
+import { ScenarioStartCondition } from "~shared/types/types";
+import { ExtractByType } from "~shared/types/utils"
 import { PlcConnector } from "../zmq_network";
 
 // function switch controls cycle executing
