@@ -1,11 +1,9 @@
 import { States, Transitions } from "./transitions";
 import { MachineStatus } from "~shared/types/types";
 import {
-  iFsmConfig,
   iData,
-  iMethods,
-  ExcludeTypeProp,
-  OnMethods,
+  FSMMethods,
+  iFsmConfig,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 
@@ -16,7 +14,7 @@ import { ExtractByType } from "~shared/types/utils";
 function createFSMConfig(plc: IPlcConnector) {
   const fsm_config: iFsmConfig & {
     data: ExtractByType<iData, "MP">;
-    methods: ExcludeTypeProp<ExtractByType<iMethods, "MP">, "type"> & OnMethods<"MP", States, Transitions>;
+    methods: FSMMethods<"MP", States, Transitions>;
   } = {
     init: graph.init,
     transitions: graph.transitions,

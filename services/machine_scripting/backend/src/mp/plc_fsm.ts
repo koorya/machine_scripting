@@ -1,6 +1,5 @@
 import { createFSMConfig, graph } from "./state_machine_cfg";
 import {
-  iCycleExecutorProps,
   iStateMachine,
   iPLCStateMachine,
   new_StateMachine,

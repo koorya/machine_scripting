@@ -1,4 +1,4 @@
-import { FSMController } from "./fsm_controller";
+import { FSMController } from "./fsm_controller/fsm_controller";
 import { createPlcFsmWithRender } from "./create_plcfsm_by_type";
 import { Machines, ScenarioDefenition } from "./types/types";
 import * as fs from "fs";

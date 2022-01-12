@@ -2,7 +2,7 @@ import * as fs from "fs";
 
 import * as MyTypes from "~shared/types/types";
 import { Machines } from "~shared/types/types";
-import { parseCommand } from "./fsm_controller";
+import { parseCommand } from "./fsm_controller/fsm_controller";
 import { iPLCStateMachine, iStateMachine } from "./fsm_types";
 
 function compileScenario(scenario: string): string[] {
