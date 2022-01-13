@@ -74,9 +74,10 @@ type AddParams =
     reading_port: { zmq: number; ui: number; };
     seting_port: { zmq: number; ui: number; };
   }
-  | {
+  | ({
     type: "MASTER";
-  }
+  } & { [key in "mm_port" | "md_port" | "mp_port"]: number }
+  )
   ;
 
 type AddressListType = ({

@@ -70,13 +70,13 @@ export interface iStateMachine {
   step: () => Promise<boolean>;
 }
 
-
-
-export type iData = ((({
-  cycle_state: number;
-  status_message: string;
-  plc: IPlcConnector;
-} & (
+type PlcMachineData =
+  {
+    cycle_state: number;
+    status_message: string;
+    plc: IPlcConnector;
+  }
+  & (
     | {
       type: "MD";
       current_level: number;
@@ -90,15 +90,34 @@ export type iData = ((({
       type: "MP";
       length: number;
     }
-  )
-)
+  );
+
+export type ExtConfig = | {
+  type: "MASTER";
+  ext_config: { [key in "mm_port" | "md_port" | "mp_port"]: number }
+}
+  | {
+    type: "MP" | "MD" | "MM";
+    ext_config: { zmq_port: number };
+
+  };
+
+export type MachineData = (
+  | PlcMachineData
   | {
     type: "MASTER";
-  }) & {
+    ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext_config"];
+  }
+);
+
+
+export type iData = (
+  {
     init: string;
     is_test: boolean;
-
-  })
+  }
+  & MachineData
+)
   | {
     type: "CONTROLLER";
     slave_fsm: iPLCStateMachine<Machines>;
@@ -206,5 +225,7 @@ export type FSMMethods<
   transitions extends string> =
   SpecificMethods<machine>
   & OnMethods<machine, states, transitions>;
+
+
 
 

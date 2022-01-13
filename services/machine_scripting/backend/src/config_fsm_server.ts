@@ -3,11 +3,12 @@ import { createPlcFsmWithRender } from "./create_plcfsm_by_type";
 import { Machines, ScenarioDefenition } from "./types/types";
 import * as fs from "fs";
 import { generateEndPoints } from "./end_points";
+import { ExtConfig, iData, MachineData } from "./fsm_types";
 
 const algorithms_path = "config/algorithms.json";
 const default_algorithms_path = "config/default_algorithms.json";
 
-export function configFsmServer(machine_type: Machines, zmq_port: number) {
+export function configFsmServer(config: ExtConfig) {
 
   let scenarios: ScenarioDefenition[] = [];
   try {
@@ -16,8 +17,8 @@ export function configFsmServer(machine_type: Machines, zmq_port: number) {
     console.log("algorithms.json is empty");
     scenarios = JSON.parse(fs.readFileSync(default_algorithms_path).toString());
   }
+  const { plc_fsm, render } = createPlcFsmWithRender(config);
 
-  const { plc_fsm, render } = createPlcFsmWithRender(machine_type, zmq_port);
   const funct = plc_fsm.js_fsm.onAfterTransition;
   plc_fsm.js_fsm.onAfterTransition = async function (lifecycle) {
     render.updateImage(plc_fsm.js_fsm.state);

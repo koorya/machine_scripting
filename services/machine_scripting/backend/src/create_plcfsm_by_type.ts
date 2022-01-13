@@ -14,29 +14,30 @@ import {
 	createPlcFsm as createPlcFsmMASTER,
 	graph as graphMASTER,
 } from "./master_machine/plc_fsm";
-
-import * as MyTypes from "~shared/types/types";
 import { ImageRender } from "./image_render";
+import { ExtConfig, iData, MachineData } from "./fsm_types";
 
-export function createPlcFsmWithRender(machine_type: MyTypes.Machines, zmq_port: number) {
-	if (machine_type == "MM")
+
+
+export function createPlcFsmWithRender(config: ExtConfig) {
+	if (config.type == "MM")
 		return {
-			plc_fsm: createPlcFsmMM(zmq_port),
+			plc_fsm: createPlcFsmMM(config.ext_config.zmq_port),
 			render: new ImageRender(graphMM),
 		};
-	if (machine_type == "MD")
+	if (config.type == "MD")
 		return {
-			plc_fsm: createPlcFsmMD(zmq_port),
+			plc_fsm: createPlcFsmMD(config.ext_config.zmq_port),
 			render: new ImageRender(graphMD),
 		};
-	if (machine_type == "MP")
+	if (config.type == "MP")
 		return {
-			plc_fsm: createPlcFsmMP(zmq_port),
+			plc_fsm: createPlcFsmMP(config.ext_config.zmq_port),
 			render: new ImageRender(graphMP),
 		};
-	if (machine_type == "MASTER")
+	if (config.type == "MASTER")
 		return {
-			plc_fsm: createPlcFsmMASTER(zmq_port),
+			plc_fsm: createPlcFsmMASTER(config.ext_config),
 			render: new ImageRender(graphMASTER),
 		};
 };

@@ -5,6 +5,7 @@ import * as cors from "cors";
 
 import { associateEndpoints } from "./endpoints_utils";
 import { configFsmServer } from "./config_fsm_server";
+import { Machines } from "./types/types";
 
 
 // хранение состояния манипулятора +
@@ -18,14 +19,38 @@ import { configFsmServer } from "./config_fsm_server";
 
 const argv = yargs(hideBin(process.argv)).argv;
 
-const zmq_port = argv["zmq_port"] ? argv["zmq_port"] : 5552;
+const zmq_port: number = argv["zmq_port"] ? argv["zmq_port"] : 5552;
+
+
 const ui_port = argv["ui_port"] ? argv["ui_port"] : 5001;
-const machine_type = argv["machine_type"] ? argv["machine_type"] : "MM";
+const machine_type: Machines = argv["machine_type"] ? argv["machine_type"] : "MM";
+
+const md_port: number = argv["md_port"] ? argv["md_port"] : 0;
+const mm_port: number = argv["mm_port"] ? argv["mm_port"] : 0;
+const mp_port: number = argv["mp_port"] ? argv["mp_port"] : 0;
 console.log(`zmq_port: ${zmq_port}`);
 console.log(`ui_port: ${ui_port}`);
 console.log(`machine_type: ${machine_type}`);
 
-const fsm_api = configFsmServer(machine_type, zmq_port);
+
+
+let fsm_api: ReturnType<typeof configFsmServer>;
+
+if (machine_type == "MP" ||
+  machine_type == "MD" ||
+  machine_type == "MM"
+) {
+  fsm_api = configFsmServer({ type: machine_type, ext_config: { zmq_port: zmq_port } });
+} else if (machine_type == "MASTER") {
+  fsm_api = configFsmServer({
+    type: machine_type, ext_config: {
+      md_port: md_port,
+      mm_port: mm_port,
+      mp_port: mp_port,
+    }
+  });
+}
+
 
 const app = express();
 app.use(express.json());
