@@ -3,11 +3,12 @@ import {
   iFsmConfig,
   iData,
   FSMMethods,
+  ExtConfig,
 } from "../fsm_types";
-import { IPlcConnector } from "../zmq_network";
 import { graph, States, Transitions } from "./transitions";
 
-function createFSMConfig(plc: IPlcConnector) {
+function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext_config"]) {
+
   const fsm_config: iFsmConfig & {
     data: ExtractByType<iData, "MASTER">;
     methods: FSMMethods<"MASTER", States, Transitions>;
@@ -18,6 +19,7 @@ function createFSMConfig(plc: IPlcConnector) {
       type: "MASTER",
       init: graph.init,
       is_test: false,
+      ext_config: ext_config,
     },
     methods: {
       // can cancel only in
@@ -35,7 +37,9 @@ function createFSMConfig(plc: IPlcConnector) {
           status_message: undefined,
         };
       },
-
+      onLeaveState: function () {
+        console.log(this.ext_config);
+      },
       onAfterTransition: function (lifecycle) {
         return true;
       },

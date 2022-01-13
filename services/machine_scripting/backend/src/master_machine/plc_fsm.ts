@@ -3,18 +3,18 @@ import {
   iStateMachine,
   iPLCStateMachine,
   new_StateMachine,
+  ExtConfig,
 } from "../fsm_types";
 import { ScenarioStartCondition } from "~shared/types/types";
 import { ExtractByType } from "~shared/types/utils"
-import { PlcConnector } from "../zmq_network";
 
 // function switch controls cycle executing
 // in PLC.
 
 // расширенный объект, помимо всех этих полей должно
 // быть поле с тестовым вариантом машины состояний
-function createPlcFsm(port: number) {
-  const fsm_config = createFSMConfig(new PlcConnector(port));
+function createPlcFsm(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext_config"]) {
+  const fsm_config = createFSMConfig(ext_config);
 
   var plc_fsm: iPLCStateMachine<"MASTER"> = {
     type: "MASTER",

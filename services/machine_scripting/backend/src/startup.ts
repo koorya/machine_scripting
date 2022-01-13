@@ -68,12 +68,23 @@ address_list.map((value) => {
       name: `repeater_setting`,
     });
   }
+  if (value.specific_params.type == "MD"
+    || value.specific_params.type == "MP"
+    || value.specific_params.type == "MM"
+  ) {
+    run_list.push({
+      command:
+        `npm run server${node_mon} -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
+      name: `server_${value.specific_params.type}`
+    });
+  } else if (value.specific_params.type == "MASTER") {
+    run_list.push({
+      command:
+        `npm run server${node_mon} -- --md_port=${value.specific_params.md_port} --mp_port=${value.specific_params.mp_port} --mm_port=${value.specific_params.mm_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
+      name: `server_${value.specific_params.type}`
+    });
 
-  run_list.push({
-    command:
-      `npm run server${node_mon} -- --zmq_port=${value.zmq_port} --ui_port=${value.ui_port} --machine_type=${value.specific_params.type}`,
-    name: `server_${value.specific_params.type}`
-  });
+  }
 });
 
 if (neuro_service)
