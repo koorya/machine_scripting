@@ -6,7 +6,7 @@ import HydraulicCircuit from "./HydraulicCircuit";
 
 import LocksOrtho from "./image_lock_ortho";
 
-import { init_vars } from "shared/md/plc_vars";
+import { init_vars } from "../shared/md/plc_vars";
 
 function MnemoMD({
   read_port,

@@ -12,7 +12,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Alert from "react-bootstrap/Alert";
 import Accordion from "react-bootstrap/Accordion";
 import ToggleButton from "react-bootstrap/ToggleButton";
-import * as MyTypes from "./types";
+import * as MyTypes from "./shared/types/types";
 import {
   ButtonGroup,
   Dropdown,
@@ -21,12 +21,12 @@ import {
   SplitButton,
   Tabs,
 } from "react-bootstrap";
-import { API } from "./api";
-import { AddParams, Machines, RequestMatching } from "./types";
+import { API } from "./shared/api/api";
+import { AddParams, Machines, RequestMatching } from "./shared/types/types";
 import MnemoMD from "./md/MnemoMD";
 import NeuroImage from "./mm/NeuroImage";
 import { MpPanel } from "./mp/MpPanel";
-import { address_list } from "shared/config/machines_config";
+import { address_list } from "./shared/config/machines_config";
 
 function Jumbotron(props: any) {
   return (

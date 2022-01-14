@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { API } from "../api";
-import { RepeaterRequestMatching } from "../repeater";
+import { API } from "../shared/api/api";
+import { RepeaterRequestMatching } from "../shared/types/repeater";
 
 function usePlcVaribles<T>(
   reading_port: number,

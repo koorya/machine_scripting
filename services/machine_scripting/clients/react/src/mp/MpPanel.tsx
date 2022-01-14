@@ -7,10 +7,10 @@ import {
   Form,
   Row,
 } from "react-bootstrap";
-import { init_vars } from "shared/mp/plc_vars";
-import { API } from "../api";
+import { init_vars } from "../shared/mp/plc_vars";
+import { API } from "../shared/api/api";
 import { usePlcContainer } from "../plcvarcontainer/PlcVarConainer";
-import { RequestMatching } from "../types";
+import { RequestMatching } from "../shared/types/types";
 import { ButtonToggle, YesNoBadge, YesNoButton } from "../utils/panel_utils";
 
 export function MpPanel({
