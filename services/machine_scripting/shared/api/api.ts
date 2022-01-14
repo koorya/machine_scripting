@@ -1,4 +1,4 @@
-import { IRequest, IResponse, ReqTypes_get, ReqTypes_post } from "./types";
+import { IRequest, IResponse, ReqTypes_get, ReqTypes_post } from "../types/types";
 
 export class API<matching> {
   address: string;

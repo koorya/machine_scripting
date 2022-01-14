@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Card, Col, Row } from "react-bootstrap";
-import { API } from "../api";
-import { NeuroServiceMatching } from "../neuroservice";
+import { API } from "../shared/api/api";
+import { NeuroServiceMatching } from "../shared/types/neuroservice";
 
 function useNeuroImagesSegment(
   api: API<NeuroServiceMatching>,

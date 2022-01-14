@@ -1,5 +1,3 @@
-import { iData } from "../fsm_types";
-
 
 export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP" | "MASTER";
 
