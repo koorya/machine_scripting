@@ -1,6 +1,7 @@
 import * as StateMachine from "javascript-state-machine";
-import { ScenarioStartCondition } from "~shared/types/types";
+import { RequestMatching, ScenarioStartCondition } from "~shared/types/types";
 import { CompiledScenario, ControllerStatus, Machines, MachineStatus, MM_address } from "~shared/types/types";
+import { API } from "./api/api";
 import { ToPascal, ExtractByType } from "./types/utils";
 import { IPlcConnector } from "./zmq_network";
 
@@ -94,7 +95,7 @@ type PlcMachineData =
 
 export type ExtConfig = | {
   type: "MASTER";
-  ext_config: { [key in "mm_port" | "md_port" | "mp_port"]: number }
+  ext_config: { [key in "mm" | "md" | "mp"]: number }
 }
   | {
     type: "MP" | "MD" | "MM";
@@ -106,7 +107,7 @@ export type MachineData = (
   | PlcMachineData
   | {
     type: "MASTER";
-    ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext_config"];
+    ext_config: { [key in keyof (Extract<ExtConfig, { type: "MASTER" }>["ext_config"])]: API<RequestMatching> };
   }
 );
 

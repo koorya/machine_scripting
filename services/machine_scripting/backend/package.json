@@ -34,7 +34,7 @@
     "graphviz": "0.0.9",
     "javascript-state-machine": "^3.1.0",
     "jest": "^27.3.1",
-    "node-fetch": ">2.0 <3.0",
+    "node-fetch": "^2.6.6",
     "nodemon": "^2.0.12",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.1.0",

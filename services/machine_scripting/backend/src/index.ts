@@ -44,9 +44,9 @@ if (machine_type == "MP" ||
 } else if (machine_type == "MASTER") {
   fsm_api = configFsmServer({
     type: machine_type, ext_config: {
-      md_port: md_port,
-      mm_port: mm_port,
-      mp_port: mp_port,
+      md: md_port,
+      mm: mm_port,
+      mp: mp_port,
     }
   });
 }
