@@ -139,7 +139,7 @@ function DirectControls({
           <Button
             className="mx-1"
             disabled={available !== true}
-            key={cmd}
+            key={`${cmd}_Button`}
             onClick={() =>
               api
                 .getByAPI_post("exec_graph_command", { command: cmd })
@@ -156,7 +156,7 @@ function DirectControls({
               title="goto"
               id="segmented-button-dropdown-1"
               className="mx-1"
-              key={cmd}
+              key={`${cmd}_SplitButton`}
               onClick={() =>
                 api
                   .getByAPI_post("exec_graph_command", {
@@ -170,7 +170,7 @@ function DirectControls({
                   <Dropdown.Item
                     onSelect={() => setGotoState(state)}
                     href="#"
-                    key={state}
+                    key={`${state}_Dropdown.Item`}
                   >
                     {state}
                   </Dropdown.Item>
