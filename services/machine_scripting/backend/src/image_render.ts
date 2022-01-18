@@ -14,7 +14,7 @@ export class ImageRender {
     const transitions = [...graph.transitions];
     transitions.map((transition) => {
       if (!transition["dot"]) transition["dot"] = { color: "black" };
-      if (transition.comment && transition.comment != "") transition.dot = { ...transition.dot, label: `${transition.comment}` };
+      if (transition.comment && transition.comment != "") transition.dot = { ...transition.dot, label: `${transition.comment} ${transition.name}` };
       if (transition.name === "step") {
         if (!transition["dot"]) transition["dot"] = { color: "blue" };
         else transition.dot["color"] = "blue";
