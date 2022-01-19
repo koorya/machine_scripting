@@ -39,7 +39,7 @@ const root_graph = {
 
 	states: [
 		{ name: "init", comment: "Исходное состояние" },
-		{ name: "lifting_one_level", comment: "МП: вис<BR/>МД: Подъем на новый этаж" },
+		{ name: "lifting_one_level", comment: "МП: парковка<BR/>МД: Подъем на новый этаж" },
 		{ name: "ready_to_column_mounting", comment: "Готовность к установке колонн" },
 		{ name: "cassette_charging_by_operator", comment: "Оператор устанавливает<BR/> колонну в кассету" },
 		{ name: "docking_cassette_by_mt", comment: "Транспортер перемещает траверсу<BR/> подъемника на кассету с колонной" },
