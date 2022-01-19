@@ -216,7 +216,7 @@ type CustomThisType<MACHINE extends Machines> =
   & iStateMachine;
 
 export type OnMethods<Machine extends Machines, States extends string, Transitions extends string> = {
-  [key in OnSpecificMethodsName<States, Transitions>]?: (this: CustomThisType<Machine>, lifecycle: LifeCycle<States, Transitions | "goto">, ...args: any
+  [key in OnSpecificMethodsName<States, Transitions>]?: (this: CustomThisType<Machine> & OnMethods<Machine, States, Transitions>, lifecycle: LifeCycle<States, Transitions | "goto">, ...args: any
   ) => Promise<boolean | void> | void | boolean;
 };
 
