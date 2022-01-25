@@ -103,12 +103,7 @@ function FC<fc_name_T extends "FC1" | "FC2">({
   );
 }
 
-type FCPanelReqVarNames =
-  | "FC1_command"
-  | "FC2_command"
-  | "FC1_freq"
-  | "FC2_freq"
-  | combine;
+type FCPanelReqVarNames = combine;
 
 type UnionToObj<T extends string> = { [key in T]?: any };
 

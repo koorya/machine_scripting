@@ -1,4 +1,23 @@
-export const init_vars = {
+
+enum MD_LIFTMECH_CMDS {
+	stop = 0,
+	expand = 1,
+	reduce = 2,
+}
+enum MD_LIFTMECH_STATES {
+	holding = 0,
+	expanding = 200,
+	reducing = 300,
+	expand_end = 400,
+	reduce_end = 500,
+	error = 98,
+
+};
+
+const init_vars = {
+	"liftmech.is_disabled": false as boolean,
+	"liftmech.cmd": MD_LIFTMECH_CMDS.stop as MD_LIFTMECH_CMDS,
+	"liftmech.state": MD_LIFTMECH_STATES.holding as MD_LIFTMECH_STATES,
 	init_to_hold_state: 0,
 	from_hold_to_init_state: 0,
 	main_state: 0,
@@ -157,3 +176,5 @@ export const init_vars = {
 	continue_handle: false,
 	stop_hanlde: false
 };
+
+export { init_vars, MD_LIFTMECH_CMDS, MD_LIFTMECH_STATES }

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sysmac schemaVersion="1">
-  <Entity type="Solution" subtype="" id="82a26025-06e1-4483-9b7e-8993b3df9d5e" name="Пусконаладка на эталоне" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="10/04/2021 18:34:59" trackingId="01751e51-85e1-4f4e-b99a-410762bb027b">
+  <Entity type="Solution" subtype="" id="82a26025-06e1-4483-9b7e-8993b3df9d5e" name="Пусконаладка на эталоне" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="01/25/2022 19:39:18" trackingId="01751e51-85e1-4f4e-b99a-410762bb027b">
     <AccessInfos />
     <ChildEntities>
       <Entity type="SolutionCustomColors" subtype="" id="dc8782df-6123-49d3-b656-07264c2e2025" name="" version="0" dateCreated="01/20/2021 17:03:53" dateLastModified="01/20/2021 17:03:53" trackingId="f9b58033-9f3c-4442-9022-d57f3b76126e">
@@ -861,7 +861,7 @@
                       </Entity>
                     </ChildEntities>
                   </Entity>
-                  <Entity type="Program" subtype="StructuredText" id="c885b2f8-9e48-474c-8bc2-502bb746e2a0" name="lifting_driver" version="0" dateCreated="05/11/2021 15:46:04" dateLastModified="10/04/2021 18:34:59" author="Puakt" trackingId="77b457ba-07f1-4ae7-aaab-c1a30a7e6f9b" DN="lifting_driver">
+                  <Entity type="Program" subtype="StructuredText" id="c885b2f8-9e48-474c-8bc2-502bb746e2a0" name="lifting_driver" version="0" dateCreated="05/11/2021 15:46:04" dateLastModified="01/25/2022 18:07:38" author="Puakt" trackingId="77b457ba-07f1-4ae7-aaab-c1a30a7e6f9b" DN="lifting_driver">
                     <AccessInfos />
                     <ChildEntities>
                       <Entity type="DebugProgramSetting" subtype="" id="0895126d-21c1-49ba-84da-927c343df39d" name="DebugProgramSetting0,00" version="0" dateCreated="05/11/2021 15:46:04" dateLastModified="05/11/2021 15:47:14" trackingId="25571873-8697-4b57-9042-5f96c19b29f7">
@@ -877,7 +877,7 @@
                           </Entity>
                         </ChildEntities>
                       </Entity>
-                      <Entity type="PouBody" subtype="StructuredText" id="546f8f97-ce2e-4430-9039-1e5464f4d7df" name="Program Body" version="0.2" dateCreated="05/11/2021 15:46:04" dateLastModified="10/04/2021 18:34:59" trackingId="03ab8661-ff8b-42b7-825c-b41543d1d4dd">
+                      <Entity type="PouBody" subtype="StructuredText" id="546f8f97-ce2e-4430-9039-1e5464f4d7df" name="Program Body" version="0.2" dateCreated="05/11/2021 15:46:04" dateLastModified="01/25/2022 18:07:38" trackingId="03ab8661-ff8b-42b7-825c-b41543d1d4dd">
                         <AccessInfos />
                         <ChildEntities>
                           <Entity type="SourceHolder" subtype="" id="77a2b66f-332c-4ba1-8429-5c57a24bb435" name="Source" version="0" dateCreated="05/11/2021 15:46:04" dateLastModified="05/11/2021 15:46:04" trackingId="518018dc-6fe1-4628-990d-abd4574f4fc2">
@@ -907,7 +907,7 @@
           <Entity type="Group" subtype="IecData" id="e9c39e59-6578-4427-8ab7-0c38ec4d3071" name="Data" version="0" dateCreated="01/20/2021 17:03:54" dateLastModified="01/20/2021 18:02:56" trackingId="d06fb4f4-7744-40f7-a1b9-96a86e753469" DN="Data">
             <AccessInfos />
             <ChildEntities>
-              <Entity type="DataType" subtype="" id="17527d5e-8c18-44e1-8836-6d639293c193" name="Data Types" version="0" dateCreated="03/06/2020 15:47:24" dateLastModified="05/11/2021 18:15:39" trackingId="fb4a9552-e8ae-4d0c-8cfc-87ce137aa2ca" DN="Data Types">
+              <Entity type="DataType" subtype="" id="17527d5e-8c18-44e1-8836-6d639293c193" name="Data Types" version="0" dateCreated="03/06/2020 15:47:24" dateLastModified="01/25/2022 19:39:18" trackingId="fb4a9552-e8ae-4d0c-8cfc-87ce137aa2ca" DN="Data Types">
                 <AccessInfos />
                 <ChildEntities>
                   <Entity type="SourceHolder" subtype="" id="41373a1a-987b-42dd-aa34-573b22f0ffc9" name="Source" version="0" dateCreated="01/20/2021 17:04:30" dateLastModified="01/20/2021 18:02:56" trackingId="c5f14ca7-ad04-4a97-899e-c3c3db7cdbff">
@@ -916,7 +916,7 @@
                   </Entity>
                 </ChildEntities>
               </Entity>
-              <Entity type="Variables" subtype="Global" id="bb24b8c6-72d0-47f7-a178-d45b44a55443" name="Global Variables" version="0" dateCreated="03/06/2020 15:47:24" dateLastModified="08/30/2021 17:02:49" trackingId="74e798b3-5142-4fb8-9e94-ea2af809998c" DN="Global Variables">
+              <Entity type="Variables" subtype="Global" id="bb24b8c6-72d0-47f7-a178-d45b44a55443" name="Global Variables" version="0" dateCreated="03/06/2020 15:47:24" dateLastModified="01/25/2022 18:07:38" trackingId="74e798b3-5142-4fb8-9e94-ea2af809998c" DN="Global Variables">
                 <AccessInfos />
                 <ChildEntities>
                   <Entity type="SourceHolder" subtype="" id="3c88d92b-6f5f-4175-95e6-ca3d3545e666" name="Source" version="0" dateCreated="01/20/2021 17:04:30" dateLastModified="01/20/2021 18:02:56" trackingId="90c89673-5a73-44c1-ac3f-aac467c44ad4">

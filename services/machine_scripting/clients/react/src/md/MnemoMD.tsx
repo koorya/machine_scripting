@@ -6,7 +6,13 @@ import HydraulicCircuit from "./HydraulicCircuit";
 
 import LocksOrtho from "./image_lock_ortho";
 
-import { init_vars } from "../shared/md/plc_vars";
+import {
+  init_vars,
+  MD_LIFTMECH_STATES,
+  MD_LIFTMECH_CMDS,
+} from "../shared/md/plc_vars";
+
+import { ButtonToggle, YesNoButton } from "../utils/panel_utils";
 
 function MnemoMD({
   read_port,
@@ -105,6 +111,42 @@ function MnemoMD({
             handle_button_click={handle_button_click}
             multiple_handler={handle_button_click_multiple}
             plc_vars={plc_vars}
+          />
+          <YesNoButton
+            handle_button_click={handle_button_click}
+            plc_vars={plc_vars}
+            var_name="liftmech.is_disabled"
+          />
+          <ButtonToggle
+            handle_button_click={handle_button_click}
+            plc_vars={plc_vars}
+            var_name="liftmech.cmd"
+            radios={[
+              {
+                name: "Stop",
+                value: MD_LIFTMECH_CMDS.stop,
+                variant: "outline-danger",
+              },
+              { name: "Expand", value: MD_LIFTMECH_CMDS.expand },
+              { name: "Reduce", value: MD_LIFTMECH_CMDS.reduce },
+            ]}
+          />
+          <ButtonToggle
+            handle_button_click={handle_button_click}
+            plc_vars={plc_vars}
+            var_name="liftmech.state"
+            radios={[
+              {
+                name: "error",
+                value: MD_LIFTMECH_STATES.error,
+                variant: "outline-danger",
+              },
+              { name: "expanding", value: MD_LIFTMECH_STATES.expanding },
+              { name: "reducing", value: MD_LIFTMECH_STATES.reducing },
+              { name: "holding", value: MD_LIFTMECH_STATES.holding },
+              { name: "expand_end", value: MD_LIFTMECH_STATES.expand_end },
+              { name: "reduce_end", value: MD_LIFTMECH_STATES.reduce_end },
+            ]}
           />
         </Col>
       </Row>
