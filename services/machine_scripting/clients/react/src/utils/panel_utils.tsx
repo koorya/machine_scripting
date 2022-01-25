@@ -43,7 +43,10 @@ export function YesNoButton<PlcVAriables extends string>({
   );
 }
 
-export function ButtonToggle<PlcVAriables extends string>({
+export function ButtonToggle<
+  PlcVAriables extends string,
+  PLC_VARS extends { [key in PlcVAriables]: any }
+>({
   var_name,
   handle_button_click,
   plc_vars,
@@ -51,10 +54,10 @@ export function ButtonToggle<PlcVAriables extends string>({
 }: {
   var_name: PlcVAriables;
   handle_button_click: (name: PlcVAriables, value: number) => void;
-  plc_vars: { [key in PlcVAriables]: any };
+  plc_vars: PLC_VARS;
   radios: {
     name: string;
-    value: number;
+    value: PLC_VARS[PlcVAriables];
     variant?: "outline-danger" | "outline-success";
   }[];
 }) {
@@ -68,7 +71,7 @@ export function ButtonToggle<PlcVAriables extends string>({
           type="radio"
           variant={radio.variant || "outline-success"}
           name={`radio-${var_name}`}
-          value={radio.value}
+          value={(radio.value as unknown) as number}
           checked={plc_vars[var_name] === radio.value}
           onChange={(e) => {
             handle_button_click(var_name, parseInt(e.target.value));
