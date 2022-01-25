@@ -43,12 +43,14 @@ address_list.map((value) => {
     ) {
       run_list.push({
         command:
-          `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} ${value.specific_params.reading_port.zmq} ${value.specific_params.seting_port.zmq} --ip_address=${value.ip} --sgw_port=2`
+          `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --port=${value.specific_params.reading_port.zmq} --port=${value.specific_params.seting_port.zmq} --ip_address=${value.ip} --sgw_port=2`,
+        name: `plc_${value.name}`
       });
     } else if (value.specific_params.type == "MM") {
       run_list.push({
         command:
-          `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`
+          `cd ../../plc_connector/MainApp & dotnet run -- --port=${value.zmq_port} --ip_address=${value.ip} --sgw_port=2`,
+        name: `plc_${value.name}`
       });
     } else if (value.specific_params.type == "MASTER") {
 
