@@ -1,5 +1,4 @@
 export const init_vars = {
-	status_message: "no",
 	init_to_hold_state: 0,
 	from_hold_to_init_state: 0,
 	main_state: 0,

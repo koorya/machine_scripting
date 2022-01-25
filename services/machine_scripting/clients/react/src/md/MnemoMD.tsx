@@ -45,8 +45,6 @@ function MnemoMD({
         <Badge bg="warning" text="dark">
           {calc_error()}
         </Badge>
-        <br />
-        Статус: {plc_vars.status_message}
       </Alert>
       <Row>
         <Col xs={8}>

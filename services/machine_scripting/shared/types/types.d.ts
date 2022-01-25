@@ -14,7 +14,6 @@ export type ScenarioStartCondition = { state: string } & (
 
 export type MachineStatus = {
   cycle_step: number;
-  status_message: string;
 } & ScenarioStartCondition;
 
 export type ScenarioStatus = {

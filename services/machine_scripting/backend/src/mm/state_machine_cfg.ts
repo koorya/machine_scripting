@@ -55,7 +55,6 @@ function createFSMConfig(plc: IPlcConnector) {
           type: this.type,
           state: this.state,
           cycle_step: this.cycle_state,
-          status_message: this.status_message,
           address: this.current_address,
         };
         return machine_status;
