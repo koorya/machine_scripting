@@ -131,6 +131,8 @@ function MnemoMD({
               { name: "Reduce", value: MD_LIFTMECH_CMDS.reduce },
             ]}
           />
+          curr_diff:{" "}
+          {plc_vars["liftmech.max_dist"] - plc_vars["liftmech.min_dist"]}
           <ButtonToggle
             handle_button_click={handle_button_click}
             plc_vars={plc_vars}

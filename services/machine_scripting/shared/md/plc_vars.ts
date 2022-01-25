@@ -16,6 +16,8 @@ enum MD_LIFTMECH_STATES {
 
 const init_vars = {
 	"liftmech.is_disabled": false as boolean,
+	"liftmech.min_dist": 0 as number,
+	"liftmech.max_dist": 0 as number,
 	"liftmech.cmd": MD_LIFTMECH_CMDS.stop as MD_LIFTMECH_CMDS,
 	"liftmech.state": MD_LIFTMECH_STATES.holding as MD_LIFTMECH_STATES,
 	init_to_hold_state: 0,
