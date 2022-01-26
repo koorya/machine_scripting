@@ -27,11 +27,8 @@ async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Om
     const run = async () => {
       const plc_variables = await plc_connector.readVarToObj([
         `${cycle_name}_state`,
-        "status_message",
       ]);
       data.cycle_state = plc_variables[`${cycle_name}_state`];
-      data.status_message = plc_variables["status_message"];
-
       if (data.cycle_state == 98) {
         console.log("ошибка при исполнении цикла " + lifecycle.from);
         reject();
@@ -60,7 +57,7 @@ function createFSMConfig(plc: IPlcConnector) {
     data: {
       type: "MD",
       init: graph.init,
-      current_level: 0,
+      current_level: 1,
       top_level: 4,
       cycle_state: 0,
       status_message: "no",
