@@ -1,0 +1,15 @@
+[SLWD version=1.0]
+_EN=Variables
++GN=VAR	GVT=DefaultGroup
++GN=VAR_EXTERNAL	GA=External	GVT=ExternalGroup
+++D=BOOL	N=Y6	G=VAR_EXTERNAL
+++D=BOOL	N=Y7	G=VAR_EXTERNAL
+++D=BOOL	N=Y1	G=VAR_EXTERNAL
+++D=BOOL	N=Y2	G=VAR_EXTERNAL
+++D=DWORD	N=SQ_DW	G=VAR_EXTERNAL
+++D=BOOL	N=Y3	G=VAR_EXTERNAL
+++D=STRING[255]	N=status_message	G=VAR_EXTERNAL
+++D=LIFTMECH_TYPE	N=liftmech	G=VAR_EXTERNAL
+++D=LREAL	N=BP1	G=VAR_EXTERNAL
+++D=INT	N=link_mounting_to_init_state	G=VAR_EXTERNAL
+++D=BOOL	N=start_link_mounting_to_init_handle	G=VAR_EXTERNAL
