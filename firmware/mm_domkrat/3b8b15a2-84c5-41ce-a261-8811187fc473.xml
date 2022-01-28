@@ -8,7 +8,7 @@
     <ExternalFileStorage>false</ExternalFileStorage>
     <MaxSamplesPerFile>4500</MaxSamplesPerFile>
     <MaxDataSetSize>100</MaxDataSetSize>
-    <TargetDirectory>C:\Материалы_для_МД\пусконаладка 20.01.2021\испытание\эксперимент 5\11062021</TargetDirectory>
+    <TargetDirectory>C:\стройка 31052021\запуски\28012022_алгоритм по двлению</TargetDirectory>
     <FilePrefix>trace</FilePrefix>
   </DataTraceConfigModel>
 </data>

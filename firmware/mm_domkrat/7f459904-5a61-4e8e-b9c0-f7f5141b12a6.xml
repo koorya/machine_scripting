@@ -26,6 +26,8 @@
     <AssociatedProgramData ProgramName="down_frame_cycle" InstanceName="down_frame_cycle" IniFileTrackingId="e0c93457e59b4d1d941f3dc118d74dee" StartupSetting="TRUE" SequenceNumber="16" IsDebugProgram="false" />
     <AssociatedProgramData ProgramName="shift_driver" InstanceName="shift_driver" IniFileTrackingId="25da34f054834efca14445711707896c" StartupSetting="TRUE" SequenceNumber="17" IsDebugProgram="false" />
     <AssociatedProgramData ProgramName="lifting_driver" InstanceName="lifting_driver" IniFileTrackingId="77b457ba07f14ae7aaabc1a30a7e6f9b" StartupSetting="TRUE" SequenceNumber="18" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="lift_up_frame_by_pressure" InstanceName="lift_up_frame_by_pressure" IniFileTrackingId="0e3a65eac27347fd9ed58a318c306c66" StartupSetting="TRUE" SequenceNumber="19" IsDebugProgram="false" />
+    <AssociatedProgramData ProgramName="link_mounting_to_init" InstanceName="link_mounting_to_init" IniFileTrackingId="de840cadb5b84d808fd2e4f59f5f4fef" StartupSetting="TRUE" SequenceNumber="20" IsDebugProgram="false" />
   </Programs>
   <RefreshUnitIds>
     <RefreshUnitId RefreshUnitId="394e1b5a-4d5d-42b5-929a-8cf4b848af7e" />
