@@ -209,6 +209,26 @@ function createFSMConfig(plc: IPlcConnector) {
           });
         this.current_level += 1;
       },
+      onLeaveLiftUpFrameByPressure: async function (lifecycle) {
+        if (lifecycle.transition === "goto") return true;
+        if (!this.is_test)
+          await executeProgram({
+            plc_connector: this.plc,
+            cycle_name: "lift_up_frame_by_pressure",
+            lifecycle: lifecycle,
+            data: this,
+          });
+      },
+      onLeaveLinkMountingToInit: async function (lifecycle) {
+        if (lifecycle.transition === "goto") return true;
+        if (!this.is_test)
+          await executeProgram({
+            plc_connector: this.plc,
+            cycle_name: "link_mounting_to_init",
+            lifecycle: lifecycle,
+            data: this,
+          });
+      },
       onAfterTransition: function (lifecycle) {
         return true;
       },

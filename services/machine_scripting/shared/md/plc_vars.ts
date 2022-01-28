@@ -31,6 +31,8 @@ const init_vars = {
 	up_crab_cycle_state: 0,
 	pushin_crab_state: 0,
 	from_hold_to_lift_crab_state: 0,
+	lift_up_frame_by_pressure_state: 0,
+	link_mounting_to_init_state: 0,
 	Y19: false,
 	PP1: false,
 	Y20: false,
