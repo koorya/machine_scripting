@@ -44,3 +44,6 @@ Pull changes from subtree
 
 
 Если случилось изменение, затрагивающее взаимосвязь подпроектов. Надо запушить в dev ветки подпроектов. Затем доведя до результата, запушить в master ветки (либо из dev веток подпроекта, либо из главного репозитория). В самый последний момент нужно сделать pull master веток подпроектов в главный репозиторий.
+
+из services\machine_scripting\clients\react\src надо выполнить
+`New-Item -Path .\shared -ItemType SymbolicLink -Target $(Convert-Path ..\..\..\shared)`
