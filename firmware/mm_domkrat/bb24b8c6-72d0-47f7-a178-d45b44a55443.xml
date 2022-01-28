@@ -192,3 +192,7 @@ _EN=Variables
 ++D=INT	N=maxbb_glob	G=VAR_GLOBAL
 ++D=LIFTMECH_TYPE	N=liftmech	IV=(state := holding, cmd := stop, min_dist := 0, max_dist := 0, is_disabled := False)	NTP=PublicationOnly	G=VAR_GLOBAL
 ++D=STRING[255]	N=status_message	G=VAR_GLOBAL
+++D=INT	N=lift_up_frame_by_pressure_state	NTP=PublicationOnly	G=VAR_GLOBAL
+++D=BOOL	N=start_lift_up_frame_by_pressure_handle	NTP=PublicationOnly	G=VAR_GLOBAL
+++D=INT	N=link_mounting_to_init_state	NTP=PublicationOnly	G=VAR_GLOBAL
+++D=BOOL	N=start_link_mounting_to_init_handle	NTP=PublicationOnly	G=VAR_GLOBAL
