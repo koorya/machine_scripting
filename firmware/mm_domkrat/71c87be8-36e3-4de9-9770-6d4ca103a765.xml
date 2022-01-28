@@ -8,6 +8,7 @@ _EN=Variables
 ++D=INT	N=saved_min	G=VAR
 ++D=INT	N=saved_max	G=VAR
 ++D=INT	N=deff_limit	IV=50	G=VAR
+++D=INT	N=max_err	Ord=1	G=VAR	AOE=1
 +GN=VAR_EXTERNAL	GA=External	GVT=ExternalGroup
 ++D=BOOL	N=Y19	G=VAR_EXTERNAL
 ++D=BOOL	N=Y20	G=VAR_EXTERNAL
