@@ -9,6 +9,18 @@ export const root_graph = {
     },
     { name: "step", from: "lifting_up_frame_cycle", to: "on_pins_support", comment: "" },
     {
+      name: "prepareToLinkMounting",
+      from: "on_pins_support",
+      to: "lift_up_frame_by_pressure", comment: ""
+    },
+    { name: "step", from: "lift_up_frame_by_pressure", to: "ready_to_link_mounting", comment: "" },
+    {
+      name: "releaseFrame",
+      from: "ready_to_link_mounting",
+      to: "link_mounting_to_init", comment: ""
+    },
+    { name: "step", from: "link_mounting_to_init", to: "on_pins_support", comment: "" },
+    {
       name: "holdFrame",
       from: "on_pins_support",
       to: "holding_frame_cycle", comment: ""
