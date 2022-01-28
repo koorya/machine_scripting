@@ -5,37 +5,37 @@
       <DataType>System.Int16</DataType>
       <Id>8c8a6586-4776-44b2-b4c0-02a04d28f3ba</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>760</Value>
+        <Offset>498999.951735</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>760</Value>
+        <Offset>499499.977525</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>760</Value>
+        <Offset>499999.93964</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>760</Value>
+        <Offset>500499.992795</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -43,37 +43,37 @@
       <DataType>System.Int16</DataType>
       <Id>61f0823e-e266-4072-bdf3-7f00d142b4df</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>760</Value>
+        <Offset>498999.951735</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>760</Value>
+        <Offset>499499.977525</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>750</Value>
+        <Offset>499999.93964</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>760</Value>
+        <Offset>500499.992795</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -81,37 +81,37 @@
       <DataType>System.Int16</DataType>
       <Id>05d8f1cb-26bd-439a-b0d0-3f011bd1a7a7</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>760</Value>
+        <Offset>498999.951735</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>760</Value>
+        <Offset>499499.977525</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>760</Value>
+        <Offset>499999.93964</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>760</Value>
+        <Offset>500499.992795</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -119,37 +119,37 @@
       <DataType>System.Int16</DataType>
       <Id>ff894068-d1d5-446c-bac1-9c7880149420</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>760</Value>
+        <Offset>498999.951735</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>760</Value>
+        <Offset>499499.977525</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>760</Value>
+        <Offset>499999.93964</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>760</Value>
+        <Offset>500499.992795</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -157,37 +157,37 @@
       <DataType>System.Int16</DataType>
       <Id>ee0afb7c-7a32-4858-bb4e-34db1df93e74</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>760</Value>
+        <Offset>498999.951735</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>760</Value>
+        <Offset>499499.977525</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>760</Value>
+        <Offset>499999.93964</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>760</Value>
+        <Offset>500499.992795</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -195,37 +195,37 @@
       <DataType>System.Int16</DataType>
       <Id>304d6fa7-a4bf-4373-9e75-9a874a061443</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>750</Value>
+        <Offset>498999.951735</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>750</Value>
+        <Offset>499499.977525</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>750</Value>
+        <Offset>499999.93964</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>750</Value>
+        <Offset>500499.992795</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -233,37 +233,37 @@
       <DataType>System.Int16</DataType>
       <Id>2513dcbe-4b3f-41ed-a916-ac7154dc2443</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>750</Value>
+        <Offset>498999.951735</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>750</Value>
+        <Offset>499499.977525</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>750</Value>
+        <Offset>499999.93964</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>750</Value>
+        <Offset>500499.992795</Offset>
+        <Value>810</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -271,37 +271,37 @@
       <DataType>System.Int16</DataType>
       <Id>88b2ac0e-6889-4917-a285-68e1261cb361</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
-        <Value>760</Value>
+        <Offset>498999.951735</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>760</Value>
+        <Offset>499499.977525</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>760</Value>
+        <Offset>499999.93964</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>760</Value>
+        <Offset>500499.992795</Offset>
+        <Value>820</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
@@ -309,36 +309,36 @@
       <DataType>System.Double</DataType>
       <Id>13b0e092-8862-4fc0-bd31-dcaee9938a5e</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
+        <Offset>498999.951735</Offset>
         <Value>0.815217</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
+        <Offset>499499.977525</Offset>
         <Value>0.815217</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
+        <Offset>499999.93964</Offset>
         <Value>0.815217</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
+        <Offset>500499.992795</Offset>
         <Value>0.815217</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
@@ -347,37 +347,37 @@
       <DataType>System.Double</DataType>
       <Id>cb98b753-680b-405a-9eb3-458e17fbeb3f</Id>
       <TriggerPosition>0</TriggerPosition>
-      <StartRawTime>32874056316365</StartRawTime>
+      <StartRawTime>38799635369480</StartRawTime>
       <SampleModel>
-        <Index>11078</Index>
-        <RawTime>38413056373735</RawTime>
+        <Index>998</Index>
+        <RawTime>39298635321215</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539000.05737</Offset>
+        <Offset>498999.951735</Offset>
         <Value>4.891302</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11079</Index>
-        <RawTime>38413556366225</RawTime>
+        <Index>999</Index>
+        <RawTime>39299135347005</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5539500.04986</Offset>
-        <Value>4.076085</Value>
+        <Offset>499499.977525</Offset>
+        <Value>4.891302</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11080</Index>
-        <RawTime>38414056369075</RawTime>
+        <Index>1000</Index>
+        <RawTime>39299635309120</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540000.05271</Offset>
-        <Value>4.076085</Value>
+        <Offset>499999.93964</Offset>
+        <Value>4.891302</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
       <SampleModel>
-        <Index>11081</Index>
-        <RawTime>38414556330555</RawTime>
+        <Index>1001</Index>
+        <RawTime>39300135362275</RawTime>
         <SamplingPointId>-3</SamplingPointId>
-        <Offset>5540500.01419</Offset>
-        <Value>4.076085</Value>
+        <Offset>500499.992795</Offset>
+        <Value>4.891302</Value>
         <BadQuality>false</BadQuality>
       </SampleModel>
     </SeriesModel>
