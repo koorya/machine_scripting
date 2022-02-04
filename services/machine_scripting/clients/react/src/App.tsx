@@ -27,6 +27,7 @@ import MnemoMD from "./md/MnemoMD";
 import NeuroImage from "./mm/NeuroImage";
 import { MpPanel } from "./mp/MpPanel";
 import { address_list } from "./shared/config/machines_config";
+import { ExtendCommandForm } from "./utils/ExtendCommandForm";
 
 function Jumbotron(props: any) {
   return (
@@ -63,7 +64,7 @@ function useScenarioStatus(api: API<RequestMatching>) {
       api.getByAPI_get("scenario_status").then((value) => setVal(value));
     }, 100);
     return () => {
-      console.log("useCmds is unmounted");
+      console.log("useScenarioStatus is unmounted");
       clearInterval(upd);
     };
   }, [api]);
@@ -79,7 +80,7 @@ function useControllerStatus(api: API<RequestMatching>) {
       api.getByAPI_get("controller_status").then((value) => setVal(value));
     }, 100);
     return () => {
-      console.log("useCmds is unmounted");
+      console.log("useControllerStatus is unmounted");
       clearInterval(upd);
     };
   }, [api]);
@@ -184,19 +185,7 @@ function DirectControls({
             />
           </InputGroup>
         ) : (
-          <Button
-            className="mx-1"
-            disabled={cmd === "step"}
-            key={cmd}
-            onClick={() =>
-              api
-                .getByAPI_post("exec_graph_command", { command: cmd })
-                .then((res) => console.log(res))
-            }
-            size="sm"
-          >
-            {cmd}
-          </Button>
+          <ExtendCommandForm key={cmd} cmd={cmd} api={api} />
         )
       )}
       {available !== true ? <Spinner size="sm" animation="border" /> : ""}
