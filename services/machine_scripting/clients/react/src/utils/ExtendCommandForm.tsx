@@ -5,7 +5,7 @@ import * as MyTypes from "../shared/types/types";
 import { init_commands } from "../shared/commands/ext_commands";
 
 import { API } from "../shared/api/api";
-import { Col, Form, Overlay, Popover, Row } from "react-bootstrap";
+import { Col, Form, Overlay, Popover } from "react-bootstrap";
 
 export function ExtendCommandForm({
   cmd,
