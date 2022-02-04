@@ -101,7 +101,7 @@ var FSMController: new (
       console.log(`command: "${parsed.name}" execution finish`);
       return;
     },
-    onExecCommand: function (lifecycle, command: string) {
+    onBeforeExecCommand: function (lifecycle, command: string) {
       const fsm = this.slave_fsm as iPLCStateMachine<Machines>;
       const parsed_cmd = parseCommand(command);
       if (parsed_cmd.name !== "goto") {
