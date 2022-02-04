@@ -702,7 +702,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
         <Col xs={4}>
           <Jumbotron style={{ position: "sticky", top: "0px" }}>
             <Tabs
-              defaultActiveKey="scenario"
+              defaultActiveKey="commands"
               // id={`graph-controll_${machine.name}`}
               className="mb-3"
             >
