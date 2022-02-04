@@ -20,6 +20,7 @@ export function parseCommand(
     name: /^[a-z]([\da-zA-Z])*/.exec(command)?.[0],
     props: props_str ? JSON.parse(props_str) : (undefined as unknown),
   };
+  console.log(`parseCommand | ${command} into ${JSON.stringify(parced)}`)
   return parced;
 }
 
