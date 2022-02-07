@@ -81,6 +81,12 @@ export default class FakeMM {
       ),
       createTask("P700", 20),
       createTask("P800", 20),
+      createTask("P20", 10),
+      createTask("P25", 10),
+      createTask("P30", 10),
+      createTask("P40", 10),
+      createTask("P50", 10),
+      createTask("P55", 10),
     ];
   }
 
@@ -98,7 +104,7 @@ export default class FakeMM {
     this.is_running = false;
   }
 
-  static mm_var_regexp = /(P\d{3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
+  static mm_var_regexp = /(P\d{2,3})\[(\d{1,2})\]\.([A-Z][a-z]*)/;
   getPLCVarByName(name: string) {
     const a = FakeMM.mm_var_regexp.exec(name);
     let vault_var: VaultVar;

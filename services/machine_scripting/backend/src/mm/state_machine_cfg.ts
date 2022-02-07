@@ -11,7 +11,7 @@ import { checkCam } from "./check_cam";
 import { graph, States, Transitions } from "./transitions";
 
 
-type P200_Conf = {
+type P_Conf = {
   skip: number[];
 };
 
@@ -44,6 +44,7 @@ function createFSMConfig(plc: IPlcConnector) {
       type: "MM",
       init: graph.init,
       current_address: { cassete: 0, pos: 0 },
+      column_address: { pos: 0 },
       cycle_state: 0,
       status_message: "no",
       plc: plc,
@@ -69,8 +70,7 @@ function createFSMConfig(plc: IPlcConnector) {
         return false;
       },
       onBeforeSetAddres: async function (lifecycle, address: MM_address) {
-        if (lifecycle.transition === "goto") return true;
-        if (!this.isAddressValid(address)) return false;
+        if (!this.isAddressValid(address)) throw new Error("Link address invalid");
 
         if (this.is_test) return true;
         console.log(address);
@@ -100,10 +100,37 @@ function createFSMConfig(plc: IPlcConnector) {
           setTimeout(mon, 100);
         });
       },
+      async onBeforeSetColumnArdess(lifecycle, column_address: { pos: number }) {
+        if (column_address.pos > 4) throw new Error("Link address invalid");
 
+        this.column_address = column_address;
+        if (this.is_test) return true;
+
+        await this.plc.writeVar({
+          Column_adress: column_address.pos
+        });
+
+        return new Promise<boolean>((resolve, reject) => {
+          const mon = async () => {
+            const plc_vars = (await this.plc.readVarToObj([
+              "Column_adress"
+            ])) as {
+              Column_adress: number;
+            };
+            console.log(plc_vars);
+            if (
+              plc_vars.Column_adress == column_address.pos
+            ) {
+              resolve(true);
+            } else reject();
+          };
+          setTimeout(mon, 100);
+        });
+
+      },
       onAfterP200Start: async function (
         lifecycle,
-        config: P200_Conf = { skip: [] }
+        config: P_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
@@ -120,7 +147,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onAfterP300Start: async function (
         lifecycle,
-        config: P200_Conf = { skip: [] }
+        config: P_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
@@ -137,7 +164,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onAfterP500Start: async function (
         lifecycle,
-        config: P200_Conf = { skip: [] }
+        config: P_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
@@ -154,7 +181,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onBeforeP600Start: async function (
         lifecycle,
-        config: P200_Conf = { skip: [] }
+        config: P_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
@@ -169,6 +196,16 @@ function createFSMConfig(plc: IPlcConnector) {
       // onLeaveState
       // onLeave<STATE>
       // onTransition
+
+      async onBeforeNext(lifecycle, config: P_Conf = { skip: [] }) {
+        if (this.is_test) return true;
+        const execProgram = async (p_name: string) => {
+          await executeProgram({ cycle_name: p_name, config: config, plc_connector: this.plc });
+          await this.plc.waitForPlcVar(`${p_name}[0].Done`, true);
+          await this.plc.writeVarByName(`${p_name}[0].Reset`, true);
+        };
+        await execProgram(lifecycle.to.toUpperCase());
+      },
 
       onLeaveP600Near: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
@@ -202,7 +239,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onAfterP700Start: async function (
         lifecycle,
-        config: P200_Conf = { skip: [] }
+        config: P_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
@@ -219,7 +256,7 @@ function createFSMConfig(plc: IPlcConnector) {
 
       onAfterP800Start: async function (
         lifecycle,
-        config: P200_Conf = { skip: [] }
+        config: P_Conf = { skip: [] }
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;

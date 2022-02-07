@@ -86,6 +86,7 @@ type PlcMachineData =
     | {
       type: "MM";
       current_address: MM_address;
+      column_address: { pos: number };
     }
     | {
       type: "MP";
