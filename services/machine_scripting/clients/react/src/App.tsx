@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -89,16 +89,27 @@ function useControllerStatus(api: API<RequestMatching>) {
 }
 
 function GraphImage({ api }: { api: API<RequestMatching> }) {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<
+    Extract<RequestMatching, { type: "image" }>["response"]
+  >({ image: "", timestamp: 0 });
+  const get_timestamp = useCallback(() => {
+    return image.timestamp;
+  }, [image.timestamp]);
+
   const [notUpdated, setNotUpdated] = useState(true);
   useEffect(() => {
     const image_upd = setInterval(() => {
       api
-        .getByAPI_get("image")
+        .getByAPI_post("image", { timestamp: get_timestamp() })
         .then((value) => {
           if (value) {
             setNotUpdated(false);
-            setImage(value);
+            if (value.image !== "") {
+              setImage(value);
+              console.log(
+                `Image updated in ${value.timestamp} | ${get_timestamp()} `
+              );
+            }
           } else {
             setNotUpdated(true);
           }
@@ -109,7 +120,7 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
       console.log("useimage is unmounted");
       clearInterval(image_upd);
     };
-  }, [api]);
+  }, [api, get_timestamp]);
   return (
     <Image
       draggable="false"
@@ -117,7 +128,7 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
         opacity: notUpdated ? "0.5" : "1.0",
         border: `5px ${notUpdated ? "red" : "white"} solid`,
       }}
-      src={`data:image/svg+xml;base64,${image}`}
+      src={`data:image/svg+xml;base64,${image.image}`}
       alt="states"
       fluid
     />

@@ -18,9 +18,6 @@ export function generateEndPoints(render: ImageRender, plc_controller: iControll
 		createEndPointGet("controller_status", async () => {
 			return plc_controller.getControllerStatus();
 		}),
-		createEndPointGet("image", async () => {
-			return render.rendered_image;
-		}),
 		createEndPointGet("get_all_states", async () => plc_controller.slave_fsm.js_fsm.allStates()
 		),
 		createEndPointGet("scenarios", async () => {
@@ -38,6 +35,12 @@ export function generateEndPoints(render: ImageRender, plc_controller: iControll
 	];
 
 	const end_points_post = [
+		createEndPointPost("image", async (t) => {
+			if (t.timestamp < render.rendered_image.timestamp)
+				return render.rendered_image;
+			return { image: "", timestamp: render.rendered_image.timestamp };
+		}),
+
 		createEndPointPost("exec_graph_command", async (req) => {
 			console.log(req);
 			console.log(

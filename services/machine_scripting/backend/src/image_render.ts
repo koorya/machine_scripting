@@ -6,7 +6,7 @@ import * as StateMachine from "javascript-state-machine";
 import { GraphOfStates } from "./fsm_types";
 
 export class ImageRender {
-  rendered_image: string = null;
+  rendered_image: { image: string; timestamp: number } = null;
   dot_script: string;
   graph: Graph;
   start_time: Date;
@@ -57,7 +57,7 @@ export class ImageRender {
 
       const local_image = buff.toString("base64");
       if (this.start_time.getTime() == local_time.getTime())
-        this.rendered_image = local_image;
+        this.rendered_image = { image: local_image, timestamp: local_time.getTime() };
     });
     gg.getNode(active_node_name).set("color", "black");
     console.log("rendered");
