@@ -3,17 +3,20 @@ export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP" | "MASTER";
 
 export type MM_address = { cassete: number; pos: number };
 
+export type ColumnAddres = Extract<BuildingComponent, { type: "column" }>["address"];
+export type LinkAddres = MM_address;
+
 export type BuildingComponent = { type: "link"; address: { cassete: number; pos: number } }
   | { type: "column"; address: { pos: number } };
 
-export type ScenarioStartCondition = { state: string } & (
+export type MachineAdditionalParams =
   | { type: "MD"; level: number }
-  | { type: "MM"; address: MM_address; }
+  | { type: "MM"; address: { link: LinkAddres; column: ColumnAddres }; }
   | { type: "MP"; lenght: number; }
   | { type: "CONTROLLER"; }
-  | { type: "MASTER"; current_element: BuildingComponent; current_level: BuildingComponent[]; }
+  | { type: "MASTER"; current_element: BuildingComponent; current_level: BuildingComponent[]; };
 
-);
+export type ScenarioStartCondition = { state: string } & MachineAdditionalParams;
 
 export type MachineStatus = {
   cycle_step: number;

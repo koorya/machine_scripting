@@ -43,8 +43,10 @@ function createFSMConfig(plc: IPlcConnector) {
     data: {
       type: "MM",
       init: graph.init,
-      current_address: { cassete: 0, pos: 0 },
-      column_address: { pos: 0 },
+      address: {
+        link: { cassete: 0, pos: 0 },
+        column: { pos: 0 },
+      },
       cycle_state: 0,
       status_message: "no",
       plc: plc,
@@ -56,7 +58,7 @@ function createFSMConfig(plc: IPlcConnector) {
           type: this.type,
           state: this.state,
           cycle_step: this.cycle_state,
-          address: this.current_address,
+          address: this.address,
         };
         return machine_status;
       },
@@ -93,17 +95,17 @@ function createFSMConfig(plc: IPlcConnector) {
               plc_vars.Stick_adress == address.pos &&
               plc_vars.Stick_socket == address.cassete
             ) {
-              this.current_address = address;
+              this.address.link = address;
               resolve(true);
             } else reject();
           };
           setTimeout(mon, 100);
         });
       },
-      async onBeforeSetColumnArdess(lifecycle, column_address) {
+      async onBeforeSetColumnAdress(lifecycle, column_address) {
         if (column_address.pos > 4) throw new Error("Link address invalid");
 
-        this.column_address = column_address;
+        this.address.column = column_address;
         if (this.is_test) return true;
 
         await this.plc.writeVar({

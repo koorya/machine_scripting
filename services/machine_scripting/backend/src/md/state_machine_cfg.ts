@@ -57,8 +57,8 @@ function createFSMConfig(plc: IPlcConnector) {
     data: {
       type: "MD",
       init: graph.init,
-      current_level: 1,
-      top_level: 4,
+      current_level: 0,
+      top_level: 5,
       cycle_state: 0,
       status_message: "no",
       plc: plc,

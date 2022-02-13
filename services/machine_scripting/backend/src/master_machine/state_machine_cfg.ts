@@ -26,7 +26,7 @@ async function waitForCondition<T>(req: () => Promise<T>, cond: (resp: T) => boo
 async function checkCondition<T>(req: () => Promise<T>, cond: (resp: T) => boolean) {
   const resp = await req();
   if (!cond(resp))
-    throw new Error("checkCondition | condition is false");
+    throw new Error(`checkCondition | condition is false | resp: ${JSON.stringify(resp)}`);
 }
 
 function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext_config"]) {
@@ -100,8 +100,16 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
             md_status.state == "available" && md_status.machine_status.state == "on_pins_support" &&
             md_status.machine_status.level == 3);
       },
+      async onBeforeStartMountCycle(lifecycle, p) {
+        if (p.pos >= 4 || p.pos < 0)
+          throw new Error(`onBeforeStartMountCycle | column position has invalid value: ${p.pos} (0-3)`)
+        const mounted_col_list = this.current_level.filter(el => el.type == "column").map(col => col.address.pos)
+        if (p.pos in mounted_col_list)
+          throw new Error(`onBeforeStartMountCycle | Column already mounted | ${p.pos} in ${mounted_col_list}`)
+        this.current_element = { type: "column", address: p };
+      },
       async onLeaveLiftingCassetteColumn() {
-        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "lift cassete", commands: ["moveUp"] });
+        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "lift cassete up", commands: ["moveUp"] });
         await waitForCondition(() => this.ext_config.mp.getByAPI_get("controller_status"),
           mp_status =>
             mp_status.machine_status.type == "MP" &&
@@ -119,9 +127,58 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
       async onLeaveColumnInCassetteOnLevel() {
         // сценарий захвата колонны
         // await окончания захвата монтажником
+
+        await this.ext_config.mm.getByAPI_post("exec_scenario", {
+          name: "hold_column",
+          commands: [
+            `setColumnAdress({"pos": ${this.current_element.address.pos}})`,
+            "next"
+          ]
+        });
+        await waitForCondition(() => this.ext_config.mm.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MM" &&
+            mp_status.state == "available" &&
+            mp_status.machine_status.state == "p20");
       },
 
+      async onBeforeMountColumnInPlace() {
+        await checkCondition(() => this.ext_config.mm.getByAPI_get("controller_status"),
+          md_status =>
+            md_status.machine_status.type == "MM" &&
+            md_status.state == "available" &&
+            md_status.machine_status.state == "p20");
+      },
 
+      async onLeaveColumnHolded() {
+        // отправляем кассету вниз
+        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "lift cassete down", commands: ["moveDown"] });
+        // монтажник продолжает установку колонны
+        await this.ext_config.mm.getByAPI_post("exec_scenario", {
+          name: "moun column",
+          commands: [
+            "next", "next", "next", "next", "next",
+          ]
+        });
+      },
+
+      async onLeaveColumnMounting() {
+        // Выходим из состояния установки колонны только по завершении работы обеих машин
+        await waitForCondition(() => this.ext_config.mm.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MM" &&
+            mp_status.state == "available" &&
+            mp_status.machine_status.state == "standby");
+
+        await waitForCondition(() => this.ext_config.mp.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MP" &&
+            mp_status.state == "available" &&
+            mp_status.machine_status.state == "bottom");
+
+        this.current_level.push(this.current_element);
+
+      },
     },
   };
 

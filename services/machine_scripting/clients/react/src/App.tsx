@@ -30,6 +30,8 @@ import { address_list } from "./shared/config/machines_config";
 import { ExtendCommandForm } from "./utils/ExtendCommandForm";
 import PanZoom from "react-easy-panzoom";
 
+const TimeInterval = 300;
+
 function Jumbotron(props: any) {
   return (
     <div
@@ -50,7 +52,7 @@ function useCmds(api: API<RequestMatching>) {
   useEffect(() => {
     const cmds_upd = setInterval(() => {
       api.getByAPI_get("commands").then((value) => setCmds(value));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useCmds is unmounted");
       clearInterval(cmds_upd);
@@ -63,7 +65,7 @@ function useScenarioStatus(api: API<RequestMatching>) {
   useEffect(() => {
     const upd = setInterval(() => {
       api.getByAPI_get("scenario_status").then((value) => setVal(value));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useScenarioStatus is unmounted");
       clearInterval(upd);
@@ -79,7 +81,7 @@ function useControllerStatus(api: API<RequestMatching>) {
   useEffect(() => {
     const upd = setInterval(() => {
       api.getByAPI_get("controller_status").then((value) => setVal(value));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useControllerStatus is unmounted");
       clearInterval(upd);
@@ -115,7 +117,7 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
           }
         })
         .catch((t) => setNotUpdated(true));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useimage is unmounted");
       clearInterval(image_upd);
@@ -542,13 +544,13 @@ function Scenarios({
         };
       case "MM":
         return {
-          address: { cassete: 0, pos: 0 },
+          address: { link: { cassete: 0, pos: 0 }, column: { pos: 0 } },
           type: "MM",
           state: "standby",
         };
       default:
         return {
-          address: { cassete: 0, pos: 0 },
+          address: { link: { cassete: 0, pos: 0 }, column: { pos: 0 } },
           type: "MM",
           state: "standby",
         };
@@ -732,7 +734,8 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                 />
               </Tab>
               <Tab eventKey="status" title="Status">
-                {controller_status?.machine_status.type === "MD" ? (
+                <pre>{JSON.stringify(controller_status, null, 2)}</pre>
+                {/* {controller_status?.machine_status.type === "MD" ? (
                   <div>level: {controller_status?.machine_status.level}</div>
                 ) : controller_status?.machine_status.type === "MM" ? (
                   <div>
@@ -744,7 +747,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                   <div>length: {controller_status?.machine_status.lenght}</div>
                 ) : (
                   <div></div>
-                )}
+                )} */}
               </Tab>
             </Tabs>
           </Jumbotron>

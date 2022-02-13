@@ -1,5 +1,5 @@
 import * as StateMachine from "javascript-state-machine";
-import { BuildingComponent, RequestMatching, ScenarioStartCondition } from "~shared/types/types";
+import { BuildingComponent, MachineAdditionalParams, RequestMatching, ScenarioStartCondition } from "~shared/types/types";
 import { CompiledScenario, ControllerStatus, Machines, MachineStatus, MM_address } from "~shared/types/types";
 import { API } from "./api/api";
 import { ToPascal, ExtractByType } from "./types/utils";
@@ -84,11 +84,8 @@ type PlcMachineData =
       current_level: number;
       top_level: number;
     }
-    | {
-      type: "MM";
-      current_address: MM_address;
-      column_address: { pos: number };
-    }
+    |
+    Extract<MachineAdditionalParams, { type: "MM" }>
     | {
       type: "MP";
       length: number;
@@ -233,7 +230,7 @@ export type OnMethods<Machine extends Machines, States extends string, Transitio
   (this: CustomThisType<Machine> & OnMethods<Machine, States, Transitions>,
     lifecycle: LifeCycle<States, Transitions | "goto">,
     arg_ext?: Arg<key>
-  ) => Promise<boolean | void> | void | boolean;
+  ) => (Promise<boolean | void> | void | boolean);
 };
 
 export type FSMMethods<
