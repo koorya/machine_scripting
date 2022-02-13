@@ -28,6 +28,7 @@ import NeuroImage from "./mm/NeuroImage";
 import { MpPanel } from "./mp/MpPanel";
 import { address_list } from "./shared/config/machines_config";
 import { ExtendCommandForm } from "./utils/ExtendCommandForm";
+import PanZoom from "react-easy-panzoom";
 
 function Jumbotron(props: any) {
   return (
@@ -111,6 +112,7 @@ function GraphImage({ api }: { api: API<RequestMatching> }) {
   }, [api]);
   return (
     <Image
+      draggable="false"
       style={{
         opacity: notUpdated ? "0.5" : "1.0",
         border: `5px ${notUpdated ? "red" : "white"} solid`,
@@ -686,7 +688,9 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
     <Container fluid>
       <Row>
         <Col>
-          <GraphImage api={machine.api} />
+          <PanZoom>
+            <GraphImage api={machine.api} />
+          </PanZoom>
         </Col>
         <Col xs={4}>
           <Jumbotron style={{ position: "sticky", top: "0px" }}>
