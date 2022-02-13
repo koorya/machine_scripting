@@ -153,7 +153,7 @@ function DirectControls({
             {cmd}
           </Button>
         ) : cmd === "goto" ? (
-          <InputGroup size="sm" className="p-1">
+          <InputGroup key={`InputGroup_${cmd}`} size="sm" className="p-1">
             <SplitButton
               variant="primary"
               title="goto"
@@ -173,7 +173,7 @@ function DirectControls({
                   <Dropdown.Item
                     onSelect={() => setGotoState(state)}
                     href="#"
-                    key={`${state}_Dropdown.Item`}
+                    key={`${cmd}_${state}_Dropdown.Item`}
                   >
                     {state}
                   </Dropdown.Item>
@@ -181,13 +181,18 @@ function DirectControls({
               })}
             </SplitButton>
             <FormControl
+              key={"FormControl_" + cmd}
               disabled
               value={gotoState}
               aria-label="Text input with dropdown button"
             />
           </InputGroup>
         ) : (
-          <ExtendCommandForm key={cmd} cmd={cmd} api={api} />
+          <ExtendCommandForm
+            key={`ExtendCommandForm_${cmd}`}
+            cmd={cmd}
+            api={api}
+          />
         )
       )}
       {available !== true ? <Spinner size="sm" animation="border" /> : ""}
