@@ -36,6 +36,8 @@ export function generateEndPoints(render: ImageRender, plc_controller: iControll
 
 	const end_points_post = [
 		createEndPointPost("image", async (t) => {
+			if (!render.rendered_image)
+				return { image: "", timestamp: 0 };
 			if (t.timestamp < render.rendered_image.timestamp)
 				return render.rendered_image;
 			return { image: "", timestamp: render.rendered_image.timestamp };
