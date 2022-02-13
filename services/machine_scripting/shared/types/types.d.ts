@@ -3,12 +3,15 @@ export type Machines = | "CONTROLLER" | "MM" | "MD" | "MP" | "MASTER";
 
 export type MM_address = { cassete: number; pos: number };
 
+export type BuildingComponent = { type: "link"; address: { cassete: number; pos: number } }
+  | { type: "column"; address: { pos: number } };
+
 export type ScenarioStartCondition = { state: string } & (
   | { type: "MD"; level: number }
   | { type: "MM"; address: MM_address; }
   | { type: "MP"; lenght: number; }
   | { type: "CONTROLLER"; }
-  | { type: "MASTER"; }
+  | { type: "MASTER"; current_element: BuildingComponent; current_level: BuildingComponent[]; }
 
 );
 
@@ -143,9 +146,9 @@ export type RequestMatching =
   }
   | {
     type: "image";
-    response: string | null;
-    request: {};
-    method: "GET";
+    response: { image: string; timestamp: number; };
+    request: { timestamp: number };
+    method: "POST";
   }
   | {
     type: "exec_graph_command";

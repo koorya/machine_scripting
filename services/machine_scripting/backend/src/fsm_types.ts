@@ -1,9 +1,10 @@
 import * as StateMachine from "javascript-state-machine";
-import { RequestMatching, ScenarioStartCondition } from "~shared/types/types";
+import { BuildingComponent, RequestMatching, ScenarioStartCondition } from "~shared/types/types";
 import { CompiledScenario, ControllerStatus, Machines, MachineStatus, MM_address } from "~shared/types/types";
 import { API } from "./api/api";
 import { ToPascal, ExtractByType } from "./types/utils";
 import { IPlcConnector } from "./zmq_network";
+import { CommandsVithParameters } from "~shared/commands/ext_commands"
 
 type Transition = {
   name: string;
@@ -109,6 +110,8 @@ export type MachineData = (
   | {
     type: "MASTER";
     ext_config: { [key in keyof (Extract<ExtConfig, { type: "MASTER" }>["ext_config"])]: API<RequestMatching> };
+    current_element: BuildingComponent;
+    current_level: BuildingComponent[];
   }
 );
 
@@ -195,6 +198,8 @@ export interface iController extends iStateMachine, Extract<iData, { type: "CONT
 
 }
 
+
+
 type OnBaseMethodsName =
   | 'onAfterTransition'
   | 'onTransition'
@@ -216,8 +221,18 @@ type CustomThisType<MACHINE extends Machines> =
   ExcludeTypeProp<ExtractByType<iMethods, MACHINE>, "type">
   & iStateMachine;
 
+type t = CommandsVithParameters;
+
+type s = keyof CommandsVithParameters
+
+type Arg<T extends string> = T extends s ? t[T] : never;
+
+
 export type OnMethods<Machine extends Machines, States extends string, Transitions extends string> = {
-  [key in OnSpecificMethodsName<States, Transitions>]?: (this: CustomThisType<Machine> & OnMethods<Machine, States, Transitions>, lifecycle: LifeCycle<States, Transitions | "goto">, ...args: any
+  [key in Transitions as OnSpecificMethodsName<States, key>]?:
+  (this: CustomThisType<Machine> & OnMethods<Machine, States, Transitions>,
+    lifecycle: LifeCycle<States, Transitions | "goto">,
+    arg_ext?: Arg<key>
   ) => Promise<boolean | void> | void | boolean;
 };
 

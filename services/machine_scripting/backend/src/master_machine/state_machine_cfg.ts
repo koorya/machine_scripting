@@ -48,7 +48,8 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
       init: graph.init,
       is_test: false,
       ext_config: ext_config_init,
-
+      current_element: { type: "link", address: { cassete: 0, pos: 0 } },
+      current_level: [],
     },
     methods: {
       // can cancel only in
@@ -64,6 +65,8 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
           state: this.state,
           cycle_step: undefined,
           status_message: undefined,
+          current_element: this.current_element,
+          current_level: this.current_level,
         };
       },
       onLeaveState: async function () {

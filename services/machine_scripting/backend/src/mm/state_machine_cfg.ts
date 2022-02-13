@@ -69,7 +69,7 @@ function createFSMConfig(plc: IPlcConnector) {
         console.log("not valid");
         return false;
       },
-      onBeforeSetAddres: async function (lifecycle, address: MM_address) {
+      onBeforeSetAddres: async function (lifecycle, address) {
         if (!this.isAddressValid(address)) throw new Error("Link address invalid");
 
         if (this.is_test) return true;
@@ -100,7 +100,7 @@ function createFSMConfig(plc: IPlcConnector) {
           setTimeout(mon, 100);
         });
       },
-      async onBeforeSetColumnArdess(lifecycle, column_address: { pos: number }) {
+      async onBeforeSetColumnArdess(lifecycle, column_address) {
         if (column_address.pos > 4) throw new Error("Link address invalid");
 
         this.column_address = column_address;
