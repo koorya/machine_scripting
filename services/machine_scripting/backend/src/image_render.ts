@@ -52,7 +52,7 @@ export class ImageRender {
 
 
     if (this.start_time.getTime() != local_time.getTime()) return;
-    gg.getNode(active_node_name).set("color", is_running ? "green" : "red");
+    gg.getNode(active_node_name).set("color", is_running ? "yellow" : "red");
     gg.output("svg", (buff) => {
 
       const local_image = buff.toString("base64");

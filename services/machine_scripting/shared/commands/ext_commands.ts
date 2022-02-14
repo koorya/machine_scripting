@@ -7,6 +7,7 @@ const init_commands = {
 	setAddres: { cassete: 0, pos: 0 } as LinkAddres,
 	setColumnAdress: { pos: 0 } as ColumnAddres,
 	startMountCycle: { pos: 0 } as ColumnAddres,
+	mountLinkByAddress: { cassete: 0, pos: 0 } as LinkAddres,
 
 	// p200Start: { skip: [] } as { skip: number[]; },
 	// p300Start: { skip: [] } as { skip: number[]; },
