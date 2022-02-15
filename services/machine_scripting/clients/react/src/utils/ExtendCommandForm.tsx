@@ -87,23 +87,41 @@ function SetAdressBtn({
           <Popover.Body>
             Check this info.
             {Object.entries(params).map((k) => (
-              <Form.Group as={Col} md="4" controlId="validationCustom01">
-                <Form.Label>{k[0]}</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={k[1]}
-                  onChange={(e) => {
-                    let p = params as any;
-                    p[`${k[0]}`] = parseInt(e.currentTarget.value);
-                    if (!p[`${k[0]}`]) p[`${k[0]}`] = 0;
-                    setParams(p);
-                  }}
-                />
-              </Form.Group>
+              <NumberField
+                k={k}
+                params={params}
+                setParams={setParams}
+                key={`NumberField_${k}`}
+              />
             ))}
           </Popover.Body>
         </Popover>
       </Overlay>
     </div>
+  );
+}
+function NumberField({
+  k,
+  params,
+  setParams,
+}: {
+  k: [string, number];
+  params: MyTypes.MM_address | { pos: number };
+  setParams: (params: MyTypes.MM_address | { pos: number }) => void;
+}): JSX.Element {
+  return (
+    <Form.Group as={Col} md="4" controlId="validationCustom01">
+      <Form.Label>{k[0]}</Form.Label>
+      <Form.Control
+        type="text"
+        value={k[1]}
+        onChange={(e) => {
+          let p = params as any;
+          p[`${k[0]}`] = parseInt(e.currentTarget.value);
+          if (!p[`${k[0]}`]) p[`${k[0]}`] = 0;
+          setParams(p);
+        }}
+      />
+    </Form.Group>
   );
 }

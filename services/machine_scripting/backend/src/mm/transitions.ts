@@ -14,8 +14,8 @@ export const root_graph = {
     { "name": "p800Start", "from": "p700", "to": "p800" },
     { "name": "step", "from": "p800", "to": "standby" },
 
-    { name: "setColumnArdess", from: "standby", to: "ready_to_column" },
-    { name: "setColumnArdess", from: "ready_to_column", to: "ready_to_column" },
+    { name: "setColumnAdress", from: "standby", to: "ready_to_column" },
+    { name: "setColumnAdress", from: "ready_to_column", to: "ready_to_column" },
     { name: "next", from: "ready_to_column", to: "p20" },
     { name: "next", from: "p20", to: "p25" },
     { name: "next", from: "p25", to: "p30" },

@@ -20,14 +20,15 @@ export function configFsmServer(config: ExtConfig) {
   const { plc_fsm, render } = createPlcFsmWithRender(config);
 
   const funct = plc_fsm.js_fsm.onAfterTransition;
+
+  const plc_controller = new FSMController(plc_fsm);
   plc_fsm.js_fsm.onAfterTransition = async function (lifecycle) {
-    render.updateImage(plc_fsm.js_fsm.state);
+    render.updateImage(plc_fsm.js_fsm.state, plc_controller.state != "available");
     funct(lifecycle);
     // fsm_sc.goto(fsm.state);
     // fsm_sc.current_level = fsm.current_level;
   };
-
-  const plc_controller = new FSMController(plc_fsm);
+  plc_controller.onAfterTransition = plc_fsm.js_fsm.onAfterTransition;
 
   return {
     render: render,

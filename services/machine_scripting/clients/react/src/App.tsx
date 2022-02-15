@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -28,6 +28,9 @@ import NeuroImage from "./mm/NeuroImage";
 import { MpPanel } from "./mp/MpPanel";
 import { address_list } from "./shared/config/machines_config";
 import { ExtendCommandForm } from "./utils/ExtendCommandForm";
+import PanZoom from "react-easy-panzoom";
+
+const TimeInterval = 300;
 
 function Jumbotron(props: any) {
   return (
@@ -49,7 +52,7 @@ function useCmds(api: API<RequestMatching>) {
   useEffect(() => {
     const cmds_upd = setInterval(() => {
       api.getByAPI_get("commands").then((value) => setCmds(value));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useCmds is unmounted");
       clearInterval(cmds_upd);
@@ -62,7 +65,7 @@ function useScenarioStatus(api: API<RequestMatching>) {
   useEffect(() => {
     const upd = setInterval(() => {
       api.getByAPI_get("scenario_status").then((value) => setVal(value));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useScenarioStatus is unmounted");
       clearInterval(upd);
@@ -78,7 +81,7 @@ function useControllerStatus(api: API<RequestMatching>) {
   useEffect(() => {
     const upd = setInterval(() => {
       api.getByAPI_get("controller_status").then((value) => setVal(value));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useControllerStatus is unmounted");
       clearInterval(upd);
@@ -88,34 +91,46 @@ function useControllerStatus(api: API<RequestMatching>) {
 }
 
 function GraphImage({ api }: { api: API<RequestMatching> }) {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<
+    Extract<RequestMatching, { type: "image" }>["response"]
+  >({ image: "", timestamp: 0 });
+  const get_timestamp = useCallback(() => {
+    return image.timestamp;
+  }, [image.timestamp]);
+
   const [notUpdated, setNotUpdated] = useState(true);
   useEffect(() => {
     const image_upd = setInterval(() => {
       api
-        .getByAPI_get("image")
+        .getByAPI_post("image", { timestamp: get_timestamp() })
         .then((value) => {
           if (value) {
             setNotUpdated(false);
-            setImage(value);
+            if (value.image !== "") {
+              setImage(value);
+              console.log(
+                `Image updated in ${value.timestamp} | ${get_timestamp()} `
+              );
+            }
           } else {
             setNotUpdated(true);
           }
         })
         .catch((t) => setNotUpdated(true));
-    }, 100);
+    }, TimeInterval);
     return () => {
       console.log("useimage is unmounted");
       clearInterval(image_upd);
     };
-  }, [api]);
+  }, [api, get_timestamp]);
   return (
     <Image
+      draggable="false"
       style={{
         opacity: notUpdated ? "0.5" : "1.0",
         border: `5px ${notUpdated ? "red" : "white"} solid`,
       }}
-      src={`data:image/svg+xml;base64,${image}`}
+      src={`data:image/svg+xml;base64,${image.image}`}
       alt="states"
       fluid
     />
@@ -151,7 +166,7 @@ function DirectControls({
             {cmd}
           </Button>
         ) : cmd === "goto" ? (
-          <InputGroup size="sm" className="p-1">
+          <InputGroup key={`InputGroup_${cmd}`} size="sm" className="p-1">
             <SplitButton
               variant="primary"
               title="goto"
@@ -171,7 +186,7 @@ function DirectControls({
                   <Dropdown.Item
                     onSelect={() => setGotoState(state)}
                     href="#"
-                    key={`${state}_Dropdown.Item`}
+                    key={`${cmd}_${state}_Dropdown.Item`}
                   >
                     {state}
                   </Dropdown.Item>
@@ -179,13 +194,18 @@ function DirectControls({
               })}
             </SplitButton>
             <FormControl
+              key={"FormControl_" + cmd}
               disabled
               value={gotoState}
               aria-label="Text input with dropdown button"
             />
           </InputGroup>
         ) : (
-          <ExtendCommandForm key={cmd} cmd={cmd} api={api} />
+          <ExtendCommandForm
+            key={`ExtendCommandForm_${cmd}`}
+            cmd={cmd}
+            api={api}
+          />
         )
       )}
       {available !== true ? <Spinner size="sm" animation="border" /> : ""}
@@ -524,13 +544,13 @@ function Scenarios({
         };
       case "MM":
         return {
-          address: { cassete: 0, pos: 0 },
+          address: { link: { cassete: 0, pos: 0 }, column: { pos: 0 } },
           type: "MM",
           state: "standby",
         };
       default:
         return {
-          address: { cassete: 0, pos: 0 },
+          address: { link: { cassete: 0, pos: 0 }, column: { pos: 0 } },
           type: "MM",
           state: "standby",
         };
@@ -686,7 +706,9 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
     <Container fluid>
       <Row>
         <Col>
-          <GraphImage api={machine.api} />
+          <PanZoom>
+            <GraphImage api={machine.api} />
+          </PanZoom>
         </Col>
         <Col xs={4}>
           <Jumbotron style={{ position: "sticky", top: "0px" }}>
@@ -712,7 +734,8 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                 />
               </Tab>
               <Tab eventKey="status" title="Status">
-                {controller_status?.machine_status.type === "MD" ? (
+                <pre>{JSON.stringify(controller_status, null, 2)}</pre>
+                {/* {controller_status?.machine_status.type === "MD" ? (
                   <div>level: {controller_status?.machine_status.level}</div>
                 ) : controller_status?.machine_status.type === "MM" ? (
                   <div>
@@ -724,7 +747,7 @@ function MachinePresentation({ machine }: { machine: MachineConfig }) {
                   <div>length: {controller_status?.machine_status.lenght}</div>
                 ) : (
                   <div></div>
-                )}
+                )} */}
               </Tab>
             </Tabs>
           </Jumbotron>
