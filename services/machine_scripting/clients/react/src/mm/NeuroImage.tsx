@@ -85,11 +85,11 @@ function PredictCard({
       </Card.Header>
       <Card.Img
         variant="top"
-        src={`http://localhost:8090/jpg/${neuro.image.source}`}
+        src={`http://${window.location.hostname}:8090/jpg/${neuro.image.source}`}
       />
       <Card.Img
         variant="top"
-        src={`http://localhost:8090/jpg/${neuro.image.predict}`}
+        src={`http://${window.location.hostname}:8090/jpg/${neuro.image.predict}`}
       />
       <Card.Body>
         <Card.Title>
@@ -112,7 +112,7 @@ function NeuroImage({
 }) {
   // eslint-disable-next-line
   const [api, setApi] = useState<API<NeuroServiceMatching>>(
-    () => new API<NeuroServiceMatching>("http://localhost", port)
+    () => new API<NeuroServiceMatching>(`http://${window.location.hostname}`, port)
   );
   const by_class = useNeuroImagesClass(api, ipcl, ipcr);
   const by_segment = useNeuroImagesSegment(api, ipcl, ipcr);

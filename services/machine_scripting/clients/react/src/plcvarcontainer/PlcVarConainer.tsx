@@ -10,7 +10,7 @@ function usePlcVaribles<T>(
 ) {
   // eslint-disable-next-line
   const [readApi, setReadApi] = useState<API<RepeaterRequestMatching>>(
-    () => new API<RepeaterRequestMatching>("http://localhost", reading_port)
+    () => new API<RepeaterRequestMatching>(`http://${window.location.hostname}`, reading_port)
   );
   const [plc_vars, setPlcVars] = useState(def_values);
 
@@ -46,7 +46,7 @@ export function usePlcContainer<T>(
 ) {
   // eslint-disable-next-line
   const [writeApi, setWriteApi] = useState<API<RepeaterRequestMatching>>(
-    () => new API<RepeaterRequestMatching>("http://localhost", writing_port)
+    () => new API<RepeaterRequestMatching>(`http://${window.location.hostname}`, writing_port)
   );
   // eslint-disable-next-line
   const [cancelUpdate, setCancelUpdate] = useState({ should_cancel: false });

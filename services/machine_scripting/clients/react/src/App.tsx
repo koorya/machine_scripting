@@ -775,7 +775,7 @@ function App() {
     console.log(`window.location.href: ${window.location.href}`);
     setMode(window.location.pathname.slice(1));
     const machines = get_machines_info().map((machine) => {
-      const api = new API("http://localhost", machine.port);
+      const api = new API(`http://${window.location.hostname}`, machine.port);
       const t = {
         api: api,
         ...machine,

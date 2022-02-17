@@ -51,6 +51,8 @@ if os.path.exists(dotenv_path):
 DEFAULT_CAM_ADDRESS = os.environ.get('DEFAULT_CAM_ADDRESS')
 IMAGES_PATH = os.environ.get('IMAGES_PATH')
 
+HOST = os.environ.get("HOST")
+
 if not os.path.exists(IMAGES_PATH):
     os.makedirs(IMAGES_PATH)
 
@@ -365,7 +367,7 @@ def main():
         sys.exit(2)   
 
     print('3. Load core for API service.')
-    app.run(debug=service_debug, port=service_port)
+    app.run(host=HOST, debug=service_debug, port=service_port)
     
 # .....................................................................................................................
 # .....................................................................................................................
