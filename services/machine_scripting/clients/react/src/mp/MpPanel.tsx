@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Badge,
-  Button,
-  Col,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import { Alert, Badge, Col, Container, Form, Row } from "react-bootstrap";
 import { init_vars } from "../shared/mp/plc_vars";
 import { API } from "../shared/api/api";
 import { usePlcContainer } from "../plcvarcontainer/PlcVarConainer";
@@ -201,33 +193,38 @@ export function MpPanel({
           </Alert>
         </Col>
         <Col>
+          <YesNoButton
+            handle_button_click={handle_button_click}
+            plc_vars={plc_vars}
+            var_name="SVU_MD_ViewWork"
+          />
+          <Col md={7}>
+            SVU_MD_ViewWork: false, // Состояние удержания кассеты с
+            подтягиванием каната. Кассета должна быть внизу, чтобы было
+            допустимо устанавливать эту переменную.
+          </Col>
+          <YesNoButton
+            handle_button_click={handle_button_click}
+            plc_vars={plc_vars}
+            var_name="SVU_Ready"
+          />
+          <Col md={7}>
+            SVU_Ready: false, // Это команда для отклюючения пульта подъемника.
+            На нее опирается плк подъемника.
+          </Col>
+          <YesNoBadge value={plc_vars.TPK_Home} className="container-fluid" />
+          <Col md={7}>TPK_Home: false, //Флаг прижатия кассеты к раме.</Col>
 
-        <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="SVU_MD_ViewWork"
-                />
-                <Col md={7}>SVU_MD_ViewWork: false, // Состояние удержания кассеты с подтягиванием каната. Кассета должна быть внизу, чтобы было допустимо устанавливать эту переменную.</Col>
-                                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="SVU_Ready"
-                />
-                <Col md={7}>SVU_Ready: false, // Это команда для отклюючения пульта подъемника. На нее  опирается плк подъемника.</Col>
-                                <YesNoBadge
-                  value={plc_vars.TPK_Home}
-                  className="container-fluid"
-                />
-                <Col md={7}>TPK_Home: false, //Флаг прижатия кассеты к раме.</Col>
-
-  <Col md={1}>
-                <Badge bg="secondary">{plc_vars.Forced_Frame_Height}</Badge>
-              </Col>
-              <Col md={7}>FC1_Frequency - Высота низа силовой рамы относительно пола в метрах.</Col>
-  <Col md={1}>
-                <Badge bg="secondary">{plc_vars.Height_To_Bottom}</Badge>
-              </Col>
-              <Col md={7}>Height_To_Bottom - Расстояние от пола до низа ТПК.</Col>
+          <Col md={1}>
+            <Badge bg="secondary">{plc_vars.Forced_Frame_Height}</Badge>
+          </Col>
+          <Col md={7}>
+            FC1_Frequency - Высота низа силовой рамы относительно пола в метрах.
+          </Col>
+          <Col md={1}>
+            <Badge bg="secondary">{plc_vars.Height_To_Bottom}</Badge>
+          </Col>
+          <Col md={7}>Height_To_Bottom - Расстояние от пола до низа ТПК.</Col>
         </Col>
       </Row>
 
