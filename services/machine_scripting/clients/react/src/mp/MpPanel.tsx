@@ -57,6 +57,35 @@ export function MpPanel({
               <Col>EmAlrm - аварийная кнопка (грибок) на шкафу МП </Col>
             </Row>
             <Row className="align-items-center py-1">
+              <Col md={4}>
+                <Badge bg="secondary" className="container-fluid">
+                  TPK_Home: {plc_vars.TPK_Home ? "yes" : "no"}
+                </Badge>
+              </Col>
+              <Col>Флаг прижатия кассеты к раме.</Col>
+            </Row>
+
+            <Row className="align-items-center py-1">
+              <Col md={4}>
+                <Badge bg="secondary" className="container-fluid">
+                  Forced_Frame_Height
+                  <br />
+                  {plc_vars.Forced_Frame_Height}
+                </Badge>
+              </Col>
+              <Col>Высота низа силовой рамы относительно пола в метрах.</Col>
+            </Row>
+            <Row className="align-items-center py-1">
+              <Col md={4}>
+                <Badge bg="secondary" className="container-fluid">
+                  Height_To_Bottom
+                  <br />
+                  {plc_vars.Height_To_Bottom}
+                </Badge>
+              </Col>
+              <Col>Расстояние от пола до низа ТПК.</Col>
+            </Row>
+            <Row className="align-items-center py-1">
               <Col md={5}>
                 <YesNoButton
                   handle_button_click={handle_button_click}
@@ -78,6 +107,19 @@ export function MpPanel({
               <Col>
                 - реле(К1) на контактор (КМ1), включает раздачу питания на ПЧ1 и
                 ПЧ2, электрические тормоза и прочие неприоритетные потребители).
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="SVU_Ready"
+                />
+              </Col>
+              <Col md={7}>
+                Это команда для отклюючения пульта подъемника. На нее опирается
+                плк подъемника.
               </Col>
             </Row>
           </Alert>
@@ -165,7 +207,7 @@ export function MpPanel({
               <Col>- реле (К2) для ПЧ1.</Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={5}>
+              <Col md={4}>
                 <YesNoButton
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
@@ -190,41 +232,21 @@ export function MpPanel({
                 - сигнал для выключения аппаратного электротормоза двигателя М1.
               </Col>
             </Row>
+            <Row>
+              <Col md={4}>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="SVU_MD_ViewWork"
+                />
+              </Col>
+              <Col>
+                - состояние удержания кассеты с подтягиванием каната. Кассета
+                должна быть внизу, чтобы было допустимо устанавливать эту
+                переменную.
+              </Col>
+            </Row>
           </Alert>
-        </Col>
-        <Col>
-          <YesNoButton
-            handle_button_click={handle_button_click}
-            plc_vars={plc_vars}
-            var_name="SVU_MD_ViewWork"
-          />
-          <Col md={7}>
-            SVU_MD_ViewWork: false, // Состояние удержания кассеты с
-            подтягиванием каната. Кассета должна быть внизу, чтобы было
-            допустимо устанавливать эту переменную.
-          </Col>
-          <YesNoButton
-            handle_button_click={handle_button_click}
-            plc_vars={plc_vars}
-            var_name="SVU_Ready"
-          />
-          <Col md={7}>
-            SVU_Ready: false, // Это команда для отклюючения пульта подъемника.
-            На нее опирается плк подъемника.
-          </Col>
-          <YesNoBadge value={plc_vars.TPK_Home} className="container-fluid" />
-          <Col md={7}>TPK_Home: false, //Флаг прижатия кассеты к раме.</Col>
-
-          <Col md={1}>
-            <Badge bg="secondary">{plc_vars.Forced_Frame_Height}</Badge>
-          </Col>
-          <Col md={7}>
-            FC1_Frequency - Высота низа силовой рамы относительно пола в метрах.
-          </Col>
-          <Col md={1}>
-            <Badge bg="secondary">{plc_vars.Height_To_Bottom}</Badge>
-          </Col>
-          <Col md={7}>Height_To_Bottom - Расстояние от пола до низа ТПК.</Col>
         </Col>
       </Row>
 
