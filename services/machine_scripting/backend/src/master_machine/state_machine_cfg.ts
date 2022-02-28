@@ -94,7 +94,13 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
       async onLeaveLiftingOneLevel(lifecycle) {
         await this.onBeforeLiftUpOneLevel(lifecycle);
 
-        console.log(`Запуск сценария поъема на ${MD_MAX_STEP} ступеней`);
+        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "tension", commands: ["tensionEnable"] });
+        await waitForCondition(() => this.ext_config.mp.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MP" &&
+            mp_status.state == "available" && mp_status.machine_status.state == "tension_control");
+
+        console.log(`Запуск сценария подъема на ${MD_MAX_STEP} ступеней`);
         await this.ext_config.md.getByAPI_post("exec_scenario", { name: `liftup ${MD_MAX_STEP} step`, commands: [...Array(MD_MAX_STEP).fill(0).map(() => "liftUpFrame")] });
 
         await waitForCondition(() => this.ext_config.md.getByAPI_get("controller_status"),
@@ -102,6 +108,12 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
             md_status.machine_status.type == "MD" &&
             md_status.state == "available" && md_status.machine_status.state == "on_pins_support" &&
             md_status.machine_status.level == MD_MAX_STEP);
+
+        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "tension", commands: ["tensionDisable"] });
+        await waitForCondition(() => this.ext_config.mp.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MP" &&
+            mp_status.state == "available" && mp_status.machine_status.state == "bottom");
       },
       async onBeforeStartMountCycle(lifecycle, p) {
         if (p.pos >= COLUMN_COUNT || p.pos < 0)
@@ -187,8 +199,16 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
           throw new Error(`onBeforePrepareToHorizontal | column mounting does not complete ${mounted_col_list}`);
       },
       async onLeaveHorizontalPrepareing1() {
-        // подъемник переходит в состояние виса
+        // подъемник переходит в состояние поддержки натяжения
         // в нашем случае стоит на полу. Олег говорит, что так он тоже может
+        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "tension", commands: ["tensionEnable"] });
+        await waitForCondition(() => this.ext_config.mp.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MP" &&
+            mp_status.state == "available" && mp_status.machine_status.state == "tension_control"
+        );
+
+
       },
       async onLeaveHorizontalPrepareing2() {
         // домкрат переходит в состояние частичной нагрузки колонн
@@ -210,7 +230,12 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
       },
       async onLeaveHorizontalPrepareing3() {
         // парковка подъемника
-        // в нашем случае стоит уже стоит на полу.
+        await this.ext_config.mp.getByAPI_post("exec_scenario", { name: "tension", commands: ["tensionDisable"] });
+        await waitForCondition(() => this.ext_config.mp.getByAPI_get("controller_status"),
+          mp_status =>
+            mp_status.machine_status.type == "MP" &&
+            mp_status.state == "available" && mp_status.machine_status.state == "bottom"
+        );
       },
       async onMoveHorizontal() {
         console.log("Horizontal positioning is not allowed")
