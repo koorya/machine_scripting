@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Badge,
-  Button,
-  Col,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import { Alert, Badge, Col, Container, Form, Row } from "react-bootstrap";
 import { init_vars } from "../shared/mp/plc_vars";
 import { API } from "../shared/api/api";
 import { usePlcContainer } from "../plcvarcontainer/PlcVarConainer";
@@ -57,22 +49,41 @@ export function MpPanel({
             <Row className="align-items-center py-1">
               <Col md={2}>
                 <YesNoBadge
-                  value={plc_vars.FC2_Error}
-                  className="container-fluid"
-                  active_variant="danger"
-                />
-              </Col>
-              <Col>FC2_Error - ошибка на ПЧ2 (механизм перемещения) </Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
                   value={plc_vars.EmAlrm}
                   className="container-fluid"
                   active_variant="danger"
                 />
               </Col>
               <Col>EmAlrm - аварийная кнопка (грибок) на шкафу МП </Col>
+            </Row>
+            <Row className="align-items-center py-1">
+              <Col md={4}>
+                <Badge bg="secondary" className="container-fluid">
+                  TPK_Home: {plc_vars.TPK_Home ? "yes" : "no"}
+                </Badge>
+              </Col>
+              <Col>Флаг прижатия кассеты к раме.</Col>
+            </Row>
+
+            <Row className="align-items-center py-1">
+              <Col md={4}>
+                <Badge bg="secondary" className="container-fluid">
+                  Forced_Frame_Height
+                  <br />
+                  {plc_vars.Forced_Frame_Height}
+                </Badge>
+              </Col>
+              <Col>Высота низа силовой рамы относительно пола в метрах.</Col>
+            </Row>
+            <Row className="align-items-center py-1">
+              <Col md={4}>
+                <Badge bg="secondary" className="container-fluid">
+                  Height_To_Bottom
+                  <br />
+                  {plc_vars.Height_To_Bottom}
+                </Badge>
+              </Col>
+              <Col>Расстояние от пола до низа ТПК.</Col>
             </Row>
             <Row className="align-items-center py-1">
               <Col md={5}>
@@ -98,86 +109,22 @@ export function MpPanel({
                 ПЧ2, электрические тормоза и прочие неприоритетные потребители).
               </Col>
             </Row>
-            <br />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x1) === 0x1}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x2) === 0x2}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x4) === 0x4}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x8) === 0x8}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x10) === 0x10}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x20) === 0x20}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x40) === 0x40}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x80) === 0x80}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x100) === 0x100}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x200) === 0x200}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x400) === 0x400}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x800) === 0x800}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x1000) === 0x1000}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x2000) === 0x2000}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x4000) === 0x4000}
-              digit
-            />
-            <YesNoBadge
-              value={(plc_vars.Welding_at_Drums & 0x8000) === 0x8000}
-              digit
-            />
-            Welding_at_Drums - слово (16бит) в котором битово обозначены
-            состояния для оптических дискретных датчиков, т.е намотка троса по
-            уровням для каждого из 2 барабанов (4+4 / 4+4).
-            <br />
-            <Button
-              variant="secondary"
-              onClick={() => {
-                handle_button_click("Welding_at_Drums", 22254);
-              }}
-            >
-              setvalue
-            </Button>
+            <Row>
+              <Col>
+                <YesNoButton
+                  handle_button_click={handle_button_click}
+                  plc_vars={plc_vars}
+                  var_name="SVU_Ready"
+                />
+              </Col>
+              <Col md={7}>
+                Это команда для отклюючения пульта подъемника. На нее опирается
+                плк подъемника.
+              </Col>
+            </Row>
           </Alert>
         </Col>
-        <Col>
+        <Col md={5}>
           <Alert variant="warning">
             <Alert.Heading>Управление подъемом</Alert.Heading>
             <Row className="align-items-center py-1">
@@ -260,7 +207,7 @@ export function MpPanel({
               <Col>- реле (К2) для ПЧ1.</Col>
             </Row>
             <Row className="align-items-center py-1">
-              <Col md={5}>
+              <Col md={4}>
                 <YesNoButton
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
@@ -285,112 +232,18 @@ export function MpPanel({
                 - сигнал для выключения аппаратного электротормоза двигателя М1.
               </Col>
             </Row>
-          </Alert>
-        </Col>
-        <Col>
-          <Alert variant="warning">
-            <Alert.Heading>
-              Управление горизонтальным перемещением
-            </Alert.Heading>
-            <Row className="align-items-center py-1">
-              <Col md={6}>
-                <ButtonToggle
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="FC2_State"
-                  radios={[
-                    { name: "Сброс", value: 5, variant: "outline-danger" },
-                    { name: "Лево", value: 2 },
-                    { name: "Стоп", value: 1 },
-                    { name: "Право", value: 3 },
-                  ]}
-                />
-              </Col>
-              <Col>
-                FC2_State - переменная состояния (автомат для ПЧ2, механизм
-                перемещения).
-              </Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
-                  value={plc_vars.FC2_Forward}
-                  className="container-fluid"
-                />
-              </Col>
-              <Col>
-                FC2_Forward - команда (дискретный выходной сигнал с ПЛК и через
-                аппаратный концевой переключатель идет на ПЧ2) на движение туда.
-              </Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={2}>
-                <YesNoBadge
-                  value={plc_vars.FC2_Reverse}
-                  className="container-fluid"
-                />
-              </Col>
-              <Col>
-                FC2_Reverse - команда (дискретный выходной сигнал с ПЛК и через
-                аппаратный концевой переключатель идет на ПЧ2) на движение
-                оттуда.
-              </Col>
-            </Row>
             <Row>
               <Col md={4}>
-                <Form.Range
-                  // defaultValue={plc_vars.FC2_Frequency}
-                  value={plc_vars.FC2_Frequency}
-                  min={0}
-                  max={5000}
-                  title=""
-                  onChange={(e) => {
-                    handle_button_click(
-                      "FC2_Frequency",
-                      parseInt(e.target.value)
-                    );
-                  }}
-                />
-              </Col>
-              <Col md={1}>
-                <Badge bg="secondary">{plc_vars.FC2_Frequency}</Badge>
-              </Col>
-              <Col md={7}>FC2_Frequency - задатчик частоты (Гц * 100).</Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={4}>
                 <YesNoButton
                   handle_button_click={handle_button_click}
                   plc_vars={plc_vars}
-                  var_name="FC2_M2_State"
-                />
-              </Col>
-              <Col>- сигнал для включения реле электропитания ПЧ2.</Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={5}>
-                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="Lock_Brake_M2_State"
-                  active_variant="danger"
+                  var_name="SVU_MD_ViewWork"
                 />
               </Col>
               <Col>
-                - программный сигнал для блокировки тормоза двигателя М1 для
-                ПЧ2.
-              </Col>
-            </Row>
-            <Row className="align-items-center py-1">
-              <Col md={4}>
-                <YesNoButton
-                  handle_button_click={handle_button_click}
-                  plc_vars={plc_vars}
-                  var_name="Relay_BRK_M2"
-                />
-              </Col>
-              <Col>
-                - сигнал для выключения аппаратного электротормоза двигателя М2.
+                - состояние удержания кассеты с подтягиванием каната. Кассета
+                должна быть внизу, чтобы было допустимо устанавливать эту
+                переменную.
               </Col>
             </Row>
           </Alert>

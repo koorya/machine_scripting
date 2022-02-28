@@ -135,6 +135,15 @@ function createFSMConfig(plc: IPlcConnector) {
         }
 
       },
+      async onTensionControl() {
+        await this.plc.writeVar({ SVU_MD_ViewWork: true });
+        await this.plc.waitForPlcVar("SVU_MD_ViewWork", true);
+
+      },
+      async onLeaveTensionControl() {
+        await this.plc.writeVar({ SVU_MD_ViewWork: false });
+        await this.plc.waitForPlcVar("SVU_MD_ViewWork", false);
+      },
       onAfterTransition: function (lifecycle) {
         return true;
       },
