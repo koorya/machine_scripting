@@ -52,14 +52,18 @@ export class ImageRender {
 
 
     if (this.start_time.getTime() != local_time.getTime()) return;
-    gg.getNode(active_node_name).set("color", is_running ? "yellow" : "red");
+    gg.getNode(active_node_name).set("fillcolor", is_running ? "yellow" : "red");
+    gg.getNode(active_node_name).set("fontcolor", is_running ? "black" : "white");
+
+    gg.getNode(active_node_name).set("style", "filled, rounded");
     gg.output("svg", (buff) => {
 
       const local_image = buff.toString("base64");
       if (this.start_time.getTime() == local_time.getTime())
         this.rendered_image = { image: local_image, timestamp: local_time.getTime() };
     });
-    gg.getNode(active_node_name).set("color", "black");
+    gg.getNode(active_node_name).set("style", "rounded");
+    gg.getNode(active_node_name).set("fontcolor", "black");
     console.log("rendered");
 
 
