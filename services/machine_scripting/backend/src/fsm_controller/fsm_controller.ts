@@ -182,6 +182,9 @@ var FSMController: new (
     onTransition: function (lifecycle) {
       console.log(`controller state: ${lifecycle.to}`);
     },
+    onAfterTransition: function (lifecycle) {
+      return true;
+    },
   },
 });
 

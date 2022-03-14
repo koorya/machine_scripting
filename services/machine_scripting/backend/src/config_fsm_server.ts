@@ -1,9 +1,11 @@
 import { FSMController } from "./fsm_controller/fsm_controller";
 import { createPlcFsmWithRender } from "./create_plcfsm_by_type";
 import { Machines, ScenarioDefenition } from "./types/types";
+import * as bunyan from "bunyan";
 import * as fs from "fs";
 import { generateEndPoints } from "./end_points";
-import { ExtConfig, iData, MachineData } from "./fsm_types";
+import { ExtConfig, iData, LifeCycle, MachineData } from "./fsm_types";
+import { CustomThisType } from "./fsm_types"
 
 const algorithms_path = "config/algorithms.json";
 const default_algorithms_path = "config/default_algorithms.json";
@@ -19,16 +21,41 @@ export function configFsmServer(config: ExtConfig) {
   }
   const { plc_fsm, render } = createPlcFsmWithRender(config);
 
-  const funct = plc_fsm.js_fsm.onAfterTransition;
 
   const plc_controller = new FSMController(plc_fsm);
-  plc_fsm.js_fsm.onAfterTransition = async function (lifecycle) {
+  const render_funct = async () => {
     render.updateImage(plc_fsm.js_fsm.state, plc_controller.state != "available");
-    funct(lifecycle);
-    // fsm_sc.goto(fsm.state);
-    // fsm_sc.current_level = fsm.current_level;
+  }
+
+  const log = bunyan.createLogger({
+    name: `${plc_fsm.js_fsm.type}`,
+    stream: fs.createWriteStream(`./logs/${plc_fsm.js_fsm.type}.log`, { flags: 'a' })
+  })
+
+  const log_funct = function (this: CustomThisType<Machines>, lifecycle: LifeCycle) {
+    let data = {};
+    if (this.type == "MP") {
+      data = { ...data, length: this.length };
+    }
+    if (this.type == "MD") {
+      data = { ...data, current_level: this.current_level };
+    }
+    log.info(data, `translate from: ${lifecycle.from}, to ${lifecycle.to}`)
+  }
+
+  const after_transition_dec = <T, ARGS extends any[]>(o: { onAfterTransition: (lifecycle: LifeCycle, ...args: ARGS) => T }, d: (lifecycle: LifeCycle, ...args: ARGS) => unknown) => {
+    const f = o.onAfterTransition;
+    o.onAfterTransition = function (lifecycle, ...args) {
+      d.apply(o, [lifecycle, ...args]);
+      const res = f.apply(o, [lifecycle, ...args]);
+      return res;
+    }
   };
-  plc_controller.onAfterTransition = plc_fsm.js_fsm.onAfterTransition;
+
+  after_transition_dec(plc_fsm.js_fsm, render_funct);
+  after_transition_dec(plc_fsm.js_fsm, log_funct);
+
+  after_transition_dec(plc_controller, render_funct);
 
   return {
     render: render,

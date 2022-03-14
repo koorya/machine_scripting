@@ -213,7 +213,7 @@ type OnSpecificMethodsName<States extends string, Transitions extends string> =
   | OnBaseMethodsName;
 
 
-type CustomThisType<MACHINE extends Machines> =
+export type CustomThisType<MACHINE extends Machines> =
   ExtractByType<iData, MACHINE> &
   ExcludeTypeProp<ExtractByType<iMethods, MACHINE>, "type">
   & iStateMachine;
