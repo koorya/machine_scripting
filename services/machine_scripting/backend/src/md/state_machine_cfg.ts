@@ -67,6 +67,17 @@ function createFSMConfig(plc: IPlcConnector) {
       abort_controller: new AbortController(),
     },
     methods: {
+      AbortSignalListener() {
+        this.plc.writeVarByName("emergency_stop", true);
+      },
+      onBeforeTransition: async function (lifecycle) {
+        this.abort_controller = new AbortController();
+        this.abort_controller.signal.addEventListener("abort", () => this.AbortSignalListener());
+        return true;
+      },
+      onAfterTransition: function (lifecycle) {
+        return true;
+      },
       getMachineStatus: function () {
         const machine_status: Extract<MachineStatus, { type: "MD" }> = {
           type: this.type,
@@ -243,13 +254,7 @@ function createFSMConfig(plc: IPlcConnector) {
             this.cycle_state,
           );
       },
-      onBeforeTransition: async function (lifecycle) {
-        this.abort_controller = new AbortController();
-        return true;
-      },
-      onAfterTransition: function (lifecycle) {
-        return true;
-      },
+
     },
   };
 

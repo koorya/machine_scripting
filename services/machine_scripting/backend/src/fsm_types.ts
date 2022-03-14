@@ -61,7 +61,8 @@ export type iCycleExecutorProps = {
 
 export interface iStateMachine {
   onAfterTransition: (lifecycle: LifeCycle) => void;
-  onBeforeTransition?: (lifecycle: LifeCycle) => void;
+  onBeforeTransition: (lifecycle: LifeCycle) => void;
+  AbortSignalListener: () => void;
   state: string;
   init: string;
   transitions: () => string[];
@@ -162,7 +163,8 @@ export type iMethods = BaseMethods &
     }
   );
 export type SpecificMethods<machine extends Machines> = {
-  getMachineStatus: (this: CustomThisType<machine>) => Extract<MachineStatus, { type: machine }>
+  getMachineStatus: (this: CustomThisType<machine>) => Extract<MachineStatus, { type: machine }>;
+  AbortSignalListener: (this: CustomThisType<machine>) => void;
 } & Omit<Extract<iMethods, { type: machine }>, "type">;
 
 

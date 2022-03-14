@@ -145,8 +145,12 @@ function createFSMConfig(plc: IPlcConnector) {
         await this.plc.writeVar({ SVU_MD_ViewWork: false });
         await this.plc.waitForPlcVar("SVU_MD_ViewWork", false, this.abort_controller.signal);
       },
+      AbortSignalListener() {
+        this.plc.writeVarByName("emergency_stop", true);
+      },
       onBeforeTransition: async function (lifecycle) {
         this.abort_controller = new AbortController();
+        this.abort_controller.signal.addEventListener("abort", () => this.AbortSignalListener());
         return true;
       },
       onAfterTransition: function (lifecycle) {

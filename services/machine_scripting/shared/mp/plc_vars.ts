@@ -38,5 +38,7 @@ export const init_vars = {
 	TPK_Home: false, //Флаг прижатия кассеты к раме 
 
 	ready: true,
+	emergency_stop: false,
+	alarm: false,
 };
 

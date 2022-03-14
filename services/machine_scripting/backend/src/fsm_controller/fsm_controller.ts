@@ -48,6 +48,8 @@ var FSMController: new (
     };
   },
   methods: {
+    AbortSignalListener() {
+    },
     getMachineStatus: function () {
       return {
         cycle_step: undefined,
@@ -142,7 +144,7 @@ var FSMController: new (
       this.slave_fsm.js_fsm.abort_controller.abort();
     },
     onResetError: function (lifecycle) {
-      this.slave_fsm.js_fsm.abort_controller = new AbortController();
+
     },
     execScenarioAsync: async function (scenario: CompiledScenario) {
       this.scenario = { ...scenario, index: 0 };
