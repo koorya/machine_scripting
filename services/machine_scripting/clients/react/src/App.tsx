@@ -150,6 +150,66 @@ function DirectControls({
   const [gotoState, setGotoState] = useState(all_states[1]);
   return (
     <>
+      <Button
+        className="m-1"
+        size="sm"
+        onClick={() => {
+          api.getByAPI_post("exec_controller_command", {
+            command: "pause",
+          });
+        }}
+      >
+        Pause
+      </Button>
+      <Button
+        className="m-1"
+        size="sm"
+        onClick={() => {
+          api.getByAPI_post("exec_controller_command", {
+            command: "resume",
+          });
+        }}
+      >
+        Resume
+      </Button>
+      <Button
+        className="m-1"
+        size="sm"
+        onClick={() => {
+          api.getByAPI_post("exec_controller_command", {
+            command: "stop",
+          });
+        }}
+      >
+        Stop
+      </Button>
+      <Button
+        className="m-1"
+        size="sm"
+        disabled={available === true}
+        onClick={() =>
+          api
+            .getByAPI_post("exec_controller_command", {
+              command: "abortExecCommand",
+            })
+            .then((res) => console.log(res))
+        }
+      >
+        abort
+      </Button>
+      <Button
+        className="m-1"
+        size="sm"
+        disabled={available === true}
+        onClick={() =>
+          api
+            .getByAPI_post("exec_controller_command", { command: "resetError" })
+            .then((res) => console.log(res))
+        }
+      >
+        resetError
+      </Button>
+      <br />
       {cmds.map((cmd) =>
         cmd === "step" ? (
           <Button

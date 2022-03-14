@@ -61,6 +61,7 @@ export type iCycleExecutorProps = {
 
 export interface iStateMachine {
   onAfterTransition: (lifecycle: LifeCycle) => void;
+  onBeforeTransition?: (lifecycle: LifeCycle) => void;
   state: string;
   init: string;
   transitions: () => string[];
@@ -117,12 +118,13 @@ export type iData = (
   {
     init: string;
     is_test: boolean;
+    abort_controller: AbortController;
   }
   & MachineData
 )
   | {
     type: "CONTROLLER";
-    slave_fsm: iPLCStateMachine<Machines>;
+    slave_fsm: iPLCStateMachine<Exclude<Machines, "CONTROLLER">>;
     should_stop: boolean,
     scenario: CompiledScenario,
   };
@@ -164,7 +166,7 @@ export type SpecificMethods<machine extends Machines> = {
 } & Omit<Extract<iMethods, { type: machine }>, "type">;
 
 
-export type iPLCStateMachine<machine extends Machines> = {
+export type iPLCStateMachine<machine extends Exclude<Machines, "CONTROLLER">> = {
   type: machine;
   js_fsm: iStateMachine &
   ExtractByType<iData, machine> &

@@ -39,6 +39,7 @@ export class PlcConnector {
   async waitForPlcVar(
     name: string,
     value: any,
+    abort_signal?: AbortSignal,
     t: number = 200
   ): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -47,6 +48,10 @@ export class PlcConnector {
         const plc_variables = await this.readVarToObj([name]);
         if (plc_variables[name] != value) mon = setTimeout(run, t);
         else resolve();
+        if (abort_signal && abort_signal.aborted) {
+          clearTimeout(mon);
+          reject()
+        }
       };
       run();
     });
@@ -54,6 +59,7 @@ export class PlcConnector {
   async waitForPlcVarByArray(
     name: string,
     value: any[],
+    abort_signal?: AbortSignal,
     t: number = 200
   ): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -63,6 +69,10 @@ export class PlcConnector {
         const variant = value.find((value) => plc_variables[name] == value)
         if (variant == undefined) mon = setTimeout(run, t);
         else resolve(variant);
+        if (abort_signal && abort_signal.aborted) {
+          clearTimeout(mon);
+          reject()
+        }
       };
       run();
     });

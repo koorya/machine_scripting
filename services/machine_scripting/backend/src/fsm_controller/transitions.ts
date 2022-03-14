@@ -18,6 +18,16 @@ export const root_graph = {
       to: "available",
     },
     {
+      name: "abortExecCommand",
+      from: "executing_command",
+      to: "aborted",
+    },
+    {
+      name: "resetError",
+      from: "aborted",
+      to: "available",
+    },
+    {
       name: "stop",
       from: ["executing_scenario", "paused"],
       to: "available",

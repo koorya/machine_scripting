@@ -24,7 +24,7 @@ export function configFsmServer(config: ExtConfig) {
 
   const plc_controller = new FSMController(plc_fsm);
   const render_funct = async () => {
-    render.updateImage(plc_fsm.js_fsm.state, plc_controller.state != "available");
+    render.updateImage(plc_fsm.js_fsm.state, plc_controller.state);
   }
 
   const log = bunyan.createLogger({
@@ -32,10 +32,11 @@ export function configFsmServer(config: ExtConfig) {
     stream: fs.createWriteStream(`./logs/${plc_fsm.js_fsm.type}.log`, { flags: 'a' })
   })
 
-  const log_funct = function (this: CustomThisType<Machines>, lifecycle: LifeCycle) {
+  const log_funct = async function (this: CustomThisType<Machines>, lifecycle: LifeCycle) {
     let data = {};
     if (this.type == "MP") {
-      data = { ...data, length: this.length };
+      const plc_props = await this.plc.readVarToObj(["Forced_Frame_Height", "Height_To_Bottom"])
+      data = { ...data, length: this.length, ...plc_props };
     }
     if (this.type == "MD") {
       data = { ...data, current_level: this.current_level };
@@ -56,6 +57,33 @@ export function configFsmServer(config: ExtConfig) {
   after_transition_dec(plc_fsm.js_fsm, log_funct);
 
   after_transition_dec(plc_controller, render_funct);
+
+  const before_transition_dec = <T, ARGS extends any[]>(o: { onBeforeTransition?: (lifecycle: LifeCycle, ...args: ARGS) => Promise<T> | T }, d: (lifecycle: LifeCycle, ...args: ARGS) => unknown) => {
+    const f = o.onBeforeTransition;
+    o.onBeforeTransition = async function (lifecycle, ...args) {
+      await d.apply(o, [lifecycle, ...args]);
+      if (f) {
+        const res = f.apply(o, [lifecycle, ...args]);
+        return res;
+      }
+    }
+  };
+  if (plc_fsm.js_fsm.type != "MASTER") {
+    before_transition_dec(plc_fsm.js_fsm, async function (this: CustomThisType<Exclude<Machines, "MASTER" | "CONTROLLER">>) {
+      try {
+
+        const ready = (await this.plc.readVarToObj(["ready"]))["ready"];
+        if (!ready) {
+          const err_mesage = `Not ready ${this.type}`;
+          log.error(err_mesage);
+          throw new Error(err_mesage);
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+      return true;
+    });
+  }
 
   return {
     render: render,

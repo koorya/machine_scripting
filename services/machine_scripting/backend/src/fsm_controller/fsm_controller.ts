@@ -24,7 +24,7 @@ export function parseCommand(
   return parced;
 }
 
-type iPLCStateMachineOfUnion<U extends Machines> = {
+type iPLCStateMachineOfUnion<U extends Exclude<Machines, "CONTROLLER">> = {
   [K in U]: iPLCStateMachine<K>;
 }[U];
 
@@ -35,11 +35,11 @@ function stateMachineFactoryWrapper(config: { init: States | string, transitions
 }
 
 var FSMController: new (
-  fms: iPLCStateMachineOfUnion<Machines>
+  fms: iPLCStateMachineOfUnion<Exclude<Machines, "CONTROLLER">>
 ) => iController = stateMachineFactoryWrapper({
   init: graph.init,
   transitions: graph.transitions,
-  data: function (slave_fsm: iPLCStateMachine<Machines>): Extract<iData, { type: "CONTROLLER" }> {
+  data: function (slave_fsm: iPLCStateMachine<Exclude<Machines, "CONTROLLER">>): Extract<iData, { type: "CONTROLLER" }> {
     return {
       type: "CONTROLLER",
       slave_fsm: slave_fsm,
@@ -71,7 +71,7 @@ var FSMController: new (
     execCommandAsync: async function (
       command
     ) {
-      const fsm = this.slave_fsm as iPLCStateMachine<Machines>;
+      const fsm = this.slave_fsm as iPLCStateMachine<Exclude<Machines, "CONTROLLER">>;
       console.log(`command: "${command}" execution start`);
 
       let parsed: { name: string; props: unknown };
@@ -81,21 +81,28 @@ var FSMController: new (
       console.log(`fsm state: ${fsm.js_fsm.state}`);
       if (parsed.name === "goto" || (parsed.name !== "goto" && fsm.js_fsm.can(parsed.name))) {
         console.log(`execCommandAsync: wait for exec ${parsed.name}`);
-        const is_command_exec = await (fsm.js_fsm[parsed.name] as (
-          ...arg: any
-        ) => Promise<boolean>)(parsed.props);
+        try {
 
-        console.log(`execCommandAsync: exec ${parsed.name} finish`);
+          const is_command_exec = await (fsm.js_fsm[parsed.name] as (
+            ...arg: any
+          ) => Promise<boolean>)(parsed.props);
 
-        if (!is_command_exec) {
+          console.log(`execCommandAsync: exec ${parsed.name} finish`);
 
-          console.log("execCommandAsync: command exec error");
-        }
-        else {
-          // while (fsm.fsm.can("step")) {
-          //   console.log("execCommandAsync: wait step()")
-          //   await fsm.fsm.step();
-          // }
+          if (!is_command_exec) {
+
+            console.log("execCommandAsync: command exec error");
+          }
+          else {
+            // while (fsm.fsm.can("step")) {
+            //   console.log("execCommandAsync: wait step()")
+            //   await fsm.fsm.step();
+            // }
+          }
+        } catch (err) {
+          console.log(`execCommandAsync: command exec error ${err}`);
+
+          throw err;
         }
       } else { console.log("invalid cmd"); }
       // await (() => new Promise((resolve) => setTimeout(resolve, 1000)))(); // sleep 1000 ms
@@ -103,28 +110,39 @@ var FSMController: new (
       return;
     },
     onBeforeExecCommand: function (lifecycle, command: string) {
-      const fsm = this.slave_fsm as iPLCStateMachine<Machines>;
+      const fsm = this.slave_fsm as iPLCStateMachine<Exclude<Machines, "CONTROLLER">>;
       const parsed_cmd = parseCommand(command);
       if (parsed_cmd.name !== "goto") {
         if (fsm.js_fsm.cannot(parsed_cmd.name)) {
-          console.log(`onExecCommand | js_fsm.cannot: ${parsed_cmd.name}`)
+          console.log(`onBeforeExecCommand | js_fsm.cannot: ${parsed_cmd.name}`)
           return false;
         }
       }
-      console.log(`onExecCommand | next run command async`);
+      console.log(`onBeforeExecCommand | next run command async`);
       this.execCommandAsync(command).then(async () => {
         console.log(`execCommandAsync executed ${command} success`);
-        while (fsm.js_fsm.can("step")) {
-          console.log("execScenarioAsync: wait step()")
-          await fsm.js_fsm.step();
+        while (fsm.js_fsm.can("step") && !fsm.js_fsm.abort_controller.signal.aborted) {
+          console.log("execScenarioAsync: wait step()");
+          await fsm.js_fsm.step().catch(
+            () => {
+              console.log("onBeforeExecCommand | fail on step()");
+            }
+          );
         }
-        this.finishExecCommand();
+        if (!fsm.js_fsm.abort_controller.signal.aborted)
+          this.finishExecCommand();
       }).catch((reason) => {
-        console.log(`onExecCommand | execCommandAsync executed ${command} failed | reason: ${reason}`);
-
-        this.finishExecCommand();
+        console.log(`onBeforeExecCommand | execCommandAsync executed ${command} failed | reason: ${reason}`);
+        if (!fsm.js_fsm.abort_controller.signal.aborted)
+          this.finishExecCommand();
       });
       return true;
+    },
+    onAbortExecCommand: function (lifecycle) {
+      this.slave_fsm.js_fsm.abort_controller.abort();
+    },
+    onResetError: function (lifecycle) {
+      this.slave_fsm.js_fsm.abort_controller = new AbortController();
     },
     execScenarioAsync: async function (scenario: CompiledScenario) {
       this.scenario = { ...scenario, index: 0 };
@@ -181,6 +199,9 @@ var FSMController: new (
     onResume: function () { },
     onTransition: function (lifecycle) {
       console.log(`controller state: ${lifecycle.to}`);
+    },
+    onBeforeTransition: async function (lifecycle) {
+      return true;
     },
     onAfterTransition: function (lifecycle) {
       return true;

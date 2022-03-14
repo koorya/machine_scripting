@@ -15,12 +15,10 @@ type P_Conf = {
   skip: number[];
 };
 
-async function executeProgram(
-  { cycle_name, config, plc_connector }: Omit<Extract<iCycleExecutorProps, { type: "MM" }>, "type">
-) {
+async function executeProgram(abort_signal: AbortSignal, cycle_name: string, config: P_Conf, plc_connector: IPlcConnector) {
 
   await plc_connector.writeVarByName(`${cycle_name}[0].Reset`, true);
-  await plc_connector.waitForPlcVar(`${cycle_name}[0].Reset`, false);
+  await plc_connector.waitForPlcVar(`${cycle_name}[0].Reset`, false, abort_signal);
 
   const plc_vars = {};
   for (var step_number of config.skip) {
@@ -51,6 +49,8 @@ function createFSMConfig(plc: IPlcConnector) {
       status_message: "no",
       plc: plc,
       is_test: false,
+      abort_controller: new AbortController(),
+
     },
     methods: {
       getMachineStatus: function () {
@@ -136,13 +136,13 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await executeProgram({ cycle_name: "P200", config: config, plc_connector: this.plc });
+        await executeProgram(this.abort_controller.signal, "P200", config, this.plc);
         return true;
       },
       onLeaveP200: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P200[0].Done", true);
+        await this.plc.waitForPlcVar("P200[0].Done", true, this.abort_controller.signal);
         await this.plc.writeVar({ "P200[0].Reset": true });
         return true;
       },
@@ -153,13 +153,13 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await executeProgram({ cycle_name: "P300", config: config, plc_connector: this.plc });
+        await executeProgram(this.abort_controller.signal, "P300", config, this.plc);
         return true;
       },
       onLeaveP300: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P300[0].Done", true);
+        await this.plc.waitForPlcVar("P300[0].Done", true, this.abort_controller.signal);
         await this.plc.writeVar({ "P300[0].Reset": true });
         return true;
       },
@@ -170,13 +170,13 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await executeProgram({ cycle_name: "P500", config: config, plc_connector: this.plc });
+        await executeProgram(this.abort_controller.signal, "P500", config, this.plc);
         return true;
       },
       onLeaveP500: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P500[0].Done", true);
+        await this.plc.waitForPlcVar("P500[0].Done", true, this.abort_controller.signal);
         await this.plc.writeVar({ "P500[0].Reset": true });
         return true;
       },
@@ -187,7 +187,7 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await executeProgram({ cycle_name: "P600", config: config, plc_connector: this.plc });
+        await executeProgram(this.abort_controller.signal, "P600", config, this.plc);
         return true;
       },
 
@@ -202,8 +202,8 @@ function createFSMConfig(plc: IPlcConnector) {
       async onBeforeNext(lifecycle, config: P_Conf = { skip: [] }) {
         if (this.is_test) return true;
         const execProgram = async (p_name: string) => {
-          await executeProgram({ cycle_name: p_name, config: config, plc_connector: this.plc });
-          await this.plc.waitForPlcVar(`${p_name}[0].Done`, true);
+          await executeProgram(this.abort_controller.signal, p_name, config, this.plc);
+          await this.plc.waitForPlcVar(`${p_name}[0].Done`, true, this.abort_controller.signal);
           await this.plc.writeVarByName(`${p_name}[0].Reset`, true);
         };
         await execProgram(lifecycle.to.toUpperCase());
@@ -212,7 +212,7 @@ function createFSMConfig(plc: IPlcConnector) {
       onLeaveP600Near: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P600[7].Run", true);
+        await this.plc.waitForPlcVar("P600[7].Run", true, this.abort_controller.signal);
 
         const check_cam = await checkCam();
         if (!check_cam) throw new Error("I want to cancel leaving p600near");
@@ -225,7 +225,7 @@ function createFSMConfig(plc: IPlcConnector) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
         console.log("waitForPlcVar(P600[8].Run)")
-        await this.plc.waitForPlcVar("P600[8].Run", true);
+        await this.plc.waitForPlcVar("P600[8].Run", true, this.abort_controller.signal);
 
         const check_cam = await checkCam();
         if (!check_cam) throw new Error("I want to cancel leaving p600far");
@@ -236,7 +236,7 @@ function createFSMConfig(plc: IPlcConnector) {
       onBeforeP600Finish: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P600[0].Done", true);
+        await this.plc.waitForPlcVar("P600[0].Done", true, this.abort_controller.signal);
       },
 
       onAfterP700Start: async function (
@@ -245,13 +245,13 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await executeProgram({ cycle_name: "P700", config: config, plc_connector: this.plc });
+        await executeProgram(this.abort_controller.signal, "P700", config, this.plc);
         return true;
       },
       onLeaveP700: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P700[0].Done", true);
+        await this.plc.waitForPlcVar("P700[0].Done", true, this.abort_controller.signal);
         await this.plc.writeVar({ "P700[0].Reset": true });
         return true;
       },
@@ -262,17 +262,21 @@ function createFSMConfig(plc: IPlcConnector) {
       ) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await executeProgram({ cycle_name: "P800", config: config, plc_connector: this.plc });
+        await executeProgram(this.abort_controller.signal, "P800", config, this.plc);
         return true;
       },
       onLeaveP800: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (this.is_test) return true;
-        await this.plc.waitForPlcVar("P800[0].Done", true);
+        await this.plc.waitForPlcVar("P800[0].Done", true, this.abort_controller.signal);
         await this.plc.writeVar({ "P800[0].Reset": true });
         return true;
       },
 
+      onBeforeTransition: async function (lifecycle) {
+        this.abort_controller = new AbortController();
+        return true;
+      },
       onAfterTransition: function (lifecycle) {
         return true;
       },

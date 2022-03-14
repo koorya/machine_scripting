@@ -26,7 +26,7 @@ function compileScenario(scenario: string): string[] {
 
 async function getCompiledScenarioError(
   cmdlist: string[],
-  fsm_plc: iPLCStateMachine<Machines>,
+  fsm_plc: iPLCStateMachine<Exclude<Machines, "CONTROLLER">>,
   init: MyTypes.ScenarioStartCondition = null
 ): Promise<MyTypes.ScenarioError> {
   const fsm = fsm_plc.virt.js_fsm;

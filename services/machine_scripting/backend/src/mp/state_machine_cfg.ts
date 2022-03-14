@@ -26,6 +26,7 @@ function createFSMConfig(plc: IPlcConnector) {
       plc: plc,
       is_test: false,
       length: 0,
+      abort_controller: new AbortController(),
     },
     methods: {
       // can cancel only in
@@ -77,7 +78,7 @@ function createFSMConfig(plc: IPlcConnector) {
           throw new Error("onBeforeMoveDown | FC1_State != 1");
         }
         await this.plc.writeVar({ FC1_State: 5 });
-        await this.plc.waitForPlcVar("FC1_State", 5);
+        await this.plc.waitForPlcVar("FC1_State", 5, this.abort_controller.signal);
       },
       onBeforeMoveUp: async function () {
         const FC1_State = (await this.plc.readVarToObj(["FC1_State"]))["FC1_State"]
@@ -85,7 +86,7 @@ function createFSMConfig(plc: IPlcConnector) {
           throw new Error("onBeforeMoveDown | FC1_State != 1");
         }
         await this.plc.writeVar({ FC1_State: 2 });
-        await this.plc.waitForPlcVar("FC1_State", 2);
+        await this.plc.waitForPlcVar("FC1_State", 2, this.abort_controller.signal);
       },
       onLeaveLiftingDown: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
@@ -96,8 +97,8 @@ function createFSMConfig(plc: IPlcConnector) {
             throw new Error("onLeaveLiftingDown | FC1_State != 5, 1")
 
           await this.plc.writeVar({ FC1_State: 5 });
-          await this.plc.waitForPlcVar("FC1_State", 5);
-          const result = await this.plc.waitForPlcVarByArray("FC1_State", [1, 8]);
+          await this.plc.waitForPlcVar("FC1_State", 5, this.abort_controller.signal);
+          const result = await this.plc.waitForPlcVarByArray("FC1_State", [1, 8], this.abort_controller.signal);
           if (result == 8)
             throw new Error("onLeaveLiftingDown | internal plc error");
         } else if (lifecycle.transition === "moveUpEXTRA") {
@@ -106,7 +107,7 @@ function createFSMConfig(plc: IPlcConnector) {
             throw new Error("onLeaveLiftingDown | FC1_State != 2, 1")
 
           await this.plc.writeVar({ FC1_State: 2 });
-          await this.plc.waitForPlcVar("FC1_State", 2);
+          await this.plc.waitForPlcVar("FC1_State", 2, this.abort_controller.signal);
         }
 
       },
@@ -120,9 +121,9 @@ function createFSMConfig(plc: IPlcConnector) {
             throw new Error("onLeaveLiftingUp | FC1_State != 2, 1");
 
           await this.plc.writeVar({ FC1_State: 2 });
-          await this.plc.waitForPlcVar("FC1_State", 2);
+          await this.plc.waitForPlcVar("FC1_State", 2, this.abort_controller.signal);
 
-          const result = await this.plc.waitForPlcVarByArray("FC1_State", [1, 8]);
+          const result = await this.plc.waitForPlcVarByArray("FC1_State", [1, 8], this.abort_controller.signal);
           if (result == 8)
             throw new Error("onLeaveLiftingUp | internal plc error");
         } else if (lifecycle.transition === "moveDownEXTRA") {
@@ -131,18 +132,22 @@ function createFSMConfig(plc: IPlcConnector) {
             throw new Error("onLeaveLiftingUp | FC1_State != 5, 1");
 
           await this.plc.writeVar({ FC1_State: 5 });
-          await this.plc.waitForPlcVar("FC1_State", 5);
+          await this.plc.waitForPlcVar("FC1_State", 5, this.abort_controller.signal);
         }
 
       },
       async onTensionControl() {
         await this.plc.writeVar({ SVU_MD_ViewWork: true });
-        await this.plc.waitForPlcVar("SVU_MD_ViewWork", true);
+        await this.plc.waitForPlcVar("SVU_MD_ViewWork", true, this.abort_controller.signal);
 
       },
       async onLeaveTensionControl() {
         await this.plc.writeVar({ SVU_MD_ViewWork: false });
-        await this.plc.waitForPlcVar("SVU_MD_ViewWork", false);
+        await this.plc.waitForPlcVar("SVU_MD_ViewWork", false, this.abort_controller.signal);
+      },
+      onBeforeTransition: async function (lifecycle) {
+        this.abort_controller = new AbortController();
+        return true;
       },
       onAfterTransition: function (lifecycle) {
         return true;

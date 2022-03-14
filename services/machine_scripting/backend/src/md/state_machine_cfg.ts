@@ -5,12 +5,13 @@ import {
   iData,
   iCycleExecutorProps,
   FSMMethods,
+  LifeCycle,
 } from "../fsm_types";
 import { IPlcConnector } from "../zmq_network";
 import { ExtractByType } from "~shared/types/utils";
 
 
-async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Omit<Extract<iCycleExecutorProps, { type: "MD" }>, "type">) {
+async function executeProgram(abort_signal: AbortSignal, plc_connector: IPlcConnector, cycle_name: string, lifecycle: LifeCycle, cycle_state: number) {
 
   console.log("ожидаем пока манипулятор исполнит цикл " + lifecycle.from);
   const var_obj = {};
@@ -28,13 +29,13 @@ async function executeProgram({ cycle_name, lifecycle, plc_connector, data }: Om
       const plc_variables = await plc_connector.readVarToObj([
         `${cycle_name}_state`,
       ]);
-      data.cycle_state = plc_variables[`${cycle_name}_state`];
-      if (data.cycle_state == 98) {
+      cycle_state = plc_variables[`${cycle_name}_state`];
+      if (cycle_state == 98 || abort_signal.aborted) {
         console.log("ошибка при исполнении цикла " + lifecycle.from);
         reject();
         return;
       }
-      if (data.cycle_state != 99) {
+      if (cycle_state != 99) {
         setTimeout(run, 100);
         return;
       }
@@ -63,6 +64,7 @@ function createFSMConfig(plc: IPlcConnector) {
       status_message: "no",
       plc: plc,
       is_test: false,
+      abort_controller: new AbortController(),
     },
     methods: {
       getMachineStatus: function () {
@@ -88,12 +90,13 @@ function createFSMConfig(plc: IPlcConnector) {
       onLeaveLiftingUpFrameCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "up_frame_cycle",
-            lifecycle: lifecycle,
-            data: this,
-          })
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "up_frame_cycle",
+            lifecycle,
+            this.cycle_state,
+          )
 
         this.current_level += 1;
 
@@ -102,12 +105,13 @@ function createFSMConfig(plc: IPlcConnector) {
       onLeaveLiftingDownFrameCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "down_frame_cycle",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "down_frame_cycle",
+            lifecycle,
+            this.cycle_state,
+          );
 
         this.current_level -= 1;
       },
@@ -115,65 +119,71 @@ function createFSMConfig(plc: IPlcConnector) {
       onLeaveHoldingFrameCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "init_to_hold",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "init_to_hold",
+            lifecycle,
+            this.cycle_state,
+          );
       },
 
       onLeavePrepareingToLiftingBottomFrameCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "from_hold_to_lift_crab",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "from_hold_to_lift_crab",
+            lifecycle,
+            this.cycle_state,
+          );
       },
 
       onLeavePrepareingToTopFrameMoveingVertical: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "from_hold_to_init",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "from_hold_to_init",
+            lifecycle,
+            this.cycle_state,
+          );
       },
 
       onLeaveLandingBottomFrameToPins: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "from_upcrcyc_to_init",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "from_upcrcyc_to_init",
+            lifecycle,
+            this.cycle_state,
+          );
       },
       onLeavePushingInCrabCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "pushin_crab",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "pushin_crab",
+            lifecycle,
+            this.cycle_state,
+          );
       },
       onLeavePushingOutCrabCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "pushout_crab",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "pushout_crab",
+            lifecycle,
+            this.cycle_state,
+          );
       },
 
       onBeforeLiftUpBottomFrame: function (lifecycle) {
@@ -190,44 +200,52 @@ function createFSMConfig(plc: IPlcConnector) {
       onLeaveLiftingUpBottomFrameCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "up_crab_cycle",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "up_crab_cycle",
+            lifecycle,
+            this.cycle_state,
+          );
         this.current_level -= 1;
       },
       onLeaveLiftingDownBottomFrameCycle: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "down_crab_cycle",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "down_crab_cycle",
+            lifecycle,
+            this.cycle_state,
+          );
         this.current_level += 1;
       },
       onLeaveLiftUpFrameByPressure: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "lift_up_frame_by_pressure",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "lift_up_frame_by_pressure",
+            lifecycle,
+            this.cycle_state,
+          );
       },
       onLeaveLinkMountingToInit: async function (lifecycle) {
         if (lifecycle.transition === "goto") return true;
         if (!this.is_test)
-          await executeProgram({
-            plc_connector: this.plc,
-            cycle_name: "link_mounting_to_init",
-            lifecycle: lifecycle,
-            data: this,
-          });
+          await executeProgram(
+            this.abort_controller.signal,
+            this.plc,
+            "link_mounting_to_init",
+            lifecycle,
+            this.cycle_state,
+          );
+      },
+      onBeforeTransition: async function (lifecycle) {
+        this.abort_controller = new AbortController();
+        return true;
       },
       onAfterTransition: function (lifecycle) {
         return true;

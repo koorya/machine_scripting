@@ -20,6 +20,7 @@ const init_vars = {
 	"liftmech.max_dist": 0 as number,
 	"liftmech.cmd": MD_LIFTMECH_CMDS.stop as MD_LIFTMECH_CMDS,
 	"liftmech.state": MD_LIFTMECH_STATES.holding as MD_LIFTMECH_STATES,
+	ready: true,
 	init_to_hold_state: 0,
 	from_hold_to_init_state: 0,
 	main_state: 0,

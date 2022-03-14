@@ -37,6 +37,6 @@ export const init_vars = {
 	Height_To_Bottom: 0, // Расстояние от пола до низа ТПК
 	TPK_Home: false, //Флаг прижатия кассеты к раме 
 
-
+	ready: true,
 };
 

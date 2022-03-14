@@ -36,24 +36,30 @@ export class ImageRender {
         this.graph = gg;
       });
 
-    this.updateImage(init_state, false);
+    this.updateImage(init_state, "");
   }
 
-  updateImage(active_node_name: string, is_running: boolean) {
+  updateImage(active_node_name: string, state: string) {
     // нужно отменить предыдущее рисование, если вызвано снова
     const local_time = new Date();
     this.start_time = local_time;
 
     const gg = this.graph;
     if (!gg) {
-      setTimeout(() => this.updateImage(active_node_name, false), 100);
+      setTimeout(() => this.updateImage(active_node_name, ""), 100);
       return;
     }
 
 
+    if (!gg.getNode(active_node_name)) return;
     if (this.start_time.getTime() != local_time.getTime()) return;
-    gg.getNode(active_node_name).set("fillcolor", is_running ? "yellow" : "red");
-    gg.getNode(active_node_name).set("fontcolor", is_running ? "black" : "white");
+    gg.getNode(active_node_name).set("fillcolor",
+      state == "available" ? "green" :
+        state == "executing_command" || state == "executing_scenario" ? "yellow" :
+          state == "aborted" ? "red" : "gray");
+    // gg.getNode(active_node_name).set("fillcolor", is_running ? "yellow" : "red");
+
+    gg.getNode(active_node_name).set("fontcolor", state == "executing_command" || state == "executing_scenario" ? "black" : "white");
 
     gg.getNode(active_node_name).set("style", "filled, rounded");
     gg.output("svg", (buff) => {
