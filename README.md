@@ -1,49 +1,60 @@
 # Machine Scripting
 
-It is the main repo of **machine scripting** project developed by the Energozapas team.
+Это основной репозиторий программы управления стройкой, разработанной в энергозапасе.
 
-## Project dependencies
+## Структура проекта
 
-### PLC firmwares
- - Manipulator domkrat
- - Manipulator montagnik
+### ПЛК (firmware)
 
+- ПО манипулятора домкрата (mm_domkrat)
 
-### PC services
- - State machine scripting, inlcludes:
-	- Web UI
-	- Shared types
- - PLC connector (not integrated yet)
+### ПК сервисы
 
+- Логика (machine_scripting):
+  - Web UI (clients/react)
+  - shared - разделяемые файлы бэка и фронта, ts
+  - backend (node, ts)
+    - zmq
+    - express
+    - javascript-state-machine
+    - graphviz
+- PLC connector - модуль связи с ПЛК через SysmacGateway
+- NeuroNets_MM - модуль распознования дефектов заклепывания
 
-## Developer instructions
+## Инструкции по развертыванию
 
+Для создания symlink в win10 требуется включить разрешения в системе.
 
-Take symlinks of PLC firmware parts to Sysmac Studio..  
-In project folder execute lines(powershell):
+Чтобы SysmacStudio имел доступ к проекту домкрата, требуется
+в корне проекта в powershell исполнить следующую команду:
 
-	New-Item -Path C:\OMRON\Data\Solution\mm_domkrat -ItemType SymbolicLink -Target $(Convert-Path .\firmware\mm_domkrat)
-	...
-	...
+    New-Item -Path C:\OMRON\Data\Solution\mm_domkrat -ItemType SymbolicLink -Target $(Convert-Path .\firmware\mm_domkrat)
 
-After clone this repo add remotes as shown below
+Для запуска nodejs сервисов требуется создать symlink на разделяемые бэком и фронтом части проекта.
+Для этого из `services\machine_scripting\clients\react\src` надо выполнить
 
-	git remote add firmware_domkrat https://github.com/koorya/mm_domkrat
-	git remote add machine_scripting_service https://github.com/koorya/machine_scripting_backend.git
-	...
+New-Item -Path .\shared -ItemType SymbolicLink -Target $(Convert-Path ..\..\..\shared)
 
-Push changes to subtree
+### Зависимости
 
-	git subtree push --prefix=firmware/mm_domkrat firmware_domkrat [master|dev]
-	git subtree push --prefix=services/machine_scripting machine_scripting_service  [master|dev]
+По [ссылке архив](http://dd) с требуемыми зависимостями
 
-Pull changes from subtree
+Для комфортной работы требуется установить
+свежий **Powershell**, **git**, модуль **posh-git** ниже
+инструкция.
 
-	git subtree pull --prefix=firmware/mm_domkrat firmware_domkrat master
-	git subtree pull --prefix=services/machine_scripting machine_scripting_service  master
+    PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
 
+    Add-PoshGitToProfile -AllHosts
 
-Если случилось изменение, затрагивающее взаимосвязь подпроектов. Надо запушить в dev ветки подпроектов. Затем доведя до результата, запушить в master ветки (либо из dev веток подпроекта, либо из главного репозитория). В самый последний момент нужно сделать pull master веток подпроектов в главный репозиторий.
+Устанавливаем
+К6СМ\Framework\dotnetfx35.exe
 
-из services\machine_scripting\clients\react\src надо выполнить
-`New-Item -Path .\shared -ItemType SymbolicLink -Target $(Convert-Path ..\..\..\shared)`
+Далее устанавливаем SysmacGateWay - программу для связи с контроллерами Omron.
+К6СМ\SGW\Disk1\setup.exe
+Появится файл
+C:\Program Files (x86)\OMRON\SYSMAC Gateway\bin\CIPCoreConsole.exe
+Для удобства делаем ссылку на этот файл в доступном месте. При запуске системы
+для связи с манипуляторами требуется в этой программе настроить подключение.
+
+После перезагрузки удается настроить подключение.
