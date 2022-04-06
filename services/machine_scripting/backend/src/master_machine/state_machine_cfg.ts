@@ -94,19 +94,16 @@ function createFSMConfig(ext_config: Extract<ExtConfig, { type: "MASTER" }>["ext
       onLeaveState: async function () {
         // console.log(this.ext_config);
       },
-      AbortSignalListener() {
+      async AbortSignalListener() {
         // this.plc.writeVarByName("alarm", true);
-        this.ext_config.md.getByAPI_post("exec_controller_command", { command: "stop" });
-        this.ext_config.mp.getByAPI_post("exec_controller_command", { command: "stop" });
-        this.ext_config.mm.getByAPI_post("exec_controller_command", { command: "stop" });
-        this.ext_config.md.getByAPI_post("exec_controller_command", { command: "abortExecCommand" });
-        this.ext_config.mp.getByAPI_post("exec_controller_command", { command: "abortExecCommand" });
-        this.ext_config.mm.getByAPI_post("exec_controller_command", { command: "abortExecCommand" });
+        await this.ext_config.md.getByAPI_post("exec_controller_command", { command: "abortExecCommand" });
+        await this.ext_config.mp.getByAPI_post("exec_controller_command", { command: "abortExecCommand" });
+        await this.ext_config.mm.getByAPI_post("exec_controller_command", { command: "abortExecCommand" });
 
       },
       onBeforeTransition: async function (lifecycle) {
         this.abort_controller = new AbortController();
-        this.abort_controller.signal.addEventListener("abort", () => this.AbortSignalListener());
+        // this.abort_controller.signal.addEventListener("abort", () => this.AbortSignalListener(), true);
         return true;
       },
       onAfterTransition: function (lifecycle) {

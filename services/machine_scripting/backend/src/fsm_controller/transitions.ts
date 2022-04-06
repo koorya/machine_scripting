@@ -19,7 +19,7 @@ export const root_graph = {
     },
     {
       name: "abortExecCommand",
-      from: "executing_command",
+      from: ["executing_command", "available", "executing_scenario", "paused"],
       to: "aborted",
     },
     {

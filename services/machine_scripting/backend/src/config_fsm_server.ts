@@ -24,6 +24,7 @@ export function configFsmServer(config: ExtConfig) {
 
   const plc_controller = new FSMController(plc_fsm);
   const render_funct = async () => {
+<<<<<<< Updated upstream
     render.updateImage(plc_fsm.js_fsm.state, plc_controller.state);
   }
 
@@ -49,10 +50,21 @@ export function configFsmServer(config: ExtConfig) {
     o.onAfterTransition = function (lifecycle, ...args) {
       d.apply(o, [lifecycle, ...args]);
       const res = f.apply(o, [lifecycle, ...args]);
+=======
+    render.updateImage(plc_fsm.js_fsm.state, plc_controller.state != "available");
+  }
+
+  const render_dec = <T, ARGS extends any[]>(o: { onAfterTransition: (...args: ARGS) => T }, d: (...args: ARGS) => unknown) => {
+    const f = o.onAfterTransition;
+    o.onAfterTransition = (...args) => {
+      d(...args);
+      const res = f(...args);
+>>>>>>> Stashed changes
       return res;
     }
   };
 
+<<<<<<< Updated upstream
   after_transition_dec(plc_fsm.js_fsm, render_funct);
   after_transition_dec(plc_fsm.js_fsm, log_funct);
 
@@ -84,6 +96,39 @@ export function configFsmServer(config: ExtConfig) {
       return true;
     });
   }
+  // setInterval(async () => {
+  //   if (plc_fsm.js_fsm.type != "MASTER") {
+  //     try {
+
+  //       const alarm = (await plc_fsm.js_fsm.plc.readVarToObj(["alarm"]))["alarm"];
+  //       if (alarm) {
+  //         if (plc_controller.can("stop")) {
+  //           plc_controller["stop"]();
+  //         }
+  //         if (plc_controller.can("abortExecCommand")) {
+  //           plc_controller["abortExecCommand"]();
+  //         }
+  //         plc_fsm.js_fsm.abort_controller.abort();
+  //       }
+  //     } catch {
+
+  //     }
+  //   } else {
+  //     // const md_status = await plc_fsm.js_fsm.ext_config.md.getByAPI_get("controller_status");
+  //     // const mm_status = await plc_fsm.js_fsm.ext_config.mm.getByAPI_get("controller_status");
+  //     // const mp_status = await plc_fsm.js_fsm.ext_config.mp.getByAPI_get("controller_status");
+  //     // if ((md_status.state == "aborted" ||
+  //     //   mm_status.state == "aborted" ||
+  //     //   mp_status.state == "aborted") && plc_controller.state != "aborted") {
+  //     //   plc_controller["abortExecCommand"]();
+  //     // }
+  //   }
+  // }, 1000);
+=======
+  render_dec(plc_fsm.js_fsm, render_funct);
+
+  render_dec(plc_controller, render_funct);
+>>>>>>> Stashed changes
 
   return {
     render: render,

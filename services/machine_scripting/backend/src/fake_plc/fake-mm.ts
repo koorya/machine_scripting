@@ -57,7 +57,8 @@ export default class FakeMM {
   mm_vault: VaultVar[] = [];
   timeout_period = 100;
   constructor() {
-    this.mm_vault = [{ name: "CHECK_CAMERA", value: false }, { name: "ready", value: true }];
+    this.mm_vault = [{ name: "CHECK_CAMERA", value: false }, { name: "ready", value: true },
+    { name: "alarm", value: false }];
 
     this.mm_tasks = [
       createTask("P200", 20),
