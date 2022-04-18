@@ -71,7 +71,7 @@
 Архив с зависимостями находится в папке **dependences**
 
 Для комфортной работы требуется установить
-свежий **Powershell**, **git**, модуль **posh-git** ниже
+свежий [Powershell](https://docs.microsoft.com/ru-ru/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2#msi), **git**, модуль **posh-git** ниже
 инструкция.
 
     PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
